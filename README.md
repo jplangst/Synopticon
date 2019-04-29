@@ -1,1 +1,1 @@
-# SynOpticon
+# Synopticon
