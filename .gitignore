@@ -1,0 +1,8 @@
+UnrealSimulator/.vs/*
+UnrealSimulator/Build/*
+UnrealSimulator/Saved/*
+UnrealSimulator/Resources/*
+UnrealSimulator/Binaries/*
+UnrealSimulator/Intermediate/*
+UnrealSimulator/Resources/Replays/*
+UnrealSimulator/Saved/*
