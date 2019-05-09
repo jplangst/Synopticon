@@ -1,0 +1,276 @@
+﻿html { 
+  background: url(Resources/DCC_central_1080.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+   margin: 0px;
+   min-height: 100%;
+   width: 100%;
+}
+
+*, *:after, *:before {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-animation-fill-mode: both; /* Chrome, Safari, Opera */
+    animation-fill-mode: both
+}
+.pie {
+    background-color:blueviolet;
+    margin:30px;
+    width:50px;
+    height:50px;
+    -moz-border-radius:25px;
+    -webkit-border-radius:25px;
+    border-radius:50%;
+    position:relative;
+    overflow:hidden;
+}
+.bluepie {
+    background-color:dodgerblue;
+    margin:30px;
+    width:50px;
+    height:50px;
+    -moz-border-radius:25px;
+    -webkit-border-radius:25px;
+    border-radius:50%;
+    position:relative;
+    overflow:hidden;
+}
+.clip1 {
+    position:absolute;
+    top:0;
+    left:0;
+    width:50px;
+    height:50px;
+    clip:rect(0px, 50px, 50px, 25px);
+    box-shadow:0 2px 2px rgba(0,0,0,0.2) inset;
+    border-radius:50%;
+}
+.slice1 {
+    position:absolute;
+    width:50px;
+    height:50px;
+    clip:rect(0px, 25px, 50px, 0px);
+    -moz-border-radius:25px;
+    -webkit-border-radius:25px;
+    border-radius:25px;
+    background-color:limegreen;
+    border-color:#f7e5e1;
+    -moz-transform:rotate(0);
+    -webkit-transform:rotate(0);
+    -o-transform:rotate(0);
+    transform:rotate(0);
+    transition:all 0.3s linear 0s;
+}
+.clip2 {
+    position:absolute;
+    top:0;
+    left:0;
+    width:50px;
+    height:50px;
+    clip:rect(0, 25px, 50px, 0px);
+    box-shadow:0 2px 2px rgba(0,0,0,0.2) inset;
+    border-radius:50%;
+}
+.slice2 {
+    position:absolute;
+    width:50px;
+    height:50px;
+    clip:rect(0px, 50px, 50px, 25px);
+    -moz-border-radius:25px;
+    -webkit-border-radius:25px;
+    border-radius:25px;
+    background-color:limegreen;
+    border-color:#f7e5e1;
+    -moz-transform:rotate(0);
+    -webkit-transform:rotate(0);
+    -o-transform:rotate(0);
+    transform:rotate(0);
+    transition:all 0.3s linear 0.3s;
+}
+.status {
+    position:absolute;
+    height:30px;
+    width:25%;
+    line-height:60px;
+    text-align:center;
+    top:50%;
+    margin-top:-35px;
+    font-size:16px;
+    font-family:verdana;
+}
+
+.inner {
+    position:absolute;
+    height:80%;
+    width:80%;
+    line-height:60px;
+    text-align:center;
+    top:50%;
+    left:50%;
+    margin-top:-40%;
+    margin-left:-40%;
+    background:#fff;
+    border-radius:100%;
+    box-shadow:0 2px rgba(0,0,0,0.2), 0 -100px 50px -50px rgba(0,0,0,0.1) inset;
+}
+
+.outher {
+  position:absolute;
+  border-radius:50%;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+  box-shadow:0 5px 5px rgba(0,0,0,0.3) inset;
+  //border:3px solid slateblue;
+}
+
+#piea {
+    position: fixed;
+    left: 220px;
+    top: 333px;
+}
+
+#pieb {
+    position: fixed;
+    left: 335px;
+    top: 333px;
+}
+
+#piec {
+    position: fixed;
+    left: 275px;
+    top: 520px;
+}
+
+#pied {
+    position: fixed;
+    left: 390px;
+    top: 520px;
+}
+
+#pie1 {
+    position: fixed;
+    left: 27px;
+    top: 600px;
+}
+
+#pie2 {
+    position: fixed;
+    left: 130px;
+    top: 600px;
+}
+
+#pie3 {
+    position: fixed;
+    left: 495px;
+    top: 333px;
+}
+
+#pie4 {
+    position: fixed;
+    left: 615px;
+    top: 333px;
+}
+
+#pie5 {
+    position: fixed;
+    left: 715px;
+    top: 333px;
+}
+
+#pie6 {
+    position: fixed;
+    left: 835px;
+    top: 333px;
+}
+
+#pie7 {
+    position: fixed;
+    left: 495px;
+    top: 600px;
+}
+
+#pie8 {
+    position: fixed;
+    left: 615px;
+    top: 600px;
+}
+
+#pie9 {
+    position: fixed;
+    left: 715px;
+    top: 600px;
+}
+
+#pie10 {
+    position: fixed;
+    left: 835px;
+    top: 600px;
+}
+
+#pie11 {
+    position: fixed;
+    left: 987px;
+    top: 333px;
+}
+
+#pie12 {
+    position: fixed;
+    left: 1120px;
+    top: 333px;
+}
+
+#pie13 {
+    position: fixed;
+    left: 1245px;
+    top: 265px;
+}
+
+#pie14 {
+    position: fixed;
+    left: 1120px;
+    top: 520px;
+}
+
+#pie15 {
+    position: fixed;
+    left: 1245px;
+    top: 520px;
+}
+
+#bluepie1 {
+    position: fixed;
+    left: 1404px;
+    top: 155px;
+}
+
+#bluepie2 {
+    position: fixed;
+    left: 1496px;
+    top: 155px;
+}
+
+#bluepie3 {
+    position: fixed;
+    left: 1670px;
+    top: 155px;
+}
+
+#bluepie4 {
+    position: fixed;
+    left: 1760px;
+    top: 155px;
+}
+
+#bluepie5 {
+    position: fixed;
+    left: 1615px;
+    top: 755px;
+}

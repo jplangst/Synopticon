@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<!-- saved from url=(0037)http://localhost:59794/HtmlPage1.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" type="text/css" href="./Valves_files/StyleSheet1.css">
+    <script src="./Valves_files/jquery-1.10.2.js"></script>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+    </style>
+</head>
+<body>
+ 
+    <script>
+        $(document).ready(function () {
+            function getAngle(cx, cy, ex, ey, offset) {
+                var dy = ey - cy;
+                var dx = ex - cx;
+                var theta = Math.atan2(dy, dx); // range (-PI, PI]
+                theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+                if (typeof offset != 'undefined')
+                    theta += offset;
+                if (theta < 0) theta = 360 + theta; // range [0, 360)
+
+                return theta;
+            }
+            //progressBarUpdate(90,100);
+            progressBarUpdate(0, 360);
+
+            $('#piea').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#piea", parseInt(angle), 360);
+            })
+            $('#pieb').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pieb", parseInt(angle), 360);
+            })
+            $('#piec').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#piec", parseInt(angle), 360);
+            })
+            $('#pied').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pied", parseInt(angle), 360);
+            })
+
+
+            $('#pie1').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie1", parseInt(angle), 360);
+            })
+            $('#pie2').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie2", parseInt(angle), 360);
+            })
+            $('#pie3').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie3", parseInt(angle), 360);
+            })
+            $('#pie4').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie4", parseInt(angle), 360);
+            })
+            $('#pie5').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie5", parseInt(angle), 360);
+            })
+            $('#pie6').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie6", parseInt(angle), 360);
+            })
+            $('#pie7').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie7", parseInt(angle), 360);
+            })
+            $('#pie8').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie8", parseInt(angle), 360);
+            })
+            $('#pie9').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie9", parseInt(angle), 360);
+            })
+            $('#pie10').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie10", parseInt(angle), 360);
+            })
+            $('#pie11').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie11", parseInt(angle), 360);
+            })
+            $('#pie12').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie12", parseInt(angle), 360);
+            })
+            $('#pie13').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie13", parseInt(angle), 360);
+            })
+            $('#pie14').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie14", parseInt(angle), 360);
+            })
+            $('#pie15').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#pie15", parseInt(angle), 360);
+            })
+
+            $('#bluepie1').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#bluepie1", parseInt(angle), 360);
+            })
+            $('#bluepie2').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#bluepie2", parseInt(angle), 360);
+            })
+            $('#bluepie3').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#bluepie3", parseInt(angle), 360);
+            })
+            $('#bluepie4').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#bluepie4", parseInt(angle), 360);
+            })
+            $('#bluepie5').click(function (e) {
+                //progressBarUpdate(parseInt(Math.random()*100),100);
+                var ex = e.clientX - $(this).offset().left;
+                var ey = e.clientY - $(this).offset().top;
+                var cx = $(this).width() / 2;
+                var cy = $(this).height() / 2;
+                var angle = getAngle(cx, cy, ex, ey, 90);
+                progressBarUpdate("#bluepie5", parseInt(angle), 360);
+            })
+
+            function angle(cx, cy, ex, ey) {
+                var dy = ey - cy;
+                var dx = ex - cx;
+                var theta = Math.atan2(dy, dx); // range (-PI, PI]
+                theta *= 180 / Math.PI; // rads to degs, range (-180, 180]
+                //if (theta < 0) theta = 360 + theta; // range [0, 360)
+                return theta;
+            }
+            /* setInterval(function(){
+               var val = parseInt($(".pie").attr('data-x'));
+                 if (val < 100){
+                  val+=20;
+               } else
+                         val = 0;
+                         progressBarUpdate(val,100);
+             }, 600);
+             */
+        });
+
+        function rotate(element, degree) {
+            element.css({
+                '-webkit-transform': 'rotate(' + degree + 'deg)',
+                '-moz-transform': 'rotate(' + degree + 'deg)',
+                '-ms-transform': 'rotate(' + degree + 'deg)',
+                '-o-transform': 'rotate(' + degree + 'deg)',
+                'transform': 'rotate(' + degree + 'deg)',
+                'zoom': 1
+            });
+        }
+
+        function progressBarUpdate(chart, x, outOf) {
+            var firstHalfAngle = 180;
+            var secondHalfAngle = 0;
+            var oldAngle = parseInt($(chart).attr('data-angle'));
+            // caluclate the angle
+            var drawAngle = x / outOf * 360;
+
+            // calculate the angle to be displayed if each half
+            if (drawAngle <= 180) {
+                firstHalfAngle = drawAngle;
+            } else {
+                secondHalfAngle = drawAngle - 180;
+            }
+
+            if (drawAngle > 180 && oldAngle < 180) {
+                $(chart + " .slice1," + chart + " .slice2").css({
+                    'transition-duration': '0.15s',
+                    '-webkit-transition-duration': '0.15s'
+                });
+                $(chart + " .slice1").css({
+                    'transition-delay': '0s',
+                    '-webkit-transition-delay': '0s'
+                });
+                $(chart + " .slice2").css({
+                    'transition-delay': '0.15s',
+                    '-webkit-transition-delay': '0.15s'
+                });
+            } else if (drawAngle < 180 && oldAngle > 180) {
+                $(chart + " .slice1," + chart + " .slice2").css({
+                    'transition-duration': '0.15s',
+                    '-webkit-transition-duration': '0.15s'
+                });
+                $(chart + " .slice2").css({
+                    'transition-delay': '0s',
+                    '-webkit-transition-delay': '0s'
+                });
+                $(chart + " .slice1").css({
+                    'transition-delay': '0.15s',
+                    '-webkit-transition-delay': '0.15s'
+                });
+            } else {
+                $(chart + " .slice1," + chart + " .slice2").css({
+                    'transition-delay': '0s',
+                    '-webkit-transition-delay': '0s',
+                    'transition-duration': '0.3s',
+                    '-webkit-transition-duration': '0.3s'
+                });
+            }
+
+            $(chart).attr('data-angle', drawAngle);
+            $(chart).attr('data-x', x);
+
+            // set the transition
+            rotate($(chart + " .slice1"), firstHalfAngle);
+            rotate($(chart + " .slice2"), secondHalfAngle);
+
+            // set the values on the text
+            $(chart + " .status").html(x + " of " + outOf);
+        }
+    </script>
+
+<!-- Visual Studio Browser Link -->
+<script type="application/json" id="__browserLink_initializationData">
+    {"appName":"Chrome","requestId":"299112a8c7d74e43a786d87c4362b4f6"}
+</script>
+<script type="text/javascript" src="./Valves_files/browserLink" async="async"></script>
+<!-- End Browser Link -->
+
+
+ </body></html>

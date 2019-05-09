@@ -1,8 +1,8 @@
-UnrealSimulator/.vs/*
-UnrealSimulator/Build/*
-UnrealSimulator/Saved/*
-UnrealSimulator/Resources/*
-UnrealSimulator/Binaries/*
-UnrealSimulator/Intermediate/*
-UnrealSimulator/Resources/Replays/*
-UnrealSimulator/Saved/*
+Synopticon/.vs/*
+Synopticon/Build/*
+Synopticon/Saved/*
+Synopticon/Resources/*
+Synopticon/Binaries/*
+Synopticon/Intermediate/*
+Synopticon/Resources/Replays/*
+Synopticon/Saved/*

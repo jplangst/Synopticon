@@ -1,0 +1,10 @@
+Widget suddenly stop working in packaged version?
+	Enable "Force Slow Construction Path" in the widgets class settings 
+	
+Decorated Name Length Exceeded?
+	Remove error code 4503 from the WindowsPlatformCompilerSetup.h in the UE Engine Installed path (Not in the project)
+	
+Cannot rebuild after modifying codes: set bAdaptiveUnityDisablesPCH to false in Engine/Saved/UnrealBuildTool/BuildConfiguration.xml (in Engine Installed path)
+<BuildConfiguration>
+	<bAdaptiveUnityDisablesPCH>false</bAdaptiveUnityDisablesPCH>
+</BuildConfiguration>
