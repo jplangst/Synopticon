@@ -12,6 +12,9 @@
 //NatNet
 #include "NatNet/NatNetWAMPComponent.h"
 
+//Actor components
+#include "ActorComponents/WebcamComponent.h"
+
 #include "Utils/ReplaySyncJSONExporter.h"
 #include "Replay/ReplayDataStructures.h"
 
@@ -75,6 +78,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GazeActorBP")
 		TSubclassOf<AGazeActor> GazeActorBP;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VideoComponentBP")
+		TSubclassOf<UWebcamComponent> WebcamCompBP;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GazeVisualizationBP")
 		TSubclassOf<UGazeDataVisualizerComponent> GazeVizBP;

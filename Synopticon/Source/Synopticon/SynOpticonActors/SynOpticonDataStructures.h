@@ -240,6 +240,48 @@ FORCEINLINE FArchive& operator<<(FArchive &Ar, FOpenFaceStruct &OpenFaceStruct)
 	return Ar;
 }
 
+USTRUCT(BlueprintType)
+struct FVideoComponentStruct
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon VideoComponent Struct")
+		FString VideoFeedName; //Friendly name
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon VideoComponent Struct")
+		FString VideoURL; //Used in real-time/recording
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon VideoComponent Struct")
+		FString VideoRecordingFilepath; //Used when replaying
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon VideoComponent Struct")
+		int32 SelectedVideoTrack; //Which video track is selected
+
+	FVideoComponentStruct()
+	{
+		VideoFeedName = "";
+		VideoURL = "";
+		SelectedVideoTrack = 0;
+		VideoRecordingFilepath = "";
+	}
+
+	bool operator == (const FVideoComponentStruct& a) const
+	{
+		return (VideoFeedName.Equals(a.VideoFeedName) && VideoURL.Equals(a.VideoURL) && SelectedVideoTrack == a.SelectedVideoTrack 
+			&& VideoRecordingFilepath.Equals(a.VideoRecordingFilepath));
+	}
+};
+FORCEINLINE FArchive& operator<<(FArchive &Ar, FVideoComponentStruct &VideoCompStruct)
+{
+	Ar << VideoCompStruct.VideoFeedName;
+	Ar << VideoCompStruct.VideoURL;
+	Ar << VideoCompStruct.SelectedVideoTrack;
+	Ar << VideoCompStruct.VideoRecordingFilepath;
+	
+	return Ar;
+}
+
 //====================================================================================================
 USTRUCT(BlueprintType)
 struct FHandStruct
@@ -395,6 +437,9 @@ struct FSynOpticonActorStruct
 		TArray<FHandStruct> HandComponents;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon Actor Struct")
+		TArray<FVideoComponentStruct> VideoComponents;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon Actor Struct")
 		FSynOpticonActorLoggingStruct GazeLogComponentData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon Actor Struct")
@@ -421,6 +466,7 @@ struct FSynOpticonActorStruct
 		ActorName = "";
 		NatNetName = "";
 		HasMyo = false;
+		VideoComponents = TArray<FVideoComponentStruct>();
 	}
 	FSynOpticonActorStruct(FString _ActorName, FString _NatNetName, 
 		FEyeTrackerStruct _EyeTrackerStruct, FRemoteEyeTrackerStruct _RemoteEyeTrackerStruct,
@@ -434,6 +480,7 @@ struct FSynOpticonActorStruct
 		ShimmerComponents = _ShimmerComponents;
 		HasMyo = _HasMyo;
 		MarkersConfiguration = MarkersConfigurationEnum::VE_Position;
+		VideoComponents = TArray<FVideoComponentStruct>();
 	}
 	FSynOpticonActorStruct(FString _ActorName, FString _NatNetName,
 		FEyeTrackerStruct _EyeTrackerStruct, FRemoteEyeTrackerStruct _RemoteEyeTrackerStruct,
@@ -448,6 +495,7 @@ struct FSynOpticonActorStruct
 		HasMyo = _HasMyo;
 		MarkersConfiguration = MarkersConfigurationEnum::VE_Position;
 		HandComponents = _HandComponents;
+		VideoComponents = TArray<FVideoComponentStruct>();
 	}
 	FSynOpticonActorStruct(FString _ActorName, FString _NatNetName,
 		FEyeTrackerStruct _EyeTrackerStruct, FRemoteEyeTrackerStruct _RemoteEyeTrackerStruct,
@@ -463,13 +511,46 @@ struct FSynOpticonActorStruct
 		MarkersConfiguration = MarkersConfigurationEnum::VE_Position;
 		HandComponents = _HandComponents;
 		VisualComponentData = _VisualComponentData;
+		VideoComponents = TArray<FVideoComponentStruct>();
+	}
+	FSynOpticonActorStruct(FString _ActorName, FString _NatNetName,
+		FEyeTrackerStruct _EyeTrackerStruct, FRemoteEyeTrackerStruct _RemoteEyeTrackerStruct,
+		TArray<FShimmerComponentStruct> _ShimmerComponents, TArray<FHandStruct> _HandComponents, FOpenFaceStruct _VisualComponentData,
+		TArray<FVideoComponentStruct> _VideoComponents)
+	{
+		HeaderVersion = 3;
+		ActorName = _ActorName;
+		NatNetName = _NatNetName;
+		EyeTrackerStruct = _EyeTrackerStruct;
+		RemoteEyeTrackerStruct = _RemoteEyeTrackerStruct;
+		ShimmerComponents = _ShimmerComponents;
+		HasMyo = false;
+		MarkersConfiguration = MarkersConfigurationEnum::VE_Position;
+		HandComponents = _HandComponents;
+		VisualComponentData = _VisualComponentData;
+		VideoComponents = _VideoComponents;
 	}
 };
 FORCEINLINE FArchive& operator<<(FArchive &Ar, FSynOpticonActorStruct &SynOpticonActorStruct)
 {
 	uint32 ArLocation = Ar.Tell();
 	Ar << SynOpticonActorStruct.HeaderVersion;
-	if (SynOpticonActorStruct.HeaderVersion == 2) {
+
+	if (SynOpticonActorStruct.HeaderVersion == 3) {
+		Ar << SynOpticonActorStruct.ActorName;
+		Ar << SynOpticonActorStruct.NatNetName;
+		Ar << SynOpticonActorStruct.EyeTrackerStruct;
+		Ar << SynOpticonActorStruct.RemoteEyeTrackerStruct;
+		Ar << SynOpticonActorStruct.ShimmerComponents;
+		Ar << SynOpticonActorStruct.GazeLogComponentData;
+		Ar << SynOpticonActorStruct.LeftHandLogComponentData;
+		Ar << SynOpticonActorStruct.RightHandLogComponentData;
+		Ar << SynOpticonActorStruct.GazeData;
+		Ar << SynOpticonActorStruct.HasMyo;
+		Ar << SynOpticonActorStruct.HandComponents;
+		Ar << SynOpticonActorStruct.VideoComponents;
+	}
+	else if (SynOpticonActorStruct.HeaderVersion == 2) {
 		Ar << SynOpticonActorStruct.ActorName;
 		Ar << SynOpticonActorStruct.NatNetName;
 		Ar << SynOpticonActorStruct.EyeTrackerStruct;

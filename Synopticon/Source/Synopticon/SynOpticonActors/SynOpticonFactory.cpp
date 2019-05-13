@@ -8,11 +8,10 @@ int32 USynOpticonFactory::Index = 0;
 bool USynOpticonFactory::ReplayMode = false;
 
 ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStruct SynOpticonActorStruct, UWorld* World, 
-	UNatNetWAMPComponent* NatNetWAMPComponent, 
-	UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, 
-	URemoteTrackerWAMPComponent* RetWAMPComp, 
-	UOpenFaceWAMPComponent* OpenFaceWAMPComponent,
-	bool _ReplayMode, TSubclassOf<UGazeDataVisualizerComponent> GazeVizBP)
+	UNatNetWAMPComponent* NatNetWAMPComponent, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, 
+	URemoteTrackerWAMPComponent* RetWAMPComp, UOpenFaceWAMPComponent* OpenFaceWAMPComponent,
+	bool _ReplayMode, TSubclassOf<UGazeDataVisualizerComponent> GazeVizBP,
+	TSubclassOf<UWebcamComponent> VideoComponentBP)
 {
 	USynOpticonFactory::ReplayMode = _ReplayMode;
 
@@ -99,6 +98,13 @@ ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStru
 		}
 	}
 
+	for (FVideoComponentStruct VideoCompStruct : SynOpticonActorStruct.VideoComponents)
+	{
+		if (!VideoCompStruct.VideoURL.Equals("")) {
+			CreateVideoComponent(NewSynOpticonActor, VideoCompStruct, VideoComponentBP);
+		}
+	}
+
 	FString VisCompName = NewSynOpticonActor->GetActorName() + "GazeVizComponent";
 	UGazeDataVisualizerComponent* VisComponent = NewObject<UGazeDataVisualizerComponent>(NewSynOpticonActor, GazeVizBP, FName(*VisCompName));
 	if (VisComponent) {
@@ -132,7 +138,9 @@ ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStru
 	return NewSynOpticonActor;
 }
 
-void USynOpticonFactory::EditSynOpticonActor(ASynOpticonActor* Actor, FSynOpticonActorStruct SynOpticonActorStruct, UNatNetWAMPComponent* NatNetWAMPComponent, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, URemoteTrackerWAMPComponent* RetWAMPComp)
+void USynOpticonFactory::EditSynOpticonActor(ASynOpticonActor* Actor, FSynOpticonActorStruct SynOpticonActorStruct, 
+	UNatNetWAMPComponent* NatNetWAMPComponent, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, URemoteTrackerWAMPComponent* RetWAMPComp, 
+	TSubclassOf<UWebcamComponent> VideoComponentBP)
 {
 	bool hasPosOriComponent = false;
 	bool hasETComponent = false;
@@ -155,13 +163,10 @@ void USynOpticonFactory::EditSynOpticonActor(ASynOpticonActor* Actor, FSynOptico
 	EditMyoInputComponent(Actor, SynOpticonActorStruct);
 	//Edit the Shimmer Component(s)
 	EditShimmerComponents(Actor, SynOpticonActorStruct);
+	//Edit the video component(s)
+	EditVideoComponents(Actor, SynOpticonActorStruct.VideoComponents, VideoComponentBP);
 	//Edit the Raycast and Logging components
 	EditRaycastAndLogComponent(Actor, hasETComponent, hasPosOriComponent);
-
-	//if (hasPosOriComponent)
-	//{
-	//	Actor->SetupCameraAttachement();
-	//}
 }
 
 UHandComponent* USynOpticonFactory::CreateHandComponent(ASynOpticonActor* NewSynOpticonActor, FHandStruct HandCompStruct, UNatNetWAMPComponent* NatNetWAMPComponent) {
@@ -190,6 +195,69 @@ UHandComponent* USynOpticonFactory::CreateHandComponent(ASynOpticonActor* NewSyn
 
 	HandComponent->RegisterComponent();
 	return HandComponent;
+}
+
+void USynOpticonFactory::CreateVideoComponent(ASynOpticonActor* NewSynOpticonActor, FVideoComponentStruct VideoCompStruct, TSubclassOf<UWebcamComponent> VideoCompBP)
+{
+	UWebcamComponent* VideoComponent = NewObject<UWebcamComponent>(NewSynOpticonActor, VideoCompBP, FName(*(NewSynOpticonActor->GetActorName().Append("VideoComp" + VideoCompStruct.VideoFeedName))));
+	if (VideoComponent) {
+		VideoComponent->SetVideoComponentStruct(VideoCompStruct);
+		VideoComponent->SetOwnerID(NewSynOpticonActor->GetActorID());
+		VideoComponent->RegisterComponent();
+	}
+}
+
+void USynOpticonFactory::EditVideoComponents(ASynOpticonActor* NewSynOpticonActor, TArray<FVideoComponentStruct> VideoCompStructs, TSubclassOf<UWebcamComponent> VideoCompBP)
+{
+	TArray<UWebcamComponent*> VideoComponents;
+	NewSynOpticonActor->GetComponents(VideoComponents);
+
+	//Check if any components have been removed
+	TArray<int32> RemoveCompIndicies = TArray<int32>();
+	for(int i = 0; i < VideoComponents.Num(); i++) {
+		UWebcamComponent* VideoComp = VideoComponents[i];
+		bool Removed = true;
+		for(FVideoComponentStruct CompData : VideoCompStructs) {
+			if (VideoComp->GetVideoComponentStruct().VideoURL.Equals(CompData.VideoURL)) {
+				Removed = false;
+				break;
+			}
+		}
+		//The component has been removed tag for removal
+		if (Removed == true) {
+			RemoveCompIndicies.Add(i);
+		}
+	}
+	//Remove any tagged components
+	for(int32 index : RemoveCompIndicies) {
+		VideoComponents[index]->DestroyComponent();
+		VideoComponents.RemoveAt(index, 1, false);
+	}
+	//Shrink the array after the removal operation is done to shift indicies back into order
+	VideoComponents.Shrink();
+
+	for(FVideoComponentStruct CompData : VideoCompStructs) {
+		bool Exists = false;
+		for(UWebcamComponent* VideoComp : VideoComponents) {
+			//Check if the components already exists 
+			FVideoComponentStruct ExistingData = VideoComp->GetVideoComponentStruct();
+			if (CompData.VideoURL.Equals(ExistingData.VideoURL)) {
+				Exists = true;
+
+				//Check if the component information has changed
+				if (!(CompData == ExistingData)) {
+					//If so update the component
+					VideoComp->SetVideoComponentStruct(CompData);
+					VideoComp->UpdateVideoFeed();
+				}
+			}	
+		}
+
+		//Otherwise we create a new component
+		if (!Exists) {
+			CreateVideoComponent(NewSynOpticonActor, CompData, VideoCompBP);
+		}
+	}
 }
 
 void USynOpticonFactory::CreateRemoteTrackerComponent(ASynOpticonActor* NewSynOpticonActor, FRemoteEyeTrackerStruct RemoteEyeTrackerStruct, URemoteTrackerWAMPComponent* RetWAMPComp)

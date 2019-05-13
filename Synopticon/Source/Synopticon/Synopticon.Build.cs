@@ -103,8 +103,8 @@ public class Synopticon : ModuleRules
 
     public Synopticon(ReadOnlyTargetRules Target) : base(Target)
     {
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "Http", "UMG"}); //, "ShaderCore"
-        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "Http", "UMG","MediaAssets"}); //, "ShaderCore"
+        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableExceptions = true;
         

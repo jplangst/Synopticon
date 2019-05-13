@@ -22,6 +22,7 @@
 #include "ActorComponents/PositionAndOrientationComponent.h"
 #include "ActorComponents/RaycastComponent_Ours.h"
 #include "ActorComponents/SynOpticonAggLogComponent.h"
+#include "ActorComponents/WebcamComponent.h"
 //#include "ActorComponents/MyoInputComponent.h"
 #include "ActorComponents/OpenFaceComponent.h"
 #include "ActorComponents/ShimmerVRPNComponent.h"
@@ -62,7 +63,11 @@ class SYNOPTICON_API USynOpticonFactory : public UObject
 
 	static UHandComponent* CreateHandComponent(ASynOpticonActor* NewSynOpticonActor, FHandStruct HandCompStruct, UNatNetWAMPComponent* NatNetComponent);
 
+	static void CreateVideoComponent(ASynOpticonActor* NewSynOpticonActor, FVideoComponentStruct VideoCompStruct, TSubclassOf<UWebcamComponent> VideoCompBP);
+
 	//Edit Components
+	static void EditVideoComponents(ASynOpticonActor* NewSynOpticonActor, TArray<FVideoComponentStruct> VideoCompStructs, TSubclassOf<UWebcamComponent> VideoCompBP);
+
 	static bool EditRemoteTrackerComponent(ASynOpticonActor* NewSynOpticonActor, FRemoteEyeTrackerStruct RemoteEyeTrackerStruct, URemoteTrackerWAMPComponent* RetWAMPComp);
 
 	static bool EditEyeVectorsComponent(ASynOpticonActor* NewSynOpticonActor, FEyeTrackerStruct EyeTrackerStruct, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent);
@@ -81,6 +86,8 @@ public:
 		UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, 
 		URemoteTrackerWAMPComponent* RetWAMPComp, 
 		UOpenFaceWAMPComponent* OpenFaceWAMPComponent,
-		bool ReplayMode, TSubclassOf<UGazeDataVisualizerComponent> GazeVizBP);
-	static void EditSynOpticonActor(ASynOpticonActor* Actor, FSynOpticonActorStruct SynOpticonActorStruct, UNatNetWAMPComponent* NatNetComponent, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, URemoteTrackerWAMPComponent* RetWAMPComp);
+		bool ReplayMode, 
+		TSubclassOf<UGazeDataVisualizerComponent> GazeVizBP,
+		TSubclassOf<UWebcamComponent> VideoComponentBP);
+	static void EditSynOpticonActor(ASynOpticonActor* Actor, FSynOpticonActorStruct SynOpticonActorStruct, UNatNetWAMPComponent* NatNetComponent, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, URemoteTrackerWAMPComponent* RetWAMPComp, TSubclassOf<UWebcamComponent> VideoComponentBP);
 };

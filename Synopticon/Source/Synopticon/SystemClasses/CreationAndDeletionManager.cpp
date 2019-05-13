@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "CreationAndDeletionManager.h"
-//#include "Synopticon.h"
+
 UCreationAndDeletionManager* UCreationAndDeletionManager::Instance = nullptr;
 UCreationAndDeletionManager* UCreationAndDeletionManager::GetCADManagerInstance()
 {
@@ -130,7 +130,7 @@ void UCreationAndDeletionManager::EditSynOpticonActor(ASynOpticonActor* Actor, F
 	UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent = GetOwner()->FindComponentByClass<UEyeTrackingWAMPComponent>();
 	URemoteTrackerWAMPComponent* RetWAMPComponent = GetOwner()->FindComponentByClass<URemoteTrackerWAMPComponent>();
 
-	USynOpticonFactory::EditSynOpticonActor(Actor, SynOpticonActorStruct, NatNetWAMPComponent, EyeTrackingWAMPComponent, RetWAMPComponent);
+	USynOpticonFactory::EditSynOpticonActor(Actor, SynOpticonActorStruct, NatNetWAMPComponent, EyeTrackingWAMPComponent, RetWAMPComponent, WebcamCompBP);
 
 	ASynOpticonActor* CurrActor = Cast<ASynOpticonActor>(ASynOpticonState::GetCurrentActor());
 
@@ -376,7 +376,7 @@ void UCreationAndDeletionManager::CreateSynOpticonActors()
 
 	for (TPair<FSynOpticonActorStruct, bool> ActorData : SynOpticonActorsDataToCreateFrom)
 	{
-		ASynOpticonActor* NewActor = USynOpticonFactory::CreateSynOpticonActor(ActorData.Key, GetWorld(), NatNetWAMPComponent, EyeTrackingWAMPComponent, RetWAMPComponent, OpenFaceWAMPComponent, ActorData.Value, GazeVizBP);
+		ASynOpticonActor* NewActor = USynOpticonFactory::CreateSynOpticonActor(ActorData.Key, GetWorld(), NatNetWAMPComponent, EyeTrackingWAMPComponent, RetWAMPComponent, OpenFaceWAMPComponent, ActorData.Value, GazeVizBP, WebcamCompBP);
 
 		ASynOpticonState::AddSOActor(NewActor);
 

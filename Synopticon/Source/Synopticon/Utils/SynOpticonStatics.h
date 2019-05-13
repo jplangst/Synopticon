@@ -21,6 +21,9 @@
 #include "WidgetRenderer.h"
 #include "Engine/TextureRenderTarget2D.h"
 
+#include "MediaTexture.h"
+#include "MediaPlayer.h"
+
 #include "SystemClasses/SynOpticonCustomType.h"
 
 #include "SynOpticonStatics.generated.h"
@@ -114,8 +117,14 @@ public:
 	//Returns true if the point is inside
 	UFUNCTION(BlueprintCallable, Category = "Point inside Polygon")
 	static bool WindingNumberTest(FVector2D Point, TArray<FVector2D> Polygon);
-
 	//
+
+	//Creates and returns a MediaTexture reference
+	UFUNCTION(BlueprintCallable, Category = "MediaPlayer")
+		static void CreateMediaPlayer(UObject* Owner, UMediaPlayer*& MediaPlayer, UMediaTexture*& MediaTexture);
+	
+	UFUNCTION(BlueprintCallable, Category = "CBluePrintLibrary")
+		static TArray<UObject*>  LoadObjectLibrary(const FString& Path, TSubclassOf<UObject> ObjectClass);
 
 	/** Convert integer number to FString */
 	static FString ConvertNumberToString(int Number);

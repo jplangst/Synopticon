@@ -58,6 +58,43 @@ bool USynOpticonStatics::WindingNumberTest(FVector2D Point, TArray<FVector2D> Po
 	return WN != 0;
 }
 
+void USynOpticonStatics::CreateMediaPlayer(UObject* Owner, UMediaPlayer*& MediaPlayer, UMediaTexture*& MediaTexture)
+{
+	MediaPlayer = NewObject<UMediaPlayer>(Owner);
+	MediaTexture = NewObject<UMediaTexture>(Owner);
+	MediaTexture->SetMediaPlayer(MediaPlayer);
+	MediaTexture->SRGB = true;
+}
+
+TArray<UObject*> USynOpticonStatics::LoadObjectLibrary(const FString& Path, TSubclassOf<UObject> ObjectClass)
+{
+	TArray<UObject*> Assets;
+
+	UObjectLibrary* ObjectLibrary = UObjectLibrary::CreateLibrary(ObjectClass, false, GIsEditor);
+	if (ObjectLibrary != nullptr)
+	{
+		ObjectLibrary->AddToRoot();
+		FString NewPath = TEXT("/Game") / Path;
+		int32 NumOfAssetDatas = ObjectLibrary->LoadAssetDataFromPath(NewPath);
+		TArray<FAssetData> AssetDatas;
+		ObjectLibrary->GetAssetDataList(AssetDatas);
+
+
+		UObject* Asset;
+
+		for (int32 i = 0; i < AssetDatas.Num(); ++i)
+		{
+			FAssetData& AssetData = AssetDatas[i];
+			Asset = AssetData.GetAsset();
+			if (Asset)
+			{
+				Assets.Add(AssetData.GetAsset());
+			}
+		}
+	}
+	return Assets;
+}
+
 int32 USynOpticonStatics::Triangulate(TArray<FVector> vertices, TArray<int32> &OutTriangles)
 {
 	FPoly newPolygon;
