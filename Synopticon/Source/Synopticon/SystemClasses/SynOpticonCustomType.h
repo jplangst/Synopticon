@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Utils/CleanWampHeader.h"
+
 #include "CoreMinimal.h"
 
 #include <array>
@@ -593,8 +595,44 @@ struct FSequenceObjectData
 	}
 };
 
+
+//WAMP EVENTS
+UENUM(BlueprintType)
+enum class PublishWAMPEventType : uint8
+{
+	NotSet					UMETA(DisplayName = "Glasses Component"),
+	RecordingEvent 			UMETA(DisplayName = "Glasses Component"),
+	EyeEvent 				UMETA(DisplayName = "Remote Tracker Component")
+};
+
+// A base struct for WAMP publication events
 USTRUCT(BlueprintType)
-struct FEyeEventStruct
+struct FPublishWAMPEventStruct
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence Object Struct")
+		PublishWAMPEventType EventType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence Object Struct")
+		FString WAMPTopic;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence Object Struct")
+		int32 Timestamp;
+
+	FPublishWAMPEventStruct() {
+		EventType = PublishWAMPEventType::NotSet;
+		WAMPTopic = "not set";
+		Timestamp = FDateTime::UtcNow().GetTimeOfDay().GetTotalMilliseconds();
+	}
+
+	std::string GetWAMPTopic() {
+		return std::string(TCHAR_TO_UTF8(*WAMPTopic));
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FEyeEventStruct : public FPublishWAMPEventStruct
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -607,13 +645,48 @@ struct FEyeEventStruct
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence Object Struct")
 		FVector2D LocationOnAOI;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence Object Struct")
-		int32 Timestamp;
-
 	FEyeEventStruct() {
+		EventType = PublishWAMPEventType::EyeEvent;
+		WAMPTopic = "Synopticon.LiveEyeEvents";
 		ActorName = "not set";
 		TargetAOIName = "not set";
 		LocationOnAOI = FVector2D(-1, -1);
-		Timestamp = -1;
+	}
+
+	msgpack::type::tuple<std::string, std::string, std::array<float, 2>, int> GetWAMPArguments() {
+		std::string ActorNameSTD = std::string(TCHAR_TO_UTF8(*ActorName));
+		std::string TargetAOINameSTD = std::string(TCHAR_TO_UTF8(*TargetAOIName));
+		std::array<float, 2> LocationOnScreenSTD = { LocationOnAOI.X, LocationOnAOI.Y };
+		int TimestampSTD = Timestamp;
+
+		 msgpack::type::tuple<std::string, std::string, std::array<float, 2>, int> Arguments =
+			 msgpack::type::make_tuple(ActorNameSTD, TargetAOINameSTD, LocationOnScreenSTD, TimestampSTD);
+
+		 return Arguments;
+	}
+};
+
+USTRUCT(BlueprintType)
+struct FRecordingEventStruct : public FPublishWAMPEventStruct
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sequence Object Struct")
+		FString RecordingStatus;
+
+	FRecordingEventStruct() {
+		EventType = PublishWAMPEventType::RecordingEvent;
+		WAMPTopic = "Synopticon.RecordingEvents";
+		RecordingStatus = "not set";
+	}
+
+	msgpack::type::tuple<std::string, int> GetWAMPArguments() {
+		std::string RecordingStatusSTD = std::string(TCHAR_TO_UTF8(*RecordingStatus));
+		int TimestampSTD = Timestamp;
+
+		msgpack::type::tuple<std::string, int> Arguments =
+			msgpack::type::make_tuple(RecordingStatusSTD, TimestampSTD);
+
+		return Arguments;
 	}
 };

@@ -8,7 +8,7 @@ FWAMPWorker* FWAMPWorker::WAMPWorker = nullptr;
 TArray<TPair<FString, TSharedPtr<wamp_event_handler>>> FWAMPWorker::WAMPTopics;
 bool FWAMPWorker::ForcedStop = false;
 
-TQueue<FEyeEventStruct> FWAMPWorker::EyeEventsToPublish;
+TQueue<FPublishWAMPEventStruct*> FWAMPWorker::WAMPEventsToPublish;
 
 FWAMPWorker::FWAMPWorker(FString _ServerIP, FString _Realm)
 {
@@ -31,7 +31,11 @@ FWAMPWorker::~FWAMPWorker()
 		WAMPThread = nullptr;
 	}
 
-	EyeEventsToPublish.Empty();
+	FPublishWAMPEventStruct* EventToPublish;
+	while (WAMPEventsToPublish.Dequeue(EventToPublish)) { //While we have events to publish we keep publishing
+		if (EventToPublish) 
+			delete EventToPublish;
+	}
 }
 
 void FWAMPWorker::SubscribeToTopic(FString Topic, TSharedPtr<wamp_event_handler> Handler)
@@ -127,10 +131,8 @@ uint32 FWAMPWorker::Run()
 
 					//Try to stream at a rate of 60fps
 					while (!ForcedStop){ //&& !ClosedManually) {
-
-										 //if (ASynOpticonState::IsReplaying() || ASynOpticonState::IsRecording()) {
-							PublishEyeEvents(session);
-						//}					
+						PublishEvents(session);
+				
 						FPlatformProcess::Sleep(0.017);
 					}
 
@@ -195,20 +197,32 @@ uint32 FWAMPWorker::Run()
 	return 1;
 }
 
-void FWAMPWorker::PublishEyeEvents(std::shared_ptr<autobahn::wamp_session> session) {
-	FEyeEventStruct EventToPublish;
-	while (EyeEventsToPublish.Dequeue(EventToPublish)) { //While we have messages to publish we keep publishing
-		std::string ActorName = std::string(TCHAR_TO_UTF8(*EventToPublish.ActorName));
-		std::string TargetAOIName = std::string(TCHAR_TO_UTF8(*EventToPublish.TargetAOIName));
-		std::array<float, 2> LocationOnScreen = { EventToPublish.LocationOnAOI.X, EventToPublish.LocationOnAOI.Y };
-		int Timestamp = EventToPublish.Timestamp;
+void FWAMPWorker::PublishEvents(std::shared_ptr<autobahn::wamp_session> session) {
+	FPublishWAMPEventStruct* EventToPublish;
+	while (WAMPEventsToPublish.Dequeue(EventToPublish)) { //While we have events to publish we keep publishing
+		if (EventToPublish) {
+			switch (EventToPublish->EventType)
+			{
+			case PublishWAMPEventType::EyeEvent:
+			{
+				FEyeEventStruct* EyeEvent = (FEyeEventStruct*)EventToPublish;
+				session->publish(EyeEvent->GetWAMPTopic(), EyeEvent->GetWAMPArguments());
+				break;
+			}
+			case PublishWAMPEventType::RecordingEvent:
+			{
+				FRecordingEventStruct* RecordingEvent = (FRecordingEventStruct*)EventToPublish;
+				session->publish(RecordingEvent->GetWAMPTopic(), RecordingEvent->GetWAMPArguments());
+				break;
+			}
+			case PublishWAMPEventType::NotSet:
+			{
+				break;
+			}
+			}
 
-		//Pack the message
-		msgpack::type::tuple<std::string, std::string, std::array<float, 2>, int> arguments =
-			msgpack::type::make_tuple(ActorName, TargetAOIName, LocationOnScreen, Timestamp);
-
-		//Publish the msg through WAMP
-		session->publish(std::string("Synopticon.LiveEyeEvents"), arguments);
+			delete EventToPublish;
+		}		
 	}
 }
 
@@ -253,9 +267,9 @@ bool FWAMPWorker::IsThreadFinished()
 	return WAMPWorker == nullptr;
 }
 
-void FWAMPWorker::PublishEyeEvent(FEyeEventStruct EyeEvent)
+void FWAMPWorker::PublishWAMPEvent(FPublishWAMPEventStruct* WAMPEvent)
 {
-	EyeEventsToPublish.Enqueue(EyeEvent);
+	WAMPEventsToPublish.Enqueue(WAMPEvent);
 }
 
 void FWAMPWorker::CleanUp()

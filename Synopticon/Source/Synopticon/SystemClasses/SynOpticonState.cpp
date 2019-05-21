@@ -133,6 +133,11 @@ bool ASynOpticonState::IsRecording()
 void ASynOpticonState::SetRecordingStatus(bool _Recording)
 {
 	bRecording = _Recording;
+
+	FRecordingEventStruct* RecordingEvent = new FRecordingEventStruct();
+	RecordingEvent->RecordingStatus = _Recording ? "Recording" : "Stopped Recording";
+	FWAMPWorker::PublishWAMPEvent(RecordingEvent);
+
 	globalEventSystem->OnEventStartRecord.Broadcast(_Recording);
 }
 

@@ -39,9 +39,9 @@ private:
 	bool IsFinished;
 	static bool ForcedStop;
 
-	//For publishing eye events
-	static TQueue<FEyeEventStruct> EyeEventsToPublish;
-	void PublishEyeEvents(std::shared_ptr<autobahn::wamp_session> session);
+	//For publishing events
+	static TQueue<FPublishWAMPEventStruct*> WAMPEventsToPublish;
+	void PublishEvents(std::shared_ptr<autobahn::wamp_session> session);
 
 	boost::asio::io_service io;
 
@@ -53,8 +53,8 @@ public:
 	static void CleanUp();
 	static bool IsThreadFinished();
 
-	//For publishing eye events
-	static void PublishEyeEvent(FEyeEventStruct EyeEvent);
+	//For publishing events
+	static void PublishWAMPEvent(FPublishWAMPEventStruct* WAMPEvent);
 
 	FWAMPWorker(FString _ServerIP, FString _Realm);
 	virtual ~FWAMPWorker();

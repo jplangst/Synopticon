@@ -181,12 +181,12 @@ void URaycastComponent_Ours::ProcessHitResults(TArray<FHitObjectResult> &HitResu
 		//Create an eye event for streaming. Stream at all times
 		//if (ASynOpticonState::IsReplaying() || ASynOpticonState::IsRecording()) {
 			if (PublishEvent) {
-				FEyeEventStruct EyeEvent;
-				EyeEvent.ActorName = OwnerName;
-				EyeEvent.LocationOnAOI = HitUV;
-				EyeEvent.TargetAOIName = GazeActor->GetAOINameFromID(HitAOIID);
-				EyeEvent.Timestamp = FDateTime::UtcNow().GetTimeOfDay().GetTotalMilliseconds();
-				FWAMPWorker::PublishEyeEvent(EyeEvent);
+				FEyeEventStruct* EyeEvent = new FEyeEventStruct();
+				EyeEvent->ActorName = OwnerName;
+				EyeEvent->LocationOnAOI = HitUV;
+				EyeEvent->TargetAOIName = GazeActor->GetAOINameFromID(HitAOIID);
+				EyeEvent->Timestamp = FDateTime::UtcNow().GetTimeOfDay().GetTotalMilliseconds();
+				FWAMPWorker::PublishWAMPEvent(EyeEvent);
 				PublishEvent = false;
 			}			
 		//}
