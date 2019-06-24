@@ -158,6 +158,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Calibration") //---
 		void ResetCurrentActorsCalibration();
 
+	UFUNCTION(BlueprintCallable, Category = "Calibration") //---
+		void SetGazeActorGroundplaneZOffset(float Offset);
+
 	//=========================SAVE AND LOAD FILES==========================
 	//Callback from the UI. Don't call manually
 	UFUNCTION(BlueprintCallable, Category = "File Manager")

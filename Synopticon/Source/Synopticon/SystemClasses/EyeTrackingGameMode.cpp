@@ -434,6 +434,29 @@ void AEyeTrackingGameMode::ResetCurrentActorsCalibration()
 	}	
 }
 
+void AEyeTrackingGameMode::SetGazeActorGroundplaneZOffset(float Offset)
+{
+	TArray<AActor*> Actors = ASynOpticonState::GetGazeActorList();
+
+	//Find the vertex closest to the groundplane by iterating over all GazeActors verticies
+	FVector LowestGazeActorVertex = FVector(0, 0, 100000); //Set the current lowest point to be high above the ground
+	for (AActor* Actor : Actors) {
+		AGazeActor* GazeActor = Cast<AGazeActor>(Actor);
+		TArray<FVector> Verticies = GazeActor->GetVerticies();
+		for (FVector Vertex : Verticies) {
+			if (Vertex.Z < LowestGazeActorVertex.Z) {
+				LowestGazeActorVertex.Z = Vertex.Z;
+			}
+		}
+	}
+
+	//Offset all GazeActors Z position by the location of the closest vertex and then apply the new offset
+	FVector NewOffset = FVector(0, 0, Offset);
+	for (AActor* Actor : Actors) {
+		Actor->SetActorLocation(Actor->GetActorLocation() - LowestGazeActorVertex + NewOffset);
+	}
+}
+
 //Called from the Global event system, do not call this function directly!
 void AEyeTrackingGameMode::SynOpticonActorChanged() {
 	int32 CurrentActorID = -1;
