@@ -595,7 +595,6 @@ struct FSequenceObjectData
 	}
 };
 
-
 //WAMP EVENTS
 UENUM(BlueprintType)
 enum class PublishWAMPEventType : uint8

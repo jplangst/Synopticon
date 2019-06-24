@@ -1,0 +1,20 @@
+(Synopticon)
+* Ask who is part of this recording (Publish recording event "AnnounceRecordingParticipants")
+    * Listen for announcing events for 5seconds ("Synopticon.RecordingSyncEvents", type participantid)
+        * Store id of the senders in a list
+* Send a record request (Publish recording event "StartRecording")
+    * Listen for recording started events ("Synopticon.RecordingSyncEvents", type readytorecord)
+        *Once all registered participants have said they are ready
+            *Send a StartTimestamp event (Publish recording event "SetStartTimestamp")
+            *Also use this timsestamp for our own stream.
+            
+Once the recordings are done we can then synchronize by cutting everything recorded 
+before the "Start Timestamp" was set. Then we find the recording with the shortest duration and use
+that time as the end of the recordings. Cut anything after that time from the recordings. 
+This will result in a set of recordings with MS difference in the starting of their recording that has 
+the same duration. 
+
+If even better accuracy is required for the synch you will have to come up with a solution yourselves.
+
+TODOS:
+Set internal timestamp for Synopticon recording side

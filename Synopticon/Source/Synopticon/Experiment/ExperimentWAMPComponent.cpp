@@ -9,6 +9,10 @@ const FString PopupTopic = FString("PopupTopic");
 const FString StartStopTopic = FString("StartStopTopic");
 const FString EventMarkerTopic = FString("EventMarkerTopic");
 const FString HammlabEventMarkerTopic = FString("ife.hammlab.exp.events");
+
+//Recording synch events
+const FString RecordingSynchingTopic = FString("Synopticon.RecordingSynchEvents");
+
 UExperimentWAMPComponent::UExperimentWAMPComponent()
 {
 }
@@ -16,6 +20,32 @@ UExperimentWAMPComponent::UExperimentWAMPComponent()
 void UExperimentWAMPComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	WaitingForRecordingParticipants = false;
+	WaitingTimeout = 5; //Wait for 5 seconds before proceeding
+	WaitingTimer = 0; 
+}
+
+void UExperimentWAMPComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (WaitingForRecordingParticipants) {
+		WaitingTimer += DeltaTime;
+		if (WaitingTimer > WaitingTimeout) {
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Sending request to start recording"));
+
+			//Fire off the "Start Recording" event
+			FRecordingEventStruct* RecordingEvent = new FRecordingEventStruct();
+			RecordingEvent->RecordingStatus = "StartRecording";
+			FWAMPWorker::PublishWAMPEvent(RecordingEvent);
+
+			//Reset values
+			WaitingForRecordingParticipants = false;
+			WaitingTimer = 0;
+		}
+	}
 }
 
 void UExperimentWAMPComponent::RegisterWAMP()
@@ -39,6 +69,11 @@ void UExperimentWAMPComponent::RegisterWAMP()
 	TSharedPtr<wamp_event_handler> HammlabEventMarkerTopicHandler(new wamp_event_handler());
 	*HammlabEventMarkerTopicHandler = [this](const autobahn::wamp_event& _event) { OnReceiveHammlabEventMarkers(_event); };
 	FWAMPWorker::SubscribeToTopic(HammlabEventMarkerTopic, HammlabEventMarkerTopicHandler);
+
+	//Recording synching
+	TSharedPtr<wamp_event_handler> RecordingSynchTopicHandler(new wamp_event_handler());
+	*RecordingSynchTopicHandler = [this](const autobahn::wamp_event& _event) { OnRecieveRecordingSynchEvent(_event); };
+	FWAMPWorker::SubscribeToTopic(RecordingSynchingTopic, RecordingSynchTopicHandler);
 }
 
 void UExperimentWAMPComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -209,4 +244,66 @@ void UExperimentWAMPComponent::OnReceiveHammlabEventMarkers(const autobahn::wamp
 	FString SessionID = "Hammlab";
 
 	ASynOpticonState::GetGlobalEventSystem()->OnEventMarkerExperimentDelegate.Broadcast(Name, Description, SessionID);
+}
+
+//Recording Synch Events
+void UExperimentWAMPComponent::StartSynchingRecording()
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Preparing recording synch, asking for participants"));
+
+	// First we request whoever is listening and want to be part of the recording to announce themselves
+	FRecordingEventStruct* RecordingEvent = new FRecordingEventStruct();
+	RecordingEvent->RecordingStatus = "AnnounceRecordingParticipation";
+	FWAMPWorker::PublishWAMPEvent(RecordingEvent);
+
+	//Next we set a flag that is used by the TickComponent function to trigger the next step of the synching
+	WaitingForRecordingParticipants = true;
+}
+
+void UExperimentWAMPComponent::OnRecieveRecordingSynchEvent(const autobahn::wamp_event & _event)
+{
+	std::array<object, 2> receivedData = _event.arguments<std::array<object, 2>>();
+
+	//ImageName: string
+	FString EventType = FString(receivedData[0].as<std::string>().c_str());
+	//SpecifiedID: string
+	FString SenderName = FString(receivedData[1].as<std::string>().c_str());
+
+	if (EventType.Equals("ParticipantName")) {
+		RecordingSynchStatus.Add(SenderName, false);
+
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Participant responded %s"), *SenderName));
+	}
+	else if (EventType.Equals("ReadyToRecord")) {
+		RecordingSynchStatus.Add(SenderName, true);
+
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Participant ready to record %s"), *SenderName));
+
+		bool AllReady = true;
+		//Check if all the participating streams are ready to record
+		for (auto& Elem : RecordingSynchStatus)
+		{
+			bool Ready = Elem.Value;
+			if (!Ready)
+			{
+				AllReady = false;
+				break;
+			}
+		}
+
+		//All participants are ready, send the Set Start Timestamp event
+		if (AllReady) { 
+			if (GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("All participants ready, sending synch message"));
+
+			FRecordingEventStruct* RecordingEvent = new FRecordingEventStruct();
+			RecordingEvent->RecordingStatus = "SetStartTimestamp";
+			FWAMPWorker::PublishWAMPEvent(RecordingEvent);
+
+			//TODO set internal timestamp for our binary recording here
+		}
+	}
 }

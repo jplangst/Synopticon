@@ -18,10 +18,19 @@ class SYNOPTICON_API UExperimentWAMPComponent : public UActorComponent
 
 private:
 	TMap<FString, FImageAndAOIs> ScreenMap;
+	TMap<FString, bool> RecordingSynchStatus;
+
+	//Recording participation announcment
+	bool WaitingForRecordingParticipants;
+	float WaitingTimeout;
+	float WaitingTimer;
+
 public:
 	UExperimentWAMPComponent();
 
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -36,6 +45,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Experiment Information")
 	FImageAndAOIs GetCurrentImageAndAOIs(FString Screen);
 
+
+
 	void OnReceiveImageAndAOIs(const autobahn::wamp_event& _event);
 	void OnReceivePopupEvent(const autobahn::wamp_event& _event);
 	void OnReceiveStartStopEvent(const autobahn::wamp_event& _event);
@@ -44,4 +55,10 @@ public:
 	void OnReceiveHammlabEventMarkers(const autobahn::wamp_event& _event);
 
 	void RegisterWAMP();
+
+
+	//Recording synching
+	void OnRecieveRecordingSynchEvent(const autobahn::wamp_event& _event);
+	//Starts the process of synchronizing recordings
+	void StartSynchingRecording();
 };
