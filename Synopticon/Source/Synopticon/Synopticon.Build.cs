@@ -24,36 +24,12 @@ public class Synopticon : ModuleRules
         //Include paths
         PublicIncludePaths.Add(Path.Combine(LibrariesPath, "autobahn"));
         PublicIncludePaths.Add(Path.Combine(LibrariesPath, "msgpack-c", "include"));
-        PublicIncludePaths.Add(Path.Combine(LibrariesPath, "openssl", "include64"));
         PublicIncludePaths.Add(Path.Combine(LibrariesPath, "websocketpp", "include"));
         PublicIncludePaths.Add(Path.Combine(LibrariesPath, "boost_1_68_0"));
 
-        //Old version
-        //PublicIncludePaths.Add(Path.Combine(LibrariesPath, "boost_1_63_0"));
-
-        //New toolset version
-        //PublicIncludePaths.Add(Path.Combine(LibrariesPath, "boost_1_68_0"));
-
-        //OPENSSL
-        PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "WAMP", "openssl", "lib64", "libeay32MT.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(ThirdPartyPath, "WAMP", "openssl", "lib64", "ssleay32MT.lib"));
-
         //BOOST  
-
-        //Old version     
-        //PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS = 1");
-        //PublicDefinitions.Add("BOOST_USE_WINDOWS_H");
-        //string boostLibraryPath = Path.Combine(LibrariesPath, "boost_1_63_0", "stage", "Release", "lib");
-        ////string boostLibraryPath = Path.Combine(LibrariesPath, "boost_1_63_0", "stage", "Release");
-        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_system-vc140-mt-1_63.lib"));
-        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_thread-vc140-mt-1_63.lib"));
-        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_date_time-vc140-mt-1_63.lib"));
-        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_chrono-vc140-mt-1_63.lib"));
-        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_regex-vc140-mt-1_63.lib"));
-
         //New toolset version
         PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS = 1");
-        //PublicDefinitions.Add("BOOST_USE_WINDOWS_H");
         string boostLibraryPath = Path.Combine(LibrariesPath, "boost_1_68_0", "libs");
         PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_system-vc141-mt-x64-1_68.lib"));
         PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_thread-vc141-mt-x64-1_68.lib"));
@@ -104,16 +80,15 @@ public class Synopticon : ModuleRules
     public Synopticon(ReadOnlyTargetRules Target) : base(Target)
     {
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "Http", "UMG","MediaAssets"}); //, "ShaderCore"
+        PrivateDependencyModuleNames.Add("OpenSSL");
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableExceptions = true;
         
-        //bUseRTTI = true;
 
         LoadLibWebP(Target);   
         LoadLibvpx(Target);
         LoadLibYUV(Target);
-
         LoadWAMP(Target);
 
         PublicDefinitions.Add("MALLOC_LEAKDETECTION = 1");
