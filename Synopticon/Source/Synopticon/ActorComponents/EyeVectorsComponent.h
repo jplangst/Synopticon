@@ -4,6 +4,7 @@
 
 #include "Engine.h"
 #include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 #include "ConstructorHelpers.h"
 

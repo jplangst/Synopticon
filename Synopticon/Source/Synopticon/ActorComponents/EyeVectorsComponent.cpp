@@ -29,13 +29,15 @@ UEyeVectorsComponent::UEyeVectorsComponent()
 	//Prepare the eye vector scene nodes
 	LeftEyeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("LeftEyeSceneComp"));
 	RightEyeSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RightEyeSceneComp"));
-	CombinedVectorSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CombinedVectorSceneComp"));
+	CombinedVectorSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CombinedVectorSceneComp"));	
 
 	//create eye vectors
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowMeshObj(TEXT("StaticMesh'/Game/Models/arrow/arrow.arrow'"));
-	static ConstructorHelpers::FObjectFinder <UMaterial>YellowMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/OrientationVectorMaterial.OrientationVectorMaterial'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial>YellowMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/OrientationVectorMaterial.OrientationVectorMaterial'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> BlueMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/eyeVectorMaterial.eyeVectorMaterial'"));
 	static ConstructorHelpers::FObjectFinder<UMaterial> GreenMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/ConvergenceVectorMaterial.ConvergenceVectorMaterial'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> VectorMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/VectorMaterial.VectorMaterial'"));
+
 	LeftEyeArrowMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LeftArrowMesh"));
 	LeftEyeArrowMesh->SetStaticMesh(ArrowMeshObj.Object);
 	LeftEyeArrowMesh->SetMaterial(0, BlueMaterial.Object);
@@ -51,8 +53,7 @@ UEyeVectorsComponent::UEyeVectorsComponent()
 	CombinedVectorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CombinedArrowMesh"));
 	CombinedVectorMesh->SetStaticMesh(ArrowMeshObj.Object);
 	CombinedVectorMesh->SetWorldScale3D(FVector(5, 1, 1));
-	CombinedVectorMesh->SetMaterial(0, GreenMaterial.Object);
-
+	CombinedVectorMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(VectorMaterial.Object, NULL));
 	CombinedVectorMesh->AttachToComponent(CombinedVectorSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
 	//Convergenced Point

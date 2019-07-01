@@ -92,6 +92,10 @@ public:
 	//Set the scene component containing the direction vector that is to be used for raycasting
 	void SetVectorSceneComponent(USceneComponent* VectorSceneComponent);
 
+	//Set the color of the vector used for raycasting 
+	UFUNCTION(BlueprintCallable, Category="RaycastingVector")
+	void SetVectorColor(FVector NewVectorColor);
+
 	//Get the currently hit gaze actor target, returns nullptr if there is no target
 	int32 GetHitTargetID();
 	void SetHitTargetID(int32 TargetID);

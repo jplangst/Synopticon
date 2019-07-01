@@ -71,56 +71,12 @@ void URaycastComponent_Ours::SetVectorSceneComponent(USceneComponent* _VectorSce
 	VectorSceneComponent = _VectorSceneComponent;
 }
 
+void URaycastComponent_Ours::SetVectorColor(FVector NewVectorColor) {
+	Cast<UMaterialInstanceDynamic>(Cast<UStaticMeshComponent>(VectorSceneComponent->GetChildComponent(0))->GetMaterial(0))->SetVectorParameterValue("VectorColor", NewVectorColor);
+}
+
 void URaycastComponent_Ours::PerformRaycast()
 {
-	//Single line trace = cone trace with 0 divisions
-	//FCollisionQueryParams RV_TraceParams = PrepareTraceParams();
-	//
-	//if (HitResult)
-	//{
-	//	delete HitResult;
-	//}
-	//
-	//int32 TraceLength = 1500;
-	//FTransform orientationVectorTransform = VectorSceneComponent->GetComponentTransform();
-	//FVector StartOfTrace = orientationVectorTransform.GetLocation();
-	//FVector EndOfTrace = (orientationVectorTransform.GetRotation().GetForwardVector() * TraceLength) + StartOfTrace;
-	//HitResult = TraceLine(RV_TraceParams, StartOfTrace, EndOfTrace, ECollisionChannel::ECC_GameTraceChannel4); //GazeObjects channel
-	//
-	//if (HitResult->bBlockingHit)
-	//{
-	//	TargetDistance = HitResult->Distance;
-	//	if (HitResult->GetActor()->IsA(AGazeActor::StaticClass()))
-	//	{
-	//		AGazeActor* TargetGazeActor = (AGazeActor*)HitResult->GetActor();
-	//		if (TargetGazeActor) {
-	//			SetHitTargetID(TargetGazeActor->GetHitID(true));
-	//			SetInteractingActor(TargetGazeActor);
-	//		}
-	//	}
-	//	else if (HitResult->GetActor()->IsA(AStaticRoomActor::StaticClass())) {
-	//		AStaticRoomActor* TargetStaticRoomActor = (AStaticRoomActor*)HitResult->GetActor();
-	//		SetHitTargetID(TargetStaticRoomActor->GetID());
-	//		SetInteractingActor(nullptr);
-	//	}	
-	//	else {
-	//		SetHitTargetID(-1);
-	//		SetInteractingActor(nullptr);
-	//	}
-	//
-	//	UPositionAndOrientationComponent* PosOriComponent = GetOwner()->FindComponentByClass<UPositionAndOrientationComponent>();
-	//	if (PosOriComponent)
-	//	{
-	//		PosOriComponent->ScaleOrientationMesh(TargetDistance);
-	//	}
-	//}
-	//else
-	//{
-	//	TargetDistance = -1;
-	//	SetHitTargetID(-1);
-	//	SetInteractingActor(nullptr);
-	//}
-
 	//Cone line trace
 	FCollisionQueryParams RV_TraceParams = PrepareTraceParams();
 	TArray<FHitObjectResult> ConeHitResults = TraceConeShape(RV_TraceParams, ASynOpticonState::GetConeAngle(), ASynOpticonState::GetConeDivisions());

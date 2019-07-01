@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 
 #include "ConstructorHelpers.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 #include "Components/SceneComponent.h"
+
 #include "Utils/SynOpticonStatics.h"
 #include "DrawDebugHelpers.h"
 
@@ -53,7 +55,7 @@ class SYNOPTICON_API UPositionAndOrientationComponent : public USceneComponent
 
 	//For use with the SynOpticon Actors
 	UStaticMesh* ArrowMesh;
-	UMaterial* ArrowMaterial;
+	UMaterialInstanceDynamic* ArrowMaterial;
 
 	//For use with the Gaze Parent Actors
 	UStaticMesh* SphereMesh;

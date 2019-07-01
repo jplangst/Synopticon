@@ -6,6 +6,12 @@
 
 int32 USynOpticonFactory::Index = 0;
 bool USynOpticonFactory::ReplayMode = false;
+TArray<FVector> USynOpticonFactory::ActorColors = TArray<FVector>();
+
+void USynOpticonFactory::FillActorColors() {
+	ActorColors.Add(FVector(1, 0, 0));
+	ActorColors.Add(FVector(0, 0, 1));
+}
 
 ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStruct SynOpticonActorStruct, UWorld* World, 
 	UNatNetWAMPComponent* NatNetWAMPComponent, UEyeTrackingWAMPComponent* EyeTrackingWAMPComponent, 
@@ -13,6 +19,10 @@ ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStru
 	bool _ReplayMode, TSubclassOf<UGazeDataVisualizerComponent> GazeVizBP,
 	TSubclassOf<UWebcamComponent> VideoComponentBP)
 {
+	if (Index == 0) {
+		FillActorColors();
+	}
+
 	USynOpticonFactory::ReplayMode = _ReplayMode;
 
 	ASynOpticonActor* NewSynOpticonActor = (ASynOpticonActor*)World->SpawnActor(ASynOpticonActor::StaticClass());
@@ -110,6 +120,7 @@ ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStru
 	if (VisComponent) {
 		NewSynOpticonActor->SetGazeDataVisualizer(VisComponent);
 		VisComponent->SetOwnerID(NewSynOpticonActor->GetActorID());
+		VisComponent->SetParticleColor(ActorColors[Index % 2]);
 		VisComponent->RegisterComponent();
 	}
 
@@ -403,6 +414,7 @@ void USynOpticonFactory::CreateRaycastComponent(ASynOpticonActor* NewSynOpticonA
 			}
 		}
 
+		RaycastComponent->SetVectorColor(ActorColors[Index % 2]);
 		RaycastComponent->RegisterComponent();
 	}
 

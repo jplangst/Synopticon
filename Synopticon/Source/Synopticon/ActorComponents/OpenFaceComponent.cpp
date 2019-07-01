@@ -50,10 +50,11 @@ UOpenFaceComponent::UOpenFaceComponent()
 
 	//create the orientation vector
 	static ConstructorHelpers::FObjectFinder<UMaterial>YellowMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/OrientationVectorMaterial.OrientationVectorMaterial'"));
+	static ConstructorHelpers::FObjectFinder<UMaterial> VectorMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/VectorMaterial.VectorMaterial'"));
 
 	OrientationArrowMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OpenFaceOrientationArrowMesh"));
 	OrientationArrowMesh->SetStaticMesh(ArrowMeshObj.Object);
-	OrientationArrowMesh->SetMaterial(0, YellowMaterial.Object);
+	OrientationArrowMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(VectorMaterial.Object, NULL));
 	OrientationArrowMesh->SetWorldScale3D(FVector(5, 1, 1));
 	OrientationArrowMesh->AttachToComponent(OrientationSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
@@ -62,7 +63,7 @@ UOpenFaceComponent::UOpenFaceComponent()
 	CombinedVectorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("OpenFaceCombinedArrowMesh"));
 	CombinedVectorMesh->SetStaticMesh(ArrowMeshObj.Object);
 	CombinedVectorMesh->SetWorldScale3D(FVector(5, 1, 1));
-	CombinedVectorMesh->SetMaterial(0, GreenMaterial.Object);
+	CombinedVectorMesh->SetMaterial(0, UMaterialInstanceDynamic::Create(VectorMaterial.Object, NULL));
 
 	CombinedVectorMesh->AttachToComponent(CombinedVectorSceneComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }

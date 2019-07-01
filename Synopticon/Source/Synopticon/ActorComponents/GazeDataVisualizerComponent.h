@@ -36,6 +36,8 @@ class SYNOPTICON_API UGazeDataVisualizerComponent : public UActorComponent
 
 	int32 OwnerID;
 
+	FVector ParticleColors;
+
 	int32 SpawnedSystemsID;
 	int32 MaxFixationVisualisations;
 	int32 NmbFixationVisualisations;
@@ -83,6 +85,9 @@ public:
 
 	void SetReplayGazeData(TArray<FFixationGroupStruct> Data);
 	FEyeRadarPointData Replay(FDateTime CurrentTime, AGazeActor*& OutGazeActor);
+
+	UFUNCTION(BlueprintCallable, Category="GazeParticles")
+	void SetParticleColor(FVector NewColor);
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Gaze Data")
 	void SetupDynamicMaterial(UParticleSystemComponent* ParticleSystem, bool Fixation, int32 MaxSystems, int32 SystemNumber);

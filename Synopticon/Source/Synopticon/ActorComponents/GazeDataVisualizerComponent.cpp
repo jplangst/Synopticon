@@ -9,6 +9,8 @@ UGazeDataVisualizerComponent::UGazeDataVisualizerComponent(){
 	PrimaryComponentTick.bCanEverTick = false;
 
 	MaxFixationVisualisations = 10;
+
+	ParticleColors = FVector(1, 1, 1);
 }
 
 // Called when the game starts
@@ -100,17 +102,9 @@ void UGazeDataVisualizerComponent::AddFixationData(int32 GazeActorID, FVector Lo
 		}
 	}
 
-	FLinearColor Color;
-	if (OwnerID % 2 == 0) {
-		Color = FLinearColor(0.1, 0.4, 0.9, 1);
-	}
-	else {
-		Color = FLinearColor::Green;
-	}
-
 	//Setup the particle systems parameters
 	if (FixationParticleComponent) {
-		FixationParticleComponent->SetColorParameter("Color", Color);
+		FixationParticleComponent->SetColorParameter("Color", ParticleColors);
 
 		float MaxParticleSize = 3;
 		if (Duration == 0) {
@@ -136,7 +130,7 @@ void UGazeDataVisualizerComponent::AddFixationData(int32 GazeActorID, FVector Lo
 				Location = Location + ForwardVector * 0.8;
 				SaccadeParticleComponent->SetBeamTargetPoint(0, Location, 0);
 				SaccadeParticleSystems.Enqueue(SaccadeParticleComponent);
-				SaccadeParticleComponent->SetColorParameter("SaccadeColor", Color);
+				SaccadeParticleComponent->SetColorParameter("SaccadeColor", ParticleColors);
 				FixationParticleComponent->ActivateSystem(true);
 				SaccadeParticleComponent->SetVisibility(ASynOpticonState::IsGazePointParticlesEnabled());
 			}
@@ -404,6 +398,11 @@ FEyeRadarPointData UGazeDataVisualizerComponent::Replay(FDateTime CurrentTime, A
 	}
 
 	return FEyeRadarPointData();
+}
+
+void UGazeDataVisualizerComponent::SetParticleColor(FVector NewColor)
+{
+	ParticleColors = NewColor;
 }
 
 void UGazeDataVisualizerComponent::RemoveGazeActorCallback(int32 GazeActorID)

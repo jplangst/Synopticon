@@ -16,7 +16,8 @@ UPositionAndOrientationComponent::UPositionAndOrientationComponent()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ArrowMeshObj(TEXT("StaticMesh'/Game/Models/arrow/arrow.arrow'"));
 	ArrowMesh = ArrowMeshObj.Object;
 	static ConstructorHelpers::FObjectFinder<UMaterial>YellowMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/OrientationVectorMaterial.OrientationVectorMaterial'"));
-	ArrowMaterial = YellowMaterial.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterial> VectorMaterial(TEXT("Material'/Game/Materials/SynOpticonActorMaterials/VectorMaterial.VectorMaterial'"));
+	ArrowMaterial = UMaterialInstanceDynamic::Create(VectorMaterial.Object, NULL);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshObj(TEXT("StaticMesh'/Game/Models/glasses/sphere.sphere'"));
 	SphereMesh = SphereMeshObj.Object;

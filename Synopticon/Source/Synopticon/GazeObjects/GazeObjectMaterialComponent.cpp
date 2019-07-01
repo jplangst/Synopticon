@@ -146,7 +146,8 @@ void UGazeObjectMaterialComponent::TickComponent( float DeltaTime, ELevelTick Ti
 				if (isLookedAt)
 				{
 					ProcMesh->CustomDepthStencilValue = StencilValue;
-					ProcMesh->SetRenderCustomDepth(true);							
+					ProcMesh->SetRenderCustomDepth(true);		
+					MarkRenderStateDirty();
 				}
 				else
 				{
@@ -184,7 +185,7 @@ void UGazeObjectMaterialComponent::SetHeatMapValue(float HeatMapValue)
 void UGazeObjectMaterialComponent::NotifyCollision(bool colliding, int32 SynOpticonActorID)
 {
 	if (colliding) {
-		StencilValue = 1;  //SynOpticonActorID + 1; //2 for two actors
+		StencilValue = SynOpticonActorID + 1; //2 for two actors. Was 1
 	}
 	
 	if (IsLookedAtMap.Contains(SynOpticonActorID))
