@@ -33,7 +33,7 @@ FGazeObjectAndParentData GazeActorLoader::LoadResourceFromFile(FString FileName)
 		   }
 
 		   FArchiveLoadCompressedProxy Decompressor =
-		   	FArchiveLoadCompressedProxy(CompressedData, ECompressionFlags::COMPRESS_ZLIB);
+		   	FArchiveLoadCompressedProxy(CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB); //Added compression format, do not know if the string is valid
 
 		   if (Decompressor.GetError())
 		   {

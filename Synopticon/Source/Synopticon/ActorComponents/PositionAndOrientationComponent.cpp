@@ -152,7 +152,8 @@ void UPositionAndOrientationComponent::UpdateWAMPPositionData(float DeltaTime)
 					this->SetWorldLocation(NatNetDataSample->Position);
 					AddLocalOffset(CalibrationToolOffset);
 					FTransform NewWorldTransform = FTransform(NatNetDataSample->Orientation, NatNetDataSample->Position);
-					FTransform NewRelativeTransform = UKismetMathLibrary::ConvertTransformToRelative(BeforeCalibrationToolTransform, NewWorldTransform);
+					//FTransform NewRelativeTransform = UKismetMathLibrary::ConvertTransformToRelative(BeforeCalibrationToolTransform, NewWorldTransform);
+					FTransform NewRelativeTransform = UKismetMathLibrary::MakeRelativeTransform(NewWorldTransform, BeforeCalibrationToolTransform);
 					this->AddRelativeRotation(NewRelativeTransform.GetRotation());
 						
 				}

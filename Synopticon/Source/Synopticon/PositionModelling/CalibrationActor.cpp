@@ -58,7 +58,9 @@ void ACalibrationActor::FindNearestPositionAndOrientationActorComponentInList(TA
 	OutDistance = CalibrationThreshold;
 
 	for (AActor* Actor : ActorList) {
-		TArray<UActorComponent*> PosComps = Actor->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
+		TArray<UActorComponent*> PosComps;
+		Actor->GetComponents(PosComps);
+		//TArray<UActorComponent*> PosComps = Actor->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
 		for (UActorComponent* ActorComp : PosComps) {
 			UPositionAndOrientationComponent* CurrComp = Cast<UPositionAndOrientationComponent>(ActorComp);
 			if (CurrComp) {

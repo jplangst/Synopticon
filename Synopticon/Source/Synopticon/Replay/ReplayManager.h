@@ -13,7 +13,7 @@
 #include "SystemClasses/SynOpticonState.h"
 #include "SystemClasses/CreationAndDeletionManager.h"
 
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 
 #include "GazeObjects/GazeObjectMaterialComponent.h"
 

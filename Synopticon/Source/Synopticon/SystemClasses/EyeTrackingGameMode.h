@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 
 #include "GlobalEventSystem.h"
 
@@ -18,7 +18,7 @@
 #include "WAMP/EyeTrackingWAMPComponent.h"
 #include "WAMP/MicroTaskWAMPComponent.h"
 #include "WAMP/ImagerWAMPComponent.h"
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 #include "CreationAndDeletionManager.h"
 
 #include "GazeObjects/GazeObjectMaterialComponent.h"

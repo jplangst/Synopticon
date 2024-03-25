@@ -6,13 +6,21 @@
 AEyeTrackingGameMode::AEyeTrackingGameMode(const class FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {	
-	NatNetWAMPComponent = NewObject<UNatNetWAMPComponent>(this, UNatNetWAMPComponent::StaticClass(), FName("NatNetWAMPComponent"));
-	EyeTrackingWAMPComponent = NewObject<UEyeTrackingWAMPComponent>(this, UEyeTrackingWAMPComponent::StaticClass(), FName("EyeTrackingWAMPComponent"));
-	RemoteTrackerWAMPComponent = NewObject<URemoteTrackerWAMPComponent>(this, URemoteTrackerWAMPComponent::StaticClass(), FName("RemoteEyeTrackingWAMPComponent"));
-	ImagerWAMPComponent = NewObject<UImagerWAMPComponent>(this, UImagerWAMPComponent::StaticClass(), FName("ImagerWAMPComponent"));
-	ExperimentWAMPComponent = NewObject<UExperimentWAMPComponent>(this, UExperimentWAMPComponent::StaticClass(), FName("ExperimentWAMPComponent"));
-	MicroTaskWAMPComponent = NewObject<UMicroTaskWAMPComponent>(this, UMicroTaskWAMPComponent::StaticClass(), FName("MicroTaskWAMPComponent"));
-	OpenFaceWAMPComponent = NewObject<UOpenFaceWAMPComponent>(this, UOpenFaceWAMPComponent::StaticClass(), FName("OpenFaceWAMPComponent"));
+	NatNetWAMPComponent = CreateDefaultSubobject<UNatNetWAMPComponent>(FName("NatNetWAMPComponent"));
+	EyeTrackingWAMPComponent = CreateDefaultSubobject<UEyeTrackingWAMPComponent>(FName("EyeTrackingWAMPComponent"));
+	RemoteTrackerWAMPComponent = CreateDefaultSubobject<URemoteTrackerWAMPComponent>(FName("RemoteEyeTrackingWAMPComponent"));
+	ImagerWAMPComponent = CreateDefaultSubobject<UImagerWAMPComponent>(FName("ImagerWAMPComponent"));
+	ExperimentWAMPComponent = CreateDefaultSubobject<UExperimentWAMPComponent>(FName("ExperimentWAMPComponent"));
+	MicroTaskWAMPComponent = CreateDefaultSubobject<UMicroTaskWAMPComponent>(FName("MicroTaskWAMPComponent"));
+	OpenFaceWAMPComponent = CreateDefaultSubobject<UOpenFaceWAMPComponent>(FName("OpenFaceWAMPComponent"));
+
+	//NatNetWAMPComponent = NewObject<UNatNetWAMPComponent>(this, UNatNetWAMPComponent::StaticClass(), FName("NatNetWAMPComponent"));
+	//EyeTrackingWAMPComponent = NewObject<UEyeTrackingWAMPComponent>(this, UEyeTrackingWAMPComponent::StaticClass(), FName("EyeTrackingWAMPComponent"));
+	//RemoteTrackerWAMPComponent = NewObject<URemoteTrackerWAMPComponent>(this, URemoteTrackerWAMPComponent::StaticClass(), FName("RemoteEyeTrackingWAMPComponent"));
+	//ImagerWAMPComponent = NewObject<UImagerWAMPComponent>(this, UImagerWAMPComponent::StaticClass(), FName("ImagerWAMPComponent"));
+	//ExperimentWAMPComponent = NewObject<UExperimentWAMPComponent>(this, UExperimentWAMPComponent::StaticClass(), FName("ExperimentWAMPComponent"));
+	//MicroTaskWAMPComponent = NewObject<UMicroTaskWAMPComponent>(this, UMicroTaskWAMPComponent::StaticClass(), FName("MicroTaskWAMPComponent"));
+	//OpenFaceWAMPComponent = NewObject<UOpenFaceWAMPComponent>(this, UOpenFaceWAMPComponent::StaticClass(), FName("OpenFaceWAMPComponent"));
 }
 
 void AEyeTrackingGameMode::StartPlay()
@@ -64,7 +72,7 @@ void AEyeTrackingGameMode::StartPlay()
 
 	OpenFaceWAMPComponent->RegisterWAMP();
 
-	FWAMPWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm());
+	//FWAMPWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm());
 }
 
 void AEyeTrackingGameMode::ViewportResizedCallback(FViewport * viewport, uint32 ID) {
@@ -136,8 +144,8 @@ void AEyeTrackingGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	GetWorld()->GetGameViewport()->Viewport->ViewportResizedEvent.RemoveAll(this);
 
 	//stop wamp and clean up
-	FWAMPWorker::Shutdown();
-	FWAMPWorker::CleanUp();
+	//FWAMPWorker::Shutdown();
+	//FWAMPWorker::CleanUp();
 	/*GazeMaterialComponents.Empty();*/
 
 	//Clean up
@@ -468,7 +476,8 @@ void AEyeTrackingGameMode::SynOpticonActorChanged() {
 	ASynOpticonActor* CurrentActor = Cast<ASynOpticonActor>(ASynOpticonState::GetCurrentActor());
 	FString ShimmerDeviceName = "";
 	FString ETGDevice = "";
-	if (CurrentActor && !CurrentActor->IsPendingKill()) {
+	//if (CurrentActor && !CurrentActor->IsPendingKill()) { //Old version
+	if (CurrentActor && IsValid(CurrentActor)) {
 		//Get the ID of the current actor
 		CurrentActorID = CurrentActor->GetActorID();
 
@@ -577,7 +586,7 @@ void AEyeTrackingGameMode::ResetLoggedData() { //TODO prolly dont need to go thr
 //=============================WAMP WORKER==============================
 void AEyeTrackingGameMode::RestartWAMP()
 {
-	FWAMPWorker::Shutdown();
-	FReconnectWAMPWorker::Shutdown();
-	FWAMPWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm());
+	//FWAMPWorker::Shutdown();
+	//FReconnectWAMPWorker::Shutdown();
+	//FWAMPWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm());
 }

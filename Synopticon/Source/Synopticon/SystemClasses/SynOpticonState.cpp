@@ -78,18 +78,18 @@ TMap<ComponentTypeEnum, TArray<FString>> ASynOpticonState::AvailableComponents;
 
 //Heatmap Colors
 FLinearColor ASynOpticonState::GetHeatMapColorFromValue(float HeatMapValue) { //TODO should be moved into the statics class instead
-	TArray<FHeatMapConditionStruct> HeatMapConditions = ASynOpticonState::GetHeatMapConditions();
+	TArray<FHeatMapConditionStruct> HeatMapConditionss = ASynOpticonState::GetHeatMapConditions();
 
 	FLinearColor HMColor;
 
-	if (HeatMapConditions.Num() > 0)
+	if (HeatMapConditionss.Num() > 0)
 	{
 		bool ColorSet = false;
 		//Blend color grades together
-		for (int i = 0; i < HeatMapConditions.Num() - 1; i++)
+		for (int i = 0; i < HeatMapConditionss.Num() - 1; i++)
 		{
-			FHeatMapConditionStruct CurrentCondition = HeatMapConditions[i];
-			FHeatMapConditionStruct NextCondition = HeatMapConditions[i + 1];
+			FHeatMapConditionStruct CurrentCondition = HeatMapConditionss[i];
+			FHeatMapConditionStruct NextCondition = HeatMapConditionss[i + 1];
 
 			if (HeatMapValue >= CurrentCondition.Value && HeatMapValue <= NextCondition.Value) {
 				float newS = ((HeatMapValue - CurrentCondition.Value) / (NextCondition.Value - CurrentCondition.Value));
@@ -107,7 +107,7 @@ FLinearColor ASynOpticonState::GetHeatMapColorFromValue(float HeatMapValue) { //
 
 		if (!ColorSet)
 		{
-			HMColor = HeatMapConditions.Last().Color;
+			HMColor = HeatMapConditionss.Last().Color;
 		}
 	}
 
@@ -136,7 +136,7 @@ void ASynOpticonState::SetRecordingStatus(bool _Recording)
 
 	FRecordingEventStruct* RecordingEvent = new FRecordingEventStruct();
 	RecordingEvent->RecordingStatus = _Recording ? "Recording" : "Stopped Recording";
-	FWAMPWorker::PublishWAMPEvent(RecordingEvent);
+	//FWAMPWorker::PublishWAMPEvent(RecordingEvent);
 
 	globalEventSystem->OnEventStartRecord.Broadcast(_Recording);
 }
@@ -203,9 +203,9 @@ void ASynOpticonState::InitiateState(UGlobalEventSystem* _globalEventSystem, UTh
 	SetScreenSaveRate(1, false);
 	bLabelingScreens = false;
 
-	TSharedPtr<wamp_event_handler> ComponentMetaDataHandler(new wamp_event_handler());
-	*ComponentMetaDataHandler = [](const autobahn::wamp_event& _event) { ASynOpticonState::OnReceiveChangeOfComponent(_event); };
-	FWAMPWorker::SubscribeToTopic(ComponentMetaDataTopic, ComponentMetaDataHandler);
+	//TSharedPtr<wamp_event_handler> ComponentMetaDataHandler(new wamp_event_handler());
+	//*ComponentMetaDataHandler = [](const autobahn::wamp_event& _event) { ASynOpticonState::OnReceiveChangeOfComponent(_event); };
+	//FWAMPWorker::SubscribeToTopic(ComponentMetaDataTopic, ComponentMetaDataHandler);
 	
 	ASynOpticonState::CalToolForwardAxis = 0;
 
@@ -605,48 +605,48 @@ void ASynOpticonState::AddComponentToMap(ComponentTypeEnum Type, FString name)
 	}
 }
 
-void ASynOpticonState::OnReceiveChangeOfComponent(const autobahn::wamp_event& evt)
+void ASynOpticonState::OnReceiveChangeOfComponent(const string evt)
 {
-	FString evt_type = FString(evt.argument<std::string>(0).c_str());
-	std::array<object, 2> componentInfo = evt.argument<std::array<object, 2>>(1);
-	FString name = FString(componentInfo[0].as<std::string>().c_str());
-	FString type = FString(componentInfo[1].as<std::string>().c_str());
-	
-	ComponentTypeEnum Type = FromFString(type);
-	
-	if (evt_type.Equals("add"))
-	{
-		AddComponentToMap(Type, name);
-		GetGlobalEventSystem()->OnEventWAMPComponentConnected.Broadcast(Type, name);
-	}
-	else //remove
-	{
-		if (AvailableComponents.Contains(Type))
-		{
-			TArray<FString>* list = AvailableComponents.Find(Type);
-			if (list->Contains(name))
-			{
-				list->Remove(name);
-			}
-		}
-		GetGlobalEventSystem()->OnEventWAMPComponentDisconnected.Broadcast(Type, name);
-	}
+	//FString evt_type = FString(evt.argument<std::string>(0).c_str());
+	//std::array<object, 2> componentInfo = evt.argument<std::array<object, 2>>(1);
+	//FString name = FString(componentInfo[0].as<std::string>().c_str());
+	//FString type = FString(componentInfo[1].as<std::string>().c_str());
+	//
+	//ComponentTypeEnum Type = FromFString(type);
+	//
+	//if (evt_type.Equals("add"))
+	//{
+	//	AddComponentToMap(Type, name);
+	//	GetGlobalEventSystem()->OnEventWAMPComponentConnected.Broadcast(Type, name);
+	//}
+	//else //remove
+	//{
+	//	if (AvailableComponents.Contains(Type))
+	//	{
+	//		TArray<FString>* list = AvailableComponents.Find(Type);
+	//		if (list->Contains(name))
+	//		{
+	//			list->Remove(name);
+	//		}
+	//	}
+	//	GetGlobalEventSystem()->OnEventWAMPComponentDisconnected.Broadcast(Type, name);
+	//}
 }
 
-void ASynOpticonState::InitializeAvailableComponents(autobahn::wamp_call_result result)
+void ASynOpticonState::InitializeAvailableComponents(string result)
 {
-	std::list<object> receivedData = result.argument<std::list<object>>(0);
-	for (object component : receivedData)
-	{
-		std::array<object, 2> details = component.as<std::array<object, 2>>();
+	//std::list<object> receivedData = result.argument<std::list<object>>(0);
+	//for (object component : receivedData)
+	//{
+	//	std::array<object, 2> details = component.as<std::array<object, 2>>();
 
-		std::array<object, 2> componentInfo = details[0].as<std::array<object, 2>>();
-		FString name = FString(componentInfo[0].as<std::string>().c_str());
-		FString type = FString(componentInfo[1].as<std::string>().c_str());
-		ComponentTypeEnum Type = FromFString(type);
+	//	std::array<object, 2> componentInfo = details[0].as<std::array<object, 2>>();
+	//	FString name = FString(componentInfo[0].as<std::string>().c_str());
+	//	FString type = FString(componentInfo[1].as<std::string>().c_str());
+	//	ComponentTypeEnum Type = FromFString(type);
 
-		AddComponentToMap(Type, name);
-	}
+	//	AddComponentToMap(Type, name);
+	//}
 }
 
 

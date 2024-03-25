@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "Utils/CleanWampHeader.h"
+//#include "Utils/CleanWampHeader.h"
 
 #include "CoreMinimal.h"
 #include "CircularQueue.h"
 
 #include "SystemClasses/SynOpticonState.h"
 #include "SystemClasses/SynOpticonCustomType.h"
-#include "WAMPWorker.h"
+//#include "WAMPWorker.h"
 
 #include "Components/ActorComponent.h"
 
@@ -38,7 +38,7 @@ public:
 
 	void SetCurrentActorSource(FString Source);
 
-	void OnReceiveOpenFaceData(const autobahn::wamp_event& _event);
+	void OnReceiveOpenFaceData(const string _event);
 
 	void RegisterWAMP();
 };

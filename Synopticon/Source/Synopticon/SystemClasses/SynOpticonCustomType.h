@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/CleanWampHeader.h"
+//#include "Utils/CleanWampHeader.h"
 
 #include "CoreMinimal.h"
 
@@ -652,14 +652,14 @@ struct FEyeEventStruct : public FPublishWAMPEventStruct
 		LocationOnAOI = FVector2D(-1, -1);
 	}
 
-	msgpack::type::tuple<std::string, std::string, std::array<float, 2>, int> GetWAMPArguments() {
+	std::tuple<std::string, std::string, std::array<float, 2>, int> GetWAMPArguments() {
 		std::string ActorNameSTD = std::string(TCHAR_TO_UTF8(*ActorName));
 		std::string TargetAOINameSTD = std::string(TCHAR_TO_UTF8(*TargetAOIName));
 		std::array<float, 2> LocationOnScreenSTD = { LocationOnAOI.X, LocationOnAOI.Y };
 		int TimestampSTD = Timestamp;
 
-		 msgpack::type::tuple<std::string, std::string, std::array<float, 2>, int> Arguments =
-			 msgpack::type::make_tuple(ActorNameSTD, TargetAOINameSTD, LocationOnScreenSTD, TimestampSTD);
+		 std::tuple<std::string, std::string, std::array<float, 2>, int> Arguments =
+			 std::tuple(ActorNameSTD, TargetAOINameSTD, LocationOnScreenSTD, TimestampSTD);
 
 		 return Arguments;
 	}
@@ -679,12 +679,12 @@ struct FRecordingEventStruct : public FPublishWAMPEventStruct
 		RecordingStatus = "not set";
 	}
 
-	msgpack::type::tuple<std::string, int> GetWAMPArguments() {
+	std::tuple<std::string, int> GetWAMPArguments() {
 		std::string RecordingStatusSTD = std::string(TCHAR_TO_UTF8(*RecordingStatus));
 		int TimestampSTD = Timestamp;
 
-		msgpack::type::tuple<std::string, int> Arguments =
-			msgpack::type::make_tuple(RecordingStatusSTD, TimestampSTD);
+		std::tuple<std::string, int> Arguments =
+			std::tuple(RecordingStatusSTD, TimestampSTD);
 
 		return Arguments;
 	}

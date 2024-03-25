@@ -94,7 +94,7 @@ public:
 
 	//Set the color of the vector used for raycasting 
 	UFUNCTION(BlueprintCallable, Category="RaycastingVector")
-	void SetVectorColor(FVector NewVectorColor);
+	void SetVectorColor(FLinearColor NewVectorColor);
 
 	//Get the currently hit gaze actor target, returns nullptr if there is no target
 	int32 GetHitTargetID();

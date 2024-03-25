@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 
 #include "CoreMinimal.h"
 #include "CircularQueue.h"
@@ -52,7 +52,7 @@ public:
 	UFUNCTION()
 		void OnNatNetWAMPComponentConnected(ComponentTypeEnum ComponentType, FString ComponentID);
 
-	void OnReceiveNatNetData(const autobahn::wamp_event& _event);
+	void OnReceiveNatNetData(const string _event);
 
 	void RegisterWAMP();
 };

@@ -25,10 +25,5 @@ public:
 		Owner = a; 
 	}
 
-	UWorld* GetWorld() const 
-	{
-		if(Owner)
-			return Owner->GetWorld();
-		return nullptr;
-	}
+	UWorld* GetOwnerWorld() const;
 };

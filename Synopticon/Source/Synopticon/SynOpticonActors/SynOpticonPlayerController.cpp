@@ -3,4 +3,9 @@
 #include "SynOpticonPlayerController.h"
 //#include "Synopticon.h"
 
-
+UWorld* ASynOpticonPlayerController::GetOwnerWorld() const
+{
+	if (Owner)
+		return Owner->GetWorld();
+	return nullptr;
+}

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 #include "CoreMinimal.h"
 
 #include "ExperimentDataStructure.h"
@@ -47,18 +47,18 @@ public:
 
 
 
-	void OnReceiveImageAndAOIs(const autobahn::wamp_event& _event);
-	void OnReceivePopupEvent(const autobahn::wamp_event& _event);
-	void OnReceiveStartStopEvent(const autobahn::wamp_event& _event);
-	void OnReceiveEventMarkers(const autobahn::wamp_event& _event);
+	void OnReceiveImageAndAOIs(const string _event);
+	void OnReceivePopupEvent(const string _event);
+	void OnReceiveStartStopEvent(const string _event);
+	void OnReceiveEventMarkers(const string _event);
 
-	void OnReceiveHammlabEventMarkers(const autobahn::wamp_event& _event);
+	void OnReceiveHammlabEventMarkers(const string _event);
 
 	void RegisterWAMP();
 
 
 	//Recording synching
-	void OnRecieveRecordingSynchEvent(const autobahn::wamp_event& _event);
+	void OnRecieveRecordingSynchEvent(const string _event);
 	//Starts the process of synchronizing recordings
 	void StartSynchingRecording();
 };

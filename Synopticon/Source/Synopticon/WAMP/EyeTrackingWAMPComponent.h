@@ -2,14 +2,12 @@
 
 #pragma once
 
-#include "Utils/CleanWampHeader.h"
-
 #include "CoreMinimal.h"
 #include "CircularQueue.h"
 
 #include "SystemClasses/SynOpticonState.h"
 #include "SystemClasses/SynOpticonCustomType.h"
-#include "WAMPWorker.h"
+//#include "WAMPWorker.h"
 
 #include "Replay/ReplayDataStructures.h"
 #include "ImageProcessing/ImageDataStructures.h"
@@ -60,8 +58,8 @@ public:
 	void PublishReplayData(TPair<FString, float> Sample);
 	TPair<FString, float> GetReplaySample();
 
-	void OnReceiveEyeData(const autobahn::wamp_event& _event);
-	void OnRecieveEncodedSceneCamera(const autobahn::wamp_event& _event);
+	void OnReceiveEyeData(const string _event);
+	void OnRecieveEncodedSceneCamera(const string _event);
 
 	void RegisterWAMP();
 };

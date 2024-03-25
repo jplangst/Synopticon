@@ -17,7 +17,7 @@ ASynOpticonActor::ASynOpticonActor()
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->TargetArmLength = 55.0f;
 	CameraArm->SocketOffset = FVector(0.0f, 0.f, 10.f);
-	CameraArm->RelativeRotation = FRotator(-10.f, 0.f, 0.f);
+	CameraArm->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f));
 	CameraArm->bDoCollisionTest = false;
 
 	//Smooth the camera movement by introducing a small amount of lag
@@ -663,7 +663,9 @@ void ASynOpticonActor::SetCompressedSOBlock(CompressedSOBlock* _SOBlock)
 		VisionComponent->SetSOBlock(SOBlock);
 	}
 
-	TArray<UActorComponent*> Components = this->GetComponentsByClass(UHandComponent::StaticClass());
+	TArray<UHandComponent*> Components;
+	this->GetComponents(Components);
+	//TArray<UActorComponent*> Components = this->GetComponentsByClass(UHandComponent::StaticClass());
 	for (UActorComponent* ActorComp : Components) {
 		HandDataBlock* HandData = new HandDataBlock();
 		SOBlock->HandDataBlocks.Add(HandData);
@@ -677,7 +679,9 @@ void ASynOpticonActor::RecordFrameData()
 {
 	if (SOBlock)
 	{
-		TArray<UActorComponent*> PosComps = this->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
+		TArray<UPositionAndOrientationComponent*> PosComps;
+		this->GetComponents(PosComps);
+		//TArray<UActorComponent*> PosComps = this->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
 		for (UActorComponent* ActorComp : PosComps) {
 			UPositionAndOrientationComponent* PosOriComponent = Cast<UPositionAndOrientationComponent>(ActorComp);
 			if (PosOriComponent && !PosOriComponent->GetName().Contains("hand")) {
@@ -711,7 +715,9 @@ void ASynOpticonActor::RecordFrameData()
 		//	//MyoGesture = FString(MyoInputComponent->GetCurrentPose().toString().c_str());
 		//}
 
-		TArray<UActorComponent*> HandComps = this->GetComponentsByClass(UHandComponent::StaticClass());
+		TArray<UHandComponent*> HandComps;
+		this->GetComponents(HandComps);
+		//TArray<UActorComponent*> HandComps = this->GetComponentsByClass(UHandComponent::StaticClass());
 		for (UActorComponent* ActorComp : HandComps) {
 			UHandComponent* HandComponent = Cast<UHandComponent>(ActorComp);
 			HandComponent->ToBinaryReplayData();
@@ -728,8 +734,8 @@ void ASynOpticonActor::SetupCameraAttachement(USceneComponent* CameraParent)
 	}
 	else{ //Currently only the Remote Tracker
 		CameraArm->TargetArmLength = 100.0f;
-		CameraArm->RelativeLocation = FVector(0.0f, 0.f, 20.f);
-		CameraArm->RelativeRotation = FRotator(45.f, 180.f, 0.f);
+		CameraArm->SetRelativeLocation(FVector(0.0f, 0.f, 20.f));
+		CameraArm->SetRelativeRotation(FRotator(45.f, 180.f, 0.f));
 		CameraArm->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);	
 	}
 }
@@ -738,7 +744,9 @@ FSynOpticonActorStruct ASynOpticonActor::GetDataStruct()
 {
 	FString NatNetName = "";
 
-	TArray<UActorComponent*> PosComps = this->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
+	TArray<UPositionAndOrientationComponent*> PosComps;
+	this->GetComponents(PosComps);
+	//TArray<UActorComponent*> PosComps = this->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
 	for (UActorComponent* ActorComp : PosComps) {
 		UPositionAndOrientationComponent* PosOriComponent = Cast<UPositionAndOrientationComponent>(ActorComp);
 		if (PosOriComponent && !PosOriComponent->GetName().Contains("hand")) {
@@ -793,7 +801,9 @@ FSynOpticonActorStruct ASynOpticonActor::GetDataStruct()
 	}
 
 	TArray<FHandStruct> HandComponentsData;
-	TArray<UActorComponent*> HandComps = this->GetComponentsByClass(UHandComponent::StaticClass());
+	TArray<UHandComponent*> HandComps;
+	this->GetComponents(HandComps);
+	//TArray<UActorComponent*> HandComps = this->GetComponentsByClass(UHandComponent::StaticClass());
 	for (UActorComponent* ActorComp : HandComps) {
 		UHandComponent* HandComponent = Cast<UHandComponent>(ActorComp);
 		FHandStruct HandData = HandComponent->GetComponentData();

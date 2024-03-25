@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "SystemClasses/SynOpticonState.h"
-#include "WAMPWorker.h"
+//#include "WAMPWorker.h"
 #include "MicroTaskWAMPComponent.generated.h"
 
 
@@ -27,5 +27,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void RegisterWAMP();
-	void OnReceiveMicroTaskData(const autobahn::wamp_event& _event);
+	void OnReceiveMicroTaskData(const string _event);
 };

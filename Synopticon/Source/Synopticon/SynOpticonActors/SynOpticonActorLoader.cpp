@@ -40,7 +40,7 @@ TArray<FSynOpticonActorStruct> SynOpticonActorLoader::LoadResourceFromFile(FStri
 		   }
 
 		   FArchiveLoadCompressedProxy Decompressor =
-		   	FArchiveLoadCompressedProxy(CompressedData, ECompressionFlags::COMPRESS_ZLIB);
+		   	FArchiveLoadCompressedProxy(CompressedData,"", ECompressionFlags::COMPRESS_ZLIB);
 
 		   if (Decompressor.GetError())
 		   {

@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 
 #include "CoreMinimal.h"
 #include "CircularQueue.h"
@@ -20,21 +20,14 @@ class SYNOPTICON_API URemoteTrackerWAMPComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-private:
+	TCircularQueue<TPair<FString, float>>* ReplayPupilQueue;
 	FString CurrentActorRetID;
 	TMap<FString, TCircularQueue<FWAMPRetDataStruct*>*> EyeDataQueuesMap;
-	TCircularQueue<TPair<FString, float>>* ReplayPupilQueue;
 
 public:	
 	// Sets default values for this component's properties
 	URemoteTrackerWAMPComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -49,7 +42,11 @@ public:
 	void PublishReplayData(TPair<FString, float> Sample);
 	TPair<FString, float> GetReplaySample();
 	TArray<FString> RemoteTrackers;
-	void OnReceiveEyeData(const autobahn::wamp_event& _event);
+	void OnReceiveEyeData(const string _event);
 
 	void RegisterWAMP();
+
+	// Called when the game starts
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

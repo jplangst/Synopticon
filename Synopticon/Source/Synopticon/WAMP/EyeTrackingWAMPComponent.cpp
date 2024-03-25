@@ -35,13 +35,13 @@ void UEyeTrackingWAMPComponent::BeginPlay()
 
 void UEyeTrackingWAMPComponent::RegisterWAMP()
 {
-	TSharedPtr<wamp_event_handler> EyeDataSampleHandler(new wamp_event_handler());
-	*EyeDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveEyeData(_event); };
-	FWAMPWorker::SubscribeToTopic(EyeDataSample, EyeDataSampleHandler);
+	//TSharedPtr<wamp_event_handler> EyeDataSampleHandler(new wamp_event_handler());
+	//*EyeDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveEyeData(_event); };
+	//FWAMPWorker::SubscribeToTopic(EyeDataSample, EyeDataSampleHandler);
 
-	TSharedPtr<wamp_event_handler> ETGVPEncodedSceneCameraHandler(new wamp_event_handler());
-	*ETGVPEncodedSceneCameraHandler = [this](const autobahn::wamp_event& _event) { OnRecieveEncodedSceneCamera(_event); };
-	FWAMPWorker::SubscribeToTopic(ETGVPEncodedSceneCamera, ETGVPEncodedSceneCameraHandler);
+	//TSharedPtr<wamp_event_handler> ETGVPEncodedSceneCameraHandler(new wamp_event_handler());
+	//*ETGVPEncodedSceneCameraHandler = [this](const autobahn::wamp_event& _event) { OnRecieveEncodedSceneCamera(_event); };
+	//FWAMPWorker::SubscribeToTopic(ETGVPEncodedSceneCamera, ETGVPEncodedSceneCameraHandler);
 }
 
 void UEyeTrackingWAMPComponent::OnRecordingStatusChanged(bool Started) {
@@ -240,20 +240,20 @@ TPair<FString, float> UEyeTrackingWAMPComponent::GetReplaySample()
 	return Sample;
 }
 
-void UEyeTrackingWAMPComponent::OnReceiveEyeData(const autobahn::wamp_event& _event)
+void UEyeTrackingWAMPComponent::OnReceiveEyeData(const string _event)
 {
 	if (ASynOpticonState::IsReplaying()) {
 		return;
 	}
 
-	FString GlassesID = FString(_event.argument<std::string>(0).c_str());
+	FString GlassesID = "Not Set"; //FString(_event.argument<std::string>(0).c_str());
 	if (!Glasses.Contains(GlassesID))
 	{
 		ASynOpticonState::AddComponentToMap(ComponentTypeEnum::VE_Glasses, GlassesID);
 		Glasses.Add(GlassesID);
 	}
 
-	FWAMPEyeDataStruct* EyeData = new FWAMPEyeDataStruct(_event.argument<std::array<double, 16>>(1));
+	FWAMPEyeDataStruct* EyeData = new FWAMPEyeDataStruct();//new FWAMPEyeDataStruct(_event.argument<std::array<double, 16>>(1));
 
 	if (!EyeDataQueuesMap.Contains(GlassesID)) {
 		TCircularQueue<FWAMPEyeDataStruct*>* DataQueue = new TCircularQueue<FWAMPEyeDataStruct*>(121); //Allow one second worth of data to be stored at a time
@@ -274,51 +274,51 @@ void UEyeTrackingWAMPComponent::OnReceiveEyeData(const autobahn::wamp_event& _ev
 	}
 }
 
-void UEyeTrackingWAMPComponent::OnRecieveEncodedSceneCamera(const autobahn::wamp_event& _event)
+void UEyeTrackingWAMPComponent::OnRecieveEncodedSceneCamera(const string _event)
 {
 	if (ASynOpticonState::IsReplaying()) {
 		return;
 	}
 
-	FString GlassesID = FString(_event.argument<std::string>(0).c_str());
+	FString GlassesID = "Not Set"; // FString(_event.argument<std::string>(0).c_str());
 	//if (GEngine)
 	//{
 	//	GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Red, GlassesID);
 	//}
 
-	std::vector<uint8_t> ImageData = _event.argument<std::vector<uint8_t>>(1);
+	//std::vector<uint8_t> ImageData = _event.argument<std::vector<uint8_t>>(1);
 	//if (GEngine)
 	//{
 	//	GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Black, FString::FromInt(ImageData.size()));
 	//}
 
-	int32 IsKeyFrame = _event.argument<int32>(2);
+	//int32 IsKeyFrame = _event.argument<int32>(2);
 	//if (GEngine)
 	//{
 	//	GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Green, FString::FromInt(IsKeyFrame));
 	//}
 
-	int32 ImageWidth = _event.argument<int32>(3);
+	//int32 ImageWidth = _event.argument<int32>(3);
 	//if (GEngine)
 	//{
 	//	GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Yellow, FString::FromInt(ImageWidth));
 	//}
 
-	int32 ImageHeight = _event.argument<int32>(4);
+	//int32 ImageHeight = _event.argument<int32>(4);
 	//if (GEngine)
 	//{
 	//	GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Cyan, FString::FromInt(ImageHeight));
 	//	GEngine->AddOnScreenDebugMessage(-1, 0.2f, FColor::Black, "");
 	//}
 
-	ImageDataStructures::VP8EncodedImageData* EncodedCameraImage = new ImageDataStructures::VP8EncodedImageData();
-	EncodedCameraImage->ImageDataBufferSize = ImageData.size();
-	memcpy(EncodedCameraImage->ImageBuffer, ImageData.data(), ImageData.size());
-	EncodedCameraImage->IsKeyFrame = IsKeyFrame;
-	EncodedCameraImage->ImageWidth = ImageWidth;
-	EncodedCameraImage->ImageHeight = ImageHeight;
+	//ImageDataStructures::VP8EncodedImageData* EncodedCameraImage = new ImageDataStructures::VP8EncodedImageData();
+	//EncodedCameraImage->ImageDataBufferSize = ImageData.size();
+	//memcpy(EncodedCameraImage->ImageBuffer, ImageData.data(), ImageData.size());
+	//EncodedCameraImage->IsKeyFrame = IsKeyFrame;
+	//EncodedCameraImage->ImageWidth = ImageWidth;
+	//EncodedCameraImage->ImageHeight = ImageHeight;
 
-	AddEncodedSceneCameraImage(GlassesID, EncodedCameraImage);
+	//AddEncodedSceneCameraImage(GlassesID, EncodedCameraImage);
 }
 
 #pragma warning(pop)

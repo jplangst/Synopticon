@@ -100,24 +100,32 @@ int32 USynOpticonStatics::Triangulate(TArray<FVector> vertices, TArray<int32> &O
 	FPoly newPolygon;
 	for (int i = 0; i < vertices.Num(); i++)
 	{
-		newPolygon.InsertVertex(i, vertices[i]);
+		FVector verticiesVector = FVector(vertices[i]);
+		newPolygon.InsertVertex(i, verticiesVector);
 	}
 
 	TArray<FPoly> outPolys;
 	int numTriangles = TriangulatePoly(nullptr, outPolys, vertices, newPolygon);
 
+
 	for (int i = 0; i < outPolys.Num(); i++)
 	{
-		int Index0;
-		vertices.Find(outPolys[i].Vertices[2], Index0);
+		int32 Index0 = vertices.IndexOfByPredicate([&](const FVector& Vertex) {
+			return Vertex == (FVector) outPolys[i].Vertices[2];  //Added casting to FVector
+			});
+
 		OutTriangles.Add(Index0);
 
-		int Index1;
-		vertices.Find(outPolys[i].Vertices[1], Index1);
+		int32 Index1 = vertices.IndexOfByPredicate([&](const FVector& Vertex) {
+			return Vertex == (FVector) outPolys[i].Vertices[1];
+			});
+
 		OutTriangles.Add(Index1);
 
-		int Index2;
-		vertices.Find(outPolys[i].Vertices[0], Index2);
+		int32 Index2 = vertices.IndexOfByPredicate([&](const FVector& Vertex) {
+			return Vertex == (FVector) outPolys[i].Vertices[0];
+			});
+
 		OutTriangles.Add(Index2);
 	}
 	return numTriangles;
@@ -135,14 +143,14 @@ int32 USynOpticonStatics::TriangulatePoly(ABrush* InOwnerBrush, TArray<FPoly>& O
 	for (int32 v = 0; v < Vertices.Num(); ++v)
 	{
 		FClipSMVertex vtx;
-		vtx.Pos = Vertices[v];
+		vtx.Pos = (FVector3f) Vertices[v];
 
 		// Init other data so that VertsAreEqual won't compare garbage
-		vtx.TangentX = FVector::ZeroVector;
-		vtx.TangentY = FVector::ZeroVector;
-		vtx.TangentZ = FVector::ZeroVector;
+		vtx.TangentX = FVector3f::ZeroVector;
+		vtx.TangentY = FVector3f::ZeroVector;
+		vtx.TangentZ = FVector3f::ZeroVector;
 		vtx.Color = FColor(0, 0, 0);
-		for (int32 uvIndex = 0; uvIndex<ARRAY_COUNT(vtx.UVs); ++uvIndex)
+		for (int32 uvIndex = 0; uvIndex < 8; ++uvIndex)  // was < vtx.UVs.Num()
 		{
 			vtx.UVs[uvIndex] = FVector2D(0.f, 0.f);
 		}
@@ -151,7 +159,7 @@ int32 USynOpticonStatics::TriangulatePoly(ABrush* InOwnerBrush, TArray<FPoly>& O
 		Polygon.Vertices.Add(vtx);
 	}
 
-	Polygon.FaceNormal = InitialPoly.Normal;
+	Polygon.FaceNormal = (FVector) InitialPoly.Normal;
 
 	// Attempt to triangulate this polygon
 	TArray<FClipSMTriangle> Triangles;
@@ -632,9 +640,9 @@ bool USynOpticonStatics::CreateBoxGeometry(float width, float length, float heig
 	int32 InteractionFaceTriangleIndices[] = {
 		2, 1, 0, 3, 2, 0 };  //upper
 
-	OutTriangleIndices.Append(InteractionFaceTriangleIndices, ARRAY_COUNT(InteractionFaceTriangleIndices));
+	OutTriangleIndices.Append(InteractionFaceTriangleIndices, UE_ARRAY_COUNT(InteractionFaceTriangleIndices));
 
-	OutBoxTriangleIndices.Append(OutsideTriangleIndices, ARRAY_COUNT(OutsideTriangleIndices));
+	OutBoxTriangleIndices.Append(OutsideTriangleIndices, UE_ARRAY_COUNT(OutsideTriangleIndices));
 
 	return true;
 }
@@ -688,8 +696,11 @@ UTexture2D* USynOpticonStatics::LoadTextureFromImage(FString FullFilePath, FStri
 	//Create T2D!
 	if (ImageWrapper.IsValid() && ImageWrapper->SetCompressed(RawFileData.GetData(), RawFileData.Num()))
 	{
-		const TArray<uint8>* UncompressedBGRA = NULL;
-		if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedBGRA))
+		TArray64<uint8> UncompressedBGRA;
+
+		//const TArray<uint8>* UncompressedBGRA = NULL;
+		//if (ImageWrapper->GetRaw(ERGBFormat::BGRA, 8, UncompressedBGRA)) //Old method
+		if (ImageWrapper->GetRaw(UncompressedBGRA))
 		{
 			LoadedT2D = UTexture2D::CreateTransient(ImageWrapper->GetWidth(), ImageWrapper->GetHeight(), PF_B8G8R8A8);
 
@@ -704,9 +715,10 @@ UTexture2D* USynOpticonStatics::LoadTextureFromImage(FString FullFilePath, FStri
 			OutHeight = ImageWrapper->GetHeight();
 
 			//Copy!
-			void* TextureData = LoadedT2D->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
-			FMemory::Memcpy(TextureData, UncompressedBGRA->GetData(), UncompressedBGRA->Num());
-			LoadedT2D->PlatformData->Mips[0].BulkData.Unlock();
+			void* TextureData = LoadedT2D->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+			//FMemory::Memcpy(TextureData, UncompressedBGRA->GetData(), UncompressedBGRA->Num());
+			FMemory::Memcpy(TextureData, UncompressedBGRA.GetData(), UncompressedBGRA.Num());
+			LoadedT2D->GetPlatformData()->Mips[0].BulkData.Unlock();
 
 			//Update!
 			LoadedT2D->UpdateResource();
@@ -1297,10 +1309,11 @@ FVector2D USynOpticonStatics::FindUVInTriangle(TArray<FVector> TriangleVerticies
 		return FVector2D(-1, -1);
 	}
 
+	FVector HitLocation3f = FVector(HitLocation);
 	// calculate vectors from point f to vertices p1, p2 and p3:
-	FVector F1 = TriangleVerticies[0] - HitLocation;
-	FVector F2 = TriangleVerticies[1] - HitLocation;
-	FVector F3 = TriangleVerticies[2] - HitLocation;
+	FVector F1 = TriangleVerticies[0] - HitLocation3f;
+	FVector F2 = TriangleVerticies[1] - HitLocation3f;
+	FVector F3 = TriangleVerticies[2] - HitLocation3f;
 
 	// calculate the areas and factors (order of parameters doesn't matter):
 	float A = FVector::CrossProduct(TriangleVerticies[0] - TriangleVerticies[1], TriangleVerticies[0] - TriangleVerticies[2]).Size(); // main triangle area a
@@ -1402,10 +1415,10 @@ UTexture2D* USynOpticonStatics::TextureFromWidget(UUserWidget *const Widget, con
 		FRenderTarget *RenderTarget = TextureRenderTarget->GameThread_GetRenderTargetResource();
 		RenderTarget->ReadPixels(SurfData);
 
-		void* TextureData = Texture->PlatformData->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
+		void* TextureData = Texture->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
 		const int32 TextureDataSize = SurfData.Num() * 4;
 		FMemory::Memcpy(TextureData, SurfData.GetData(), TextureDataSize);
-		Texture->PlatformData->Mips[0].BulkData.Unlock();
+		Texture->GetPlatformData()->Mips[0].BulkData.Unlock();
 		Texture->UpdateResource();
 
 		// Free resources

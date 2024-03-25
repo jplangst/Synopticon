@@ -34,12 +34,12 @@ void UMicroTaskWAMPComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UMicroTaskWAMPComponent::RegisterWAMP()
 {
-	TSharedPtr<wamp_event_handler> MicroTaskDataSampleHandler(new wamp_event_handler());
-	*MicroTaskDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveMicroTaskData(_event); };
-	FWAMPWorker::SubscribeToTopic(MicroTaskDataSampleTopic, MicroTaskDataSampleHandler);
+	//TSharedPtr<wamp_event_handler> MicroTaskDataSampleHandler(new wamp_event_handler());
+	//*MicroTaskDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveMicroTaskData(_event); };
+	//FWAMPWorker::SubscribeToTopic(MicroTaskDataSampleTopic, MicroTaskDataSampleHandler);
 }
 
-void UMicroTaskWAMPComponent::OnReceiveMicroTaskData(const autobahn::wamp_event& _event)
+void UMicroTaskWAMPComponent::OnReceiveMicroTaskData(const string _event)
 {
 	/*5 parameters: 
 		int32 ClientID
@@ -49,15 +49,15 @@ void UMicroTaskWAMPComponent::OnReceiveMicroTaskData(const autobahn::wamp_event&
 		TArray<FString> Relevant AOIs
 	*/
 
-	FMicroTaskEventStruct MicroTask;
-	MicroTask.ClientID = _event.argument<int>(0);
-	MicroTask.QuestionID = _event.argument<int>(1);
-	MicroTask.EventCode = _event.argument<int>(2);
-	MicroTask.Content = FString(_event.argument<std::string>(3).c_str());
-	for (std::string item : _event.argument<std::list<std::string>>(4))
-	{
-		MicroTask.RelevantAOIs.Add(FString(item.c_str()));
-	}
+	//FMicroTaskEventStruct MicroTask;
+	//MicroTask.ClientID = _event.argument<int>(0);
+	//MicroTask.QuestionID = _event.argument<int>(1);
+	//MicroTask.EventCode = _event.argument<int>(2);
+	//MicroTask.Content = FString(_event.argument<std::string>(3).c_str());
+	//for (std::string item : _event.argument<std::list<std::string>>(4))
+	//{
+	//	MicroTask.RelevantAOIs.Add(FString(item.c_str()));
+	//}
 
-	ASynOpticonState::GetGlobalEventSystem()->OnEventReceiveMicroTaskEvent.Broadcast(MicroTask);
+	//ASynOpticonState::GetGlobalEventSystem()->OnEventReceiveMicroTaskEvent.Broadcast(MicroTask);
 }

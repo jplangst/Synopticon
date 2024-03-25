@@ -71,7 +71,7 @@ void URaycastComponent_Ours::SetVectorSceneComponent(USceneComponent* _VectorSce
 	VectorSceneComponent = _VectorSceneComponent;
 }
 
-void URaycastComponent_Ours::SetVectorColor(FVector NewVectorColor) {
+void URaycastComponent_Ours::SetVectorColor(FLinearColor NewVectorColor) {
 	Cast<UMaterialInstanceDynamic>(Cast<UStaticMeshComponent>(VectorSceneComponent->GetChildComponent(0))->GetMaterial(0))->SetVectorParameterValue("VectorColor", NewVectorColor);
 }
 
@@ -117,7 +117,8 @@ void URaycastComponent_Ours::ProcessHitResults(TArray<FHitObjectResult> &HitResu
 			//HitResult = new FRaycastHitResult();
 			HitResult = new FHitResult();
 		}
-		HitResult->Actor = BestObjectResult.HitActor;
+
+		//HitResult->Actor = BestObjectResult.HitActor; //Actor is no longer a field. As far as I can see it was not used anyways. Commenting out to test
 		HitResult->Location = AveragedHitLocation;
 		HitResult->Distance = AveragedTargetDistance;
 		HitResult->ImpactNormal = AveragedImpactNormal;
@@ -142,7 +143,7 @@ void URaycastComponent_Ours::ProcessHitResults(TArray<FHitObjectResult> &HitResu
 				EyeEvent->LocationOnAOI = HitUV;
 				EyeEvent->TargetAOIName = GazeActor->GetAOINameFromID(HitAOIID);
 				EyeEvent->Timestamp = FDateTime::UtcNow().GetTimeOfDay().GetTotalMilliseconds();
-				FWAMPWorker::PublishWAMPEvent(EyeEvent);
+				//FWAMPWorker::PublishWAMPEvent(EyeEvent);
 				PublishEvent = false;
 			}			
 		//}

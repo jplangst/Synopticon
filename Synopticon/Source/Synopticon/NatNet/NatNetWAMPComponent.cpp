@@ -49,9 +49,9 @@ void UNatNetWAMPComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void UNatNetWAMPComponent::RegisterWAMP()
 {
-	TSharedPtr<wamp_event_handler> NatNetDataSampleHandler(new wamp_event_handler());
-	*NatNetDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveNatNetData(_event); };
-	FWAMPWorker::SubscribeToTopic(NatNetDataSample, NatNetDataSampleHandler);
+	//TSharedPtr<wamp_event_handler> NatNetDataSampleHandler(new wamp_event_handler());
+	//*NatNetDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveNatNetData(_event); };
+	//FWAMPWorker::SubscribeToTopic(NatNetDataSample, NatNetDataSampleHandler);
 }
 
 FRigidBodyDataStruct* UNatNetWAMPComponent::GetNatNetDataSample(FString RigidBodyID) {
@@ -98,75 +98,75 @@ TArray<FString> UNatNetWAMPComponent::GetRigidBodies()
 	return AvailableRigidBodies;
 }
 
-void UNatNetWAMPComponent::OnReceiveNatNetData(const autobahn::wamp_event& _event)
+void UNatNetWAMPComponent::OnReceiveNatNetData(const string _event) //Was const autobahn::wamp_event& _event
 {
-	std::list<object> receivedData = _event.arguments<std::list<object>>();
-	AvailableRigidBodies.Empty();
-	for (object data : receivedData)
-	{
-		std::array<object, 4> item = data.as < std::array<object, 4>>();
-		FString RigidBodyID = FString(item[0].as<std::string>().c_str());
+	////std::list<object> receiveddata = _event.arguments<std::list<object>>();
+	////availablerigidbodies.empty();
+	////for (object data : receiveddata)
+	////{
+	////	std::array<object, 4> item = data.as < std::array<object, 4>>();
+	////	fstring rigidbodyid = fstring(item[0].as<std::string>().c_str());
 
-		FRigidBodyDataStruct* Sample = new FRigidBodyDataStruct();
+	////	frigidbodydatastruct* sample = new frigidbodydatastruct();
 
-		bool IsOpenFace = RigidBodyID.Equals("OpenFace");
+	////	bool isopenface = rigidbodyid.equals("openface");
 
-		FVector RawPosition = FVector(item[1].as<std::array<double, 3>>()[0], item[1].as<std::array<double, 3>>()[1], item[1].as<std::array<double, 3>>()[2]);
-		if (IsOpenFace) {
-			Sample->Position = RawPosition;
-		}
-		else {
-			Sample->Position = USynOpticonStatics::ConvertFromMotiveToUnrealEngineCoordinateSystem(RawPosition, ASynOpticonState::GetTrackerOffset(),
-				ASynOpticonState::IsHorizontalCoordinateSystem(), ASynOpticonState::GetPosTrackingUnitToUnrealUnitFactor());
-		}
-		
+	////	fvector rawposition = fvector(item[1].as<std::array<double, 3>>()[0], item[1].as<std::array<double, 3>>()[1], item[1].as<std::array<double, 3>>()[2]);
+	////	if (isopenface) {
+	////		sample->position = rawposition;
+	////	}
+	////	else {
+	////		sample->position = usynopticonstatics::convertfrommotivetounrealenginecoordinatesystem(rawposition, asynopticonstate::gettrackeroffset(),
+	////			asynopticonstate::ishorizontalcoordinatesystem(), asynopticonstate::getpostrackingunittounrealunitfactor());
+	////	}
+	////	
 
-		
-		if (IsOpenFace) {
-			float Pitch = FMath::RadiansToDegrees(item[2].as<std::array<double, 3>>()[0]);
-			float Yaw = FMath::RadiansToDegrees(item[2].as<std::array<double, 3>>()[1]);
-			float Roll = FMath::RadiansToDegrees(item[2].as<std::array<double, 3>>()[2]);
-			Sample->Orientation = FQuat(FRotator(Pitch, Yaw, Roll));
-		}
-		else {
-			FQuat RawOrientation = FQuat(item[2].as<std::array<double, 4>>()[0], item[2].as<std::array<double, 4>>()[1], item[2].as<std::array<double, 4>>()[2], item[2].as<std::array<double, 4>>()[3]);
-			Sample->Orientation = USynOpticonStatics::ConvertFromMotiveToUnrealEngineCoordinateSystem(RawOrientation, ASynOpticonState::IsHorizontalCoordinateSystem());
-		}
-		
-		std::list<object> listOfMarkers = item[3].as<std::list<object>>();
+	////	
+	////	if (isopenface) {
+	////		float pitch = fmath::radianstodegrees(item[2].as<std::array<double, 3>>()[0]);
+	////		float yaw = fmath::radianstodegrees(item[2].as<std::array<double, 3>>()[1]);
+	////		float roll = fmath::radianstodegrees(item[2].as<std::array<double, 3>>()[2]);
+	////		sample->orientation = fquat(frotator(pitch, yaw, roll));
+	////	}
+	////	else {
+	////		fquat raworientation = fquat(item[2].as<std::array<double, 4>>()[0], item[2].as<std::array<double, 4>>()[1], item[2].as<std::array<double, 4>>()[2], item[2].as<std::array<double, 4>>()[3]);
+	////		sample->orientation = usynopticonstatics::convertfrommotivetounrealenginecoordinatesystem(raworientation, asynopticonstate::ishorizontalcoordinatesystem());
+	////	}
+	////	
+	////	std::list<object> listofmarkers = item[3].as<std::list<object>>();
 
-		for (object marker : listOfMarkers)
-		{
-			try {
-				FVector RawMarker = FVector(marker.as<array<double, 3>>()[0], marker.as<array<double, 3>>()[1], marker.as<array<double, 3>>()[2]);
-				Sample->Markers.Add(USynOpticonStatics::ConvertFromMotiveToUnrealEngineCoordinateSystem(RawMarker,
-					ASynOpticonState::GetTrackerOffset(), ASynOpticonState::IsHorizontalCoordinateSystem(),
-					ASynOpticonState::GetPosTrackingUnitToUnrealUnitFactor()));
-			}
-			catch (std::exception ex) {
+	////	for (object marker : listofmarkers)
+	////	{
+	////		try {
+	////			fvector rawmarker = fvector(marker.as<array<double, 3>>()[0], marker.as<array<double, 3>>()[1], marker.as<array<double, 3>>()[2]);
+	////			sample->markers.add(usynopticonstatics::convertfrommotivetounrealenginecoordinatesystem(rawmarker,
+	////				asynopticonstate::gettrackeroffset(), asynopticonstate::ishorizontalcoordinatesystem(),
+	////				asynopticonstate::getpostrackingunittounrealunitfactor()));
+	////		}
+	////		catch (std::exception ex) {
 
-			}
-		}
-		AvailableRigidBodies.Add(RigidBodyID);
-		//NatNetWAMPComponent->AddNatNetDataSample(RigidBodyID, Sample);
-		if (!NatNetDataQueuesMap.Contains(RigidBodyID)) {
-			TCircularQueue<FRigidBodyDataStruct*>* DataQueue = new TCircularQueue<FRigidBodyDataStruct*>(10); //Allow one second worth of data to be stored at a time
-			DataQueue->Enqueue(Sample);
-			NatNetDataQueuesMap.Add(RigidBodyID, DataQueue);
-		}
-		else {
-			TCircularQueue<FRigidBodyDataStruct*>** NatNetDataQueue = NatNetDataQueuesMap.Find(RigidBodyID);
-			if (*NatNetDataQueue)
-			{
-				bool Success = (*NatNetDataQueue)->Enqueue(Sample);
+	////		}
+	////	}
+	////	availablerigidbodies.add(rigidbodyid);
+	////	//natnetwampcomponent->addnatnetdatasample(rigidbodyid, sample);
+	////	if (!natnetdataqueuesmap.contains(rigidbodyid)) {
+	////		tcircularqueue<frigidbodydatastruct*>* dataqueue = new tcircularqueue<frigidbodydatastruct*>(10); //allow one second worth of data to be stored at a time
+	////		dataqueue->enqueue(sample);
+	////		natnetdataqueuesmap.add(rigidbodyid, dataqueue);
+	////	}
+	////	else {
+	////		tcircularqueue<frigidbodydatastruct*>** natnetdataqueue = natnetdataqueuesmap.find(rigidbodyid);
+	////		if (*natnetdataqueue)
+	////		{
+	////			bool success = (*natnetdataqueue)->enqueue(sample);
 
-				//If the queue was full we need to free the memory we used for the sample
-				if (!Success) {
-					delete Sample;
-				}
-			}
-		}
-	}
+	////			//if the queue was full we need to free the memory we used for the sample
+	////			if (!success) {
+	////				delete sample;
+	////			}
+	////		}
+	////	}
+	////}
 }
 
 #pragma warning(pop)

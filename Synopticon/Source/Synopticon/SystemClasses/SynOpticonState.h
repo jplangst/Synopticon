@@ -12,7 +12,7 @@
 #include "GazeObjects/GazeActorDataTypes.h"
 
 #include "Utils/SynOpticonStatics.h"
-#include "WAMP/WAMPWorker.h"
+//#include "WAMP/WAMPWorker.h"
 #include "Replay/ReplayDataStructures.h"
 
 #include "SynOpticonState.generated.h"
@@ -400,9 +400,9 @@ public:
 	static UGlobalEventSystem* GetGlobalEventSystem();
 
 	//============================Component meta data==============================
-	static void OnReceiveChangeOfComponent(const autobahn::wamp_event& event);
+	static void OnReceiveChangeOfComponent(const string event);
 
-	static void InitializeAvailableComponents(autobahn::wamp_call_result result);
+	static void InitializeAvailableComponents(string result);
 
 	UFUNCTION(BlueprintPure, Category = "Available Components")
 		static TArray<FString> GetAvailableComponents(ComponentTypeEnum Type);

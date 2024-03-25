@@ -44,7 +44,7 @@ class SYNOPTICON_API USynOpticonFactory : public UObject
 	static int32 Index; //keep track of the SynOpticon ID
 	static bool ReplayMode;
 
-	static TArray<FVector> ActorColors;
+	static TArray<FLinearColor> ActorColors;
 	static void FillActorColors();
 	//Create Components
 	static void CreateRemoteTrackerComponent(ASynOpticonActor* NewSynOpticonActor, FRemoteEyeTrackerStruct RemoteEyeTrackerStruct, URemoteTrackerWAMPComponent* RetWAMPComp);

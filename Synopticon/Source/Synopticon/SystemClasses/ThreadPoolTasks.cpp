@@ -208,7 +208,7 @@ void FDecodeImageTask::DecodeImage(ImageDataStructures::VP8EncodedImageData* _En
 
 void FDecodeImageTask::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex, uint32 NumRegions, FUpdateTextureRegion2D* Regions, uint32 SrcPitch, uint32 SrcBpp, uint8* SrcData, bool bFreeData)
 {
-	if (Texture->Resource)
+	if (Texture->GetResource())
 	{
 		struct FUpdateTextureRegionsData
 		{
@@ -223,7 +223,7 @@ void FDecodeImageTask::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex,
 
 		FUpdateTextureRegionsData* RegionData = new FUpdateTextureRegionsData;
 
-		RegionData->Texture2DResource = (FTexture2DResource*)Texture->Resource;
+		RegionData->Texture2DResource = (FTexture2DResource*)Texture->GetResource();
 		RegionData->MipIndex = MipIndex;
 		RegionData->NumRegions = NumRegions;
 		RegionData->Regions = Regions;
@@ -231,33 +231,61 @@ void FDecodeImageTask::UpdateTextureRegions(UTexture2D* Texture, int32 MipIndex,
 		RegionData->SrcBpp = SrcBpp;
 		RegionData->SrcData = SrcData;
 
-		ENQUEUE_UNIQUE_RENDER_COMMAND_TWOPARAMETER(
-			UpdateTextureRegionsData,
-			FUpdateTextureRegionsData*, RegionData, RegionData,
-			bool, bFreeData, bFreeData,
+		// DEPRECATED way to update
+		//ENQUEUE_RENDER_COMMAND(
+		//	UpdateTextureRegionsData,
+		//	FUpdateTextureRegionsData*, RegionData, RegionData,
+		//	bool, bFreeData, bFreeData,
+		//	{
+		//		for (uint32 RegionIndex = 0; RegionIndex < RegionData->NumRegions; ++RegionIndex)
+		//		{
+		//			int32 CurrentFirstMip = RegionData->Texture2DResource->GetCurrentFirstMip();
+		//			if (RegionData->MipIndex >= CurrentFirstMip)
+		//			{
+		//				RHIUpdateTexture2D(
+		//					RegionData->Texture2DResource->GetTexture2DRHI(),
+		//					RegionData->MipIndex - CurrentFirstMip,
+		//					RegionData->Regions[RegionIndex],
+		//					RegionData->SrcPitch,
+		//					RegionData->SrcData
+		//					+ RegionData->Regions[RegionIndex].SrcY * RegionData->SrcPitch
+		//					+ RegionData->Regions[RegionIndex].SrcX * RegionData->SrcBpp
+		//					);
+		//			}
+		//		}
+		//		if (bFreeData)
+		//		{
+		//			FMemory::Free(RegionData->Regions);
+		//			FMemory::Free(RegionData->SrcData);
+		//		}
+		//		delete RegionData;
+		//});
+
+		/* NEW CODE - NEED TO VERIFY THT IT WORKS*/
+		ENQUEUE_RENDER_COMMAND(UpdateTextureRegionsData)(
+			[RegionData, bFreeData, Texture](FRHICommandListImmediate& RHICmdList)
 			{
 				for (uint32 RegionIndex = 0; RegionIndex < RegionData->NumRegions; ++RegionIndex)
 				{
-					int32 CurrentFirstMip = RegionData->Texture2DResource->GetCurrentFirstMip();
+					int32 CurrentFirstMip = Texture->FirstResourceMemMip;
 					if (RegionData->MipIndex >= CurrentFirstMip)
 					{
 						RHIUpdateTexture2D(
-							RegionData->Texture2DResource->GetTexture2DRHI(),
+							Texture->GetResource()->GetTexture2DRHI(), //THIS LINE PROVIDES ME AN ERROR
 							RegionData->MipIndex - CurrentFirstMip,
 							RegionData->Regions[RegionIndex],
 							RegionData->SrcPitch,
 							RegionData->SrcData
 							+ RegionData->Regions[RegionIndex].SrcY * RegionData->SrcPitch
 							+ RegionData->Regions[RegionIndex].SrcX * RegionData->SrcBpp
-							);
+						);
 					}
 				}
-		if (bFreeData)
-		{
-			FMemory::Free(RegionData->Regions);
-			FMemory::Free(RegionData->SrcData);
-		}
-		delete RegionData;
+				if (bFreeData) {
+					FMemory::Free(RegionData->Regions);
+					FMemory::Free(RegionData->SrcData);
+				}
+				delete RegionData;
 			});
 	}
 }

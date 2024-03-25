@@ -79,7 +79,9 @@ public class Synopticon : ModuleRules
 
     public Synopticon(ReadOnlyTargetRules Target) : base(Target)
     {
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "Http", "UMG","MediaAssets"}); //, "ShaderCore"
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", 
+            "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "HTTP", 
+            "UMG","MediaAssets","Sockets","Networking"}); //, "ShaderCore"
         PrivateDependencyModuleNames.Add("OpenSSL");
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
@@ -89,7 +91,7 @@ public class Synopticon : ModuleRules
         LoadLibWebP(Target);   
         LoadLibvpx(Target);
         LoadLibYUV(Target);
-        LoadWAMP(Target);
+        //LoadWAMP(Target);
 
         PublicDefinitions.Add("MALLOC_LEAKDETECTION = 1");
     }

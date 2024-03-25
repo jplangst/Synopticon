@@ -334,9 +334,9 @@ public:
 
 static FORCEINLINE FString GetFloatAsStringWithPrecision(float TheFloat, int32 Precision, bool IncludeLeadingZero = true)
 {
-	//Round to integral if have something like 1.9999 within precision
+	//Round to integer if have something like 1.9999 within precision
 	float Rounded = roundf(TheFloat);
-	if (FMath::Abs(TheFloat - Rounded) < FMath::Pow(10, -1 * Precision))
+	if (FMath::Abs(TheFloat - Rounded) < FMath::Pow(10.0, -1.0 * Precision))
 	{
 		TheFloat = Rounded;
 	}

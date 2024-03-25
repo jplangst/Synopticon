@@ -506,11 +506,11 @@ void URemoteEyeTrackerComponent::UpdateReplayGazeLocation()
 void URemoteEyeTrackerComponent::ToBinaryReplayData()
 {
 	SOBlock->hasRTData = true;
-	SOBlock->RTData.LeftEyeLocation = LeftEyeSceneComponent->RelativeLocation;
-	SOBlock->RTData.LeftEyeRotation = LeftEyeSceneComponent->RelativeRotation;
+	SOBlock->RTData.LeftEyeLocation = LeftEyeSceneComponent->GetRelativeLocation();
+	SOBlock->RTData.LeftEyeRotation = LeftEyeSceneComponent->GetRelativeRotation();
 	SOBlock->RTData.LeftEyePupilRadius = LeftEyePupilRadius;
-	SOBlock->RTData.RightEyeLocation = RightEyeSceneComponent->RelativeLocation;
-	SOBlock->RTData.RightEyeRotation = RightEyeSceneComponent->RelativeRotation;
+	SOBlock->RTData.RightEyeLocation = RightEyeSceneComponent->GetRelativeLocation();
+	SOBlock->RTData.RightEyeRotation = RightEyeSceneComponent->GetRelativeRotation();
 	SOBlock->RTData.RightEyePupilRadius = RightEyePupilRadius;
 	SOBlock->RTData.GazePoint = WorldPoint;
 }

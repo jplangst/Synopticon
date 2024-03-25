@@ -5,13 +5,11 @@
 
 const FString RETDataSample = "RETDataSample";
 // Sets default values for this component's properties
+
 URemoteTrackerWAMPComponent::URemoteTrackerWAMPComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	ReplayPupilQueue = nullptr;
-	// ...
 }
 
 // Called when the game starts
@@ -29,9 +27,9 @@ void URemoteTrackerWAMPComponent::BeginPlay()
 
 void URemoteTrackerWAMPComponent::RegisterWAMP()
 {
-	TSharedPtr<wamp_event_handler> RETDataSampleHandler(new wamp_event_handler());
-	*RETDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveEyeData(_event); };
-	FWAMPWorker::SubscribeToTopic(RETDataSample, RETDataSampleHandler);
+	//TSharedPtr<wamp_event_handler> RETDataSampleHandler(new wamp_event_handler());
+	//*RETDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveEyeData(_event); };
+	//FWAMPWorker::SubscribeToTopic(RETDataSample, RETDataSampleHandler);
 }
 
 // Called every frame
@@ -140,15 +138,15 @@ TPair<FString, float> URemoteTrackerWAMPComponent::GetReplaySample()
 	return Sample;
 }
 
-void URemoteTrackerWAMPComponent::OnReceiveEyeData(const autobahn::wamp_event& _event)
+void URemoteTrackerWAMPComponent::OnReceiveEyeData(const string _event)
 {
-	FString RetID = FString(_event.argument<std::string>(0).c_str());
+	FString RetID = "";//FString(_event.argument<std::string>(0).c_str());
 	if (!RemoteTrackers.Contains(RetID))
 	{
 		ASynOpticonState::AddComponentToMap(ComponentTypeEnum::VE_RemoteTracker, RetID);
 		RemoteTrackers.Add(RetID);
 	}
-	FWAMPRetDataStruct* Sample = new FWAMPRetDataStruct(_event.argument<std::array<double, 14>>(1));
+	FWAMPRetDataStruct* Sample = new FWAMPRetDataStruct();//new FWAMPRetDataStruct(_event.argument<std::array<double, 14>>(1));
 
 	if (!EyeDataQueuesMap.Contains(RetID)) {
 		TCircularQueue<FWAMPRetDataStruct*>* DataQueue = new TCircularQueue<FWAMPRetDataStruct*>(121); //Allow one second worth of data to be stored at a time

@@ -314,7 +314,7 @@ void UReplayManager::StartReplaying(FString _FileName)
 	//---------- stop real-time data streaming ------------
 	//we don't want the real-time data messing with our saved data
 	if (!bStreamDuringReplay) {
-		FWAMPWorker::Shutdown();
+		//FWAMPWorker::Shutdown();
 	}
 	
 	//----load textures and synchronization information----
@@ -420,7 +420,7 @@ void UReplayManager::StopReplaying()
 	ReplayFileName = "";
 	//---------- restart real-time data streaming ------------
 	if (!bStreamDuringReplay) {
-		FWAMPWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm());
+		//FWAMPWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm());
 	}
 }
 
@@ -536,7 +536,7 @@ void UReplayManager::LoadSubReplayFile()
 
 	FArchiveLoadCompressedProxy* Decompressor;
 
-	Decompressor = new FArchiveLoadCompressedProxy(CompressedData, ECompressionFlags::COMPRESS_ZLIB);
+	Decompressor = new FArchiveLoadCompressedProxy(CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
 	if (Decompressor->GetError())
 	{
 		return;
@@ -599,7 +599,7 @@ CompressedHeader UReplayManager::LoadHeaderFile(FString _FileName)
 		}
 
 		FArchiveLoadCompressedProxy HeaderDecompressor =
-			FArchiveLoadCompressedProxy(CompressedHeaderData, ECompressionFlags::COMPRESS_ZLIB);
+			FArchiveLoadCompressedProxy(CompressedHeaderData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
 
 		if (HeaderDecompressor.GetError())
 		{
@@ -985,7 +985,7 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 				_Decompressor->FlushCache();
 				delete _Decompressor;
 			}
-			_Decompressor = new FArchiveLoadCompressedProxy(_CompressedData, ECompressionFlags::COMPRESS_ZLIB);
+			_Decompressor = new FArchiveLoadCompressedProxy(_CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
 			if (_Decompressor->GetError())
 			{
 				//return;

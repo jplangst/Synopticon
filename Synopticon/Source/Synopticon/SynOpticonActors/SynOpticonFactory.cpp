@@ -6,11 +6,11 @@
 
 int32 USynOpticonFactory::Index = 0;
 bool USynOpticonFactory::ReplayMode = false;
-TArray<FVector> USynOpticonFactory::ActorColors = TArray<FVector>();
+TArray<FLinearColor> USynOpticonFactory::ActorColors = TArray<FLinearColor>();
 
 void USynOpticonFactory::FillActorColors() {
-	ActorColors.Add(FVector(1, 0, 0));
-	ActorColors.Add(FVector(0, 0, 1));
+	ActorColors.Add(FLinearColor(1, 0, 0));
+	ActorColors.Add(FLinearColor(0, 0, 1));
 }
 
 ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStruct SynOpticonActorStruct, UWorld* World, 
@@ -402,7 +402,8 @@ void USynOpticonFactory::CreateRaycastComponent(ASynOpticonActor* NewSynOpticonA
 				CanRaycast = true;
 			}
 			else {
-				TArray<UActorComponent*> PosOriComps = NewSynOpticonActor->GetComponentsByClass(UPositionAndOrientationComponent::StaticClass());
+				TArray<UActorComponent*> PosOriComps; 
+				NewSynOpticonActor->GetComponents(UPositionAndOrientationComponent::StaticClass(), PosOriComps);
 				for (UActorComponent* PosComp : PosOriComps) {
 					if (!PosComp->GetName().Contains("Hand")) {
 						UPositionAndOrientationComponent* RaySceneComp = Cast<UPositionAndOrientationComponent>(PosComp);

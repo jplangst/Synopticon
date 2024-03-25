@@ -10,7 +10,7 @@ UGazeDataVisualizerComponent::UGazeDataVisualizerComponent(){
 
 	MaxFixationVisualisations = 10;
 
-	ParticleColors = FVector(1, 1, 1);
+	ParticleColors = FLinearColor(1, 1, 1);
 }
 
 // Called when the game starts
@@ -400,7 +400,7 @@ FEyeRadarPointData UGazeDataVisualizerComponent::Replay(FDateTime CurrentTime, A
 	return FEyeRadarPointData();
 }
 
-void UGazeDataVisualizerComponent::SetParticleColor(FVector NewColor)
+void UGazeDataVisualizerComponent::SetParticleColor(FLinearColor NewColor)
 {
 	ParticleColors = NewColor;
 }
