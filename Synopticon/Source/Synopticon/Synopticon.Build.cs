@@ -83,7 +83,7 @@ public class Synopticon : ModuleRules
             "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "HTTP", 
             "UMG","MediaAssets","Sockets","Networking"}); //, "ShaderCore"
         PrivateDependencyModuleNames.Add("OpenSSL");
-        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore"});
+        PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "Messaging"});
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableExceptions = true;
         

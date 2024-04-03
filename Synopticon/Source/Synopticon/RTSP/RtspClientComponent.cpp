@@ -21,6 +21,7 @@ URtspClientComponent::URtspClientComponent() {
 
 void URtspClientComponent::BeginPlay() {
     Super::BeginPlay();
+
     bool result = connect();
 }
 

@@ -247,8 +247,16 @@
 			"Enabled": false
 		},
 		{
-			"Name": "HttpBlueprint",
+			"Name": "WebSocketNetworking",
 			"Enabled": true
+		},
+		{
+			"Name": "UDPWrapper",
+			"Enabled": false
+		},
+		{
+			"Name": "UdpMessaging",
+			"Enabled": false
 		}
 	]
 }
