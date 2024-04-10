@@ -19,26 +19,27 @@ public class Synopticon : ModuleRules
     {
         //Definitions.Add("WIN32_LEAN_AND_MEAN");
         PublicDefinitions.Add("MSGPACK_DEFAULT_API_VERSION = 1");
-        string LibrariesPath = Path.Combine(ThirdPartyPath, "WAMP");
+        //string LibrariesPath = Path.Combine(ThirdPartyPath, "WAMP");
 
         //Include paths
-        PublicIncludePaths.Add(Path.Combine(LibrariesPath, "autobahn"));
-        PublicIncludePaths.Add(Path.Combine(LibrariesPath, "msgpack-c", "include"));
-        PublicIncludePaths.Add(Path.Combine(LibrariesPath, "websocketpp", "include"));
-        PublicIncludePaths.Add(Path.Combine(LibrariesPath, "boost_1_68_0"));
+        //PublicIncludePaths.Add(Path.Combine(LibrariesPath, "autobahn"));
+        //PublicIncludePaths.Add(Path.Combine(LibrariesPath, "msgpack-c", "include"));
+        //PublicIncludePaths.Add(Path.Combine(LibrariesPath, "websocketpp", "include"));
+        //PublicIncludePaths.Add(Path.Combine(LibrariesPath, "boost_1_68_0"));
+        
 
         //BOOST  
         //New toolset version
-        PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS = 1");
-        string boostLibraryPath = Path.Combine(LibrariesPath, "boost_1_68_0", "libs");
-        PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_system-vc141-mt-x64-1_68.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_thread-vc141-mt-x64-1_68.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_date_time-vc141-mt-x64-1_68.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_chrono-vc141-mt-x64-1_68.lib"));
-        PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_regex-vc141-mt-x64-1_68.lib"));
+        //PublicDefinitions.Add("BOOST_DISABLE_ABI_HEADERS = 1");
+        //string boostLibraryPath = Path.Combine(LibrariesPath, "boost_1_68_0", "libs");
+        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_system-vc141-mt-x64-1_68.lib"));
+        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_thread-vc141-mt-x64-1_68.lib"));
+        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_date_time-vc141-mt-x64-1_68.lib"));
+        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_chrono-vc141-mt-x64-1_68.lib"));
+        //PublicAdditionalLibraries.Add(Path.Combine(boostLibraryPath, "libboost_regex-vc141-mt-x64-1_68.lib"));
 
         bUseRTTI = true; // turn on RTTI  
-        PublicDefinitions.Add(string.Format("WITH_WAMP_BINDING={0}", 1));
+        //PublicDefinitions.Add(string.Format("WITH_WAMP_BINDING={0}", 1));
     }
 
     //===============================LIBVPX=====================================
@@ -86,7 +87,9 @@ public class Synopticon : ModuleRules
         PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "Messaging"});
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnableExceptions = true;
-        
+
+        //Load the header files for zeroconf mDNS
+        //PublicIncludePaths.Add(Path.Combine(ThirdPartyPath, "zeroconf"));
 
         LoadLibWebP(Target);   
         LoadLibvpx(Target);

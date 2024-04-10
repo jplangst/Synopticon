@@ -9,273 +9,312 @@ void UServiceDiscoveryComponent::BeginPlay()
 {
     Super::BeginPlay();
 
-    ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
-    if (!SocketSubsystem)
-    {
-        UE_LOG(LogTemp, Error, TEXT("Failed to get socket subsystem"));
-        return;
-    }
+    /* mjansson mdns */
 
-    TSharedRef<FInternetAddr> MulticastAddr = SocketSubsystem->CreateInternetAddr();
-    bool bIsValid = false;
-    MulticastAddr->SetIp(*MulticastAddress, bIsValid);
-    if (!bIsValid) {
-        UE_LOG(LogTemp, Error, TEXT("Multicast address not valid"));
-    }
+    // Create the socket for broadcasting mDNS queries (Broadcasting is working)
+    BroadcastSocketID = mdns_socket_open_ipv4(nullptr);
 
-    Socket = SocketSubsystem->CreateSocket(NAME_DGram, TEXT("MulticastSocket"), true);
-    Socket->SetNonBlocking(true);
-    Socket->SetReuseAddr(true);
-    Socket->SetMulticastLoopback(true);
-    Socket->SetMulticastTtl(32);
+    sockaddr_in saddr;
+    saddr.sin_family = AF_INET;
+    saddr.sin_port = htons(5353);
+	saddr.sin_addr = in4addr_any; // inet_addr("192.168.0.100");//INADDR_ANY; //Bind to interface, INADDR_ANY for all
 
-    TArray<TSharedPtr<FInternetAddr>> LocalAdapterAddresses;
-    SocketSubsystem->GetLocalAdapterAddresses(LocalAdapterAddresses);
-    TSharedPtr<FInternetAddr> LocalAdapterAddress = LocalAdapterAddresses[0];
+    // Create the socket for listening to mDNS messages
+    ReceiverSocketID = mdns_socket_open_ipv4(&saddr);
+	ReceiverBuffer = malloc(MAX_FUZZ_SIZE);
+}
 
-    TSharedRef<FInternetAddr> AnyAddr = SocketSubsystem->CreateInternetAddr();
-    AnyAddr->SetAnyAddress();
-    AnyAddr->SetPort(MulticastPort);
+static mdns_string_t
+ipv4_address_to_string(char* buffer, size_t capacity, const struct sockaddr_in* addr,
+	size_t addrlen) {
+	char host[NI_MAXHOST] = { 0 };
+	char service[NI_MAXSERV] = { 0 };
+	int ret = getnameinfo((const struct sockaddr*)addr, (socklen_t)addrlen, host, NI_MAXHOST,
+		service, NI_MAXSERV, NI_NUMERICSERV | NI_NUMERICHOST);
+	int len = 0;
+	if (ret == 0) {
+		if (addr->sin_port != 0)
+			len = snprintf(buffer, capacity, "%s:%s", host, service);
+		else
+			len = snprintf(buffer, capacity, "%s", host);
+	}
+	if (len >= (int)capacity)
+		len = (int)capacity - 1;
+	mdns_string_t str;
+	str.str = buffer;
+	str.length = len;
+	return str;
+}
 
-    //NBNB Should bind the socket before joining groups
-    //NBNB cannot bind to multicast address on windows, so bind to all interfaces, but only listen to multicast port
-    if (!Socket->Bind(*AnyAddr)) {
-        UE_LOG(LogTemp, Error, TEXT("Failed to bind socket"));
-    }
+static mdns_string_t
+ipv6_address_to_string(char* buffer, size_t capacity, const struct sockaddr_in6* addr,
+	size_t addrlen) {
+	char host[NI_MAXHOST] = { 0 };
+	char service[NI_MAXSERV] = { 0 };
+	int ret = getnameinfo((const struct sockaddr*)addr, (socklen_t)addrlen, host, NI_MAXHOST,
+		service, NI_MAXSERV, NI_NUMERICSERV | NI_NUMERICHOST);
+	int len = 0;
+	if (ret == 0) {
+		if (addr->sin6_port != 0)
+			len = snprintf(buffer, capacity, "[%s]:%s", host, service);
+		else
+			len = snprintf(buffer, capacity, "%s", host);
+	}
+	if (len >= (int)capacity)
+		len = (int)capacity - 1;
+	mdns_string_t str;
+	str.str = buffer;
+	str.length = len;
+	return str;
+}
 
-    if (!Socket->SetMulticastInterface(*LocalAdapterAddress)) {
-        UE_LOG(LogTemp, Error, TEXT("Failed to set multicast interface"));
-    }
+static mdns_string_t
+ip_address_to_string(char* buffer, size_t capacity, const struct sockaddr* addr, size_t addrlen) {
+	if (addr->sa_family == AF_INET6)
+		return ipv6_address_to_string(buffer, capacity, (const struct sockaddr_in6*)addr, addrlen);
+	return ipv4_address_to_string(buffer, capacity, (const struct sockaddr_in*)addr, addrlen);
+}
 
-    if (!Socket->JoinMulticastGroup(*MulticastAddr, *LocalAdapterAddress)) {
-        UE_LOG(LogTemp, Error, TEXT("Failed to join multicast group"));
-    }
+// Data for our service including the mDNS records
+typedef struct {
+	mdns_string_t service;
+	mdns_string_t hostname;
+	mdns_string_t service_instance;
+	mdns_string_t hostname_qualified;
+	struct sockaddr_in address_ipv4;
+	struct sockaddr_in6 address_ipv6;
+	int port;
+	mdns_record_t record_ptr;
+	mdns_record_t record_srv;
+	mdns_record_t record_a;
+	mdns_record_t record_aaaa;
+	mdns_record_t txt_record[2];
+} service_t;
 
-    // Create FUdpSocketReceiver
-    SocketReceiver = new FUdpSocketReceiver(Socket, FTimespan::FromMilliseconds(100), TEXT("ServiceDiscoveryThread"));
-    SocketReceiver->OnDataReceived().BindUObject(this, &UServiceDiscoveryComponent::HandleReceivedData);
-    SocketReceiver->Start();
+static char addrbuffer[64];
+static char entrybuffer[256];
+static char namebuffer[256];
+static char sendbuffer[1024];
+static mdns_record_txt_t txtbuffer[128];
+
+void UServiceDiscoveryComponent::HandleDiscoveredDevice(FString IPAddress, FString Port) {
+	// Create a new HTTP request object
+	TSharedRef<IHttpRequest> HttpRequest = FHttpModule::Get().CreateRequest();
+
+	// TODO remove the port parameter 
+	//We don't actually want to use the port that was the target when we send the REST request, we want to send to port 8080. 
+	Port = "8080";
+
+	// TODO this also needs to be generelized.
+	// Set the URL of the request
+	FString URL = "http://" + IPAddress + ":" + Port + "/api/status";
+	HttpRequest->SetURL(*URL);
+	// Set the verb (GET, POST, etc.)
+	HttpRequest->SetVerb(TEXT("GET"));
+	// Set the request completion callback
+	HttpRequest->OnProcessRequestComplete().BindLambda([](FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess) {
+		if (bSuccess && Response.IsValid())
+		{
+			// Process the response data
+			int32 ResponseCode = Response->GetResponseCode();
+			FString ResponseBody = Response->GetContentAsString();
+
+			if (ResponseBody.Contains("Neon Companion")) {
+				FPupilLabs PupilLabsStructure;
+				if (FJsonObjectConverter::JsonObjectStringToUStruct(ResponseBody, &PupilLabsStructure, 0, 0))
+				{
+					// Successfully parsed JSON string into struct
+					// Now you can access the data
+					FString Message = PupilLabsStructure.message;
+					TArray<FSensorData> SensorDataList = PupilLabsStructure.result;
+
+					// Access each sensor
+					for (const FSensorData& NewSensorData : SensorDataList)
+					{
+						if (NewSensorData.model.Equals("Sensor") && NewSensorData.data.conn_type.Equals("WEBSOCKET")) {
+							// Check if the sensor is already in the discovered list, if nto add it.
+							TArray<FSensorData> ExistingSensorDataList = ASynOpticonState::GetSensorDataList();
+							bool sensorInList = false;
+							for (FSensorData ExistingSensorData : ExistingSensorDataList) {
+								if (ExistingSensorData.data.ip == NewSensorData.data.ip && ExistingSensorData.data.port == NewSensorData.data.port) {
+									sensorInList = true;
+									break;
+								}
+							}
+							if (!sensorInList) {
+								ASynOpticonState::AddSensorData(NewSensorData);
+							}
+						}
+					}
+				}
+				else
+				{
+					// Failed to parse JSON string
+					UE_LOG(LogTemp, Error, TEXT("Failed to parse pupil labs JSON string"));
+				}
+			}
+			else {
+				UE_LOG(LogTemp, Error, TEXT("Unknown device: %s"), *ResponseBody);
+			}
+			
+			
+		}
+		else
+		{
+			// Handle request failure...
+			int32 ResponseCode = -1;
+		}
+		});
+
+	// Send the request
+	HttpRequest->ProcessRequest();
+}
+
+// Callback handling parsing answers to queries sent
+int UServiceDiscoveryComponent::OnServiceDiscovered(int sock, const struct sockaddr* from, size_t addrlen, mdns_entry_type_t entry,
+	uint16_t query_id, uint16_t rtype, uint16_t rclass, uint32_t ttl, const void* data,
+	size_t size, size_t name_offset, size_t name_length, size_t record_offset,
+	size_t record_length, void* user_data)
+{
+	(void)sizeof(sock);
+	(void)sizeof(query_id);
+	(void)sizeof(name_length);
+	(void)sizeof(user_data);
+
+	mdns_string_t fromaddrstr = ip_address_to_string(addrbuffer, sizeof(addrbuffer), from, addrlen);
+	const char* entrytype = (entry == MDNS_ENTRYTYPE_ANSWER) ?
+		"answer" :
+		((entry == MDNS_ENTRYTYPE_AUTHORITY) ? "authority" : "additional");
+	const FString EntryType = (entry == MDNS_ENTRYTYPE_ANSWER) ?
+		"answer" :
+		((entry == MDNS_ENTRYTYPE_AUTHORITY) ? "authority" : "additional");
+
+	mdns_string_t entrystr =
+		mdns_string_extract(data, size, &name_offset, entrybuffer, sizeof(entrybuffer));
+	if (rtype == MDNS_RECORDTYPE_PTR) {
+		mdns_string_t namestr = mdns_record_parse_ptr(data, size, record_offset, record_length,
+			namebuffer, sizeof(namebuffer));
+
+		FString FromAddr = fromaddrstr.str;
+		FString EntryStr = entrystr.str;
+		FString NameStr = namestr.str;
+
+		printf("%.*s : %s %.*s PTR %.*s rclass 0x%x ttl %u length %d\n",
+			MDNS_STRING_FORMAT(fromaddrstr), entrytype, MDNS_STRING_FORMAT(entrystr),
+			MDNS_STRING_FORMAT(namestr), rclass, ttl, (int)record_length);
+
+		UE_LOG(LogTemp, Warning, TEXT("Message from: %s, Entry type: %s, Entry string: %s, Name: %s, rclass: %d, ttl: %d, length: %d"),
+			*FromAddr, *EntryType, *EntryStr, *NameStr, rclass, ttl, (int)record_length);
+
+		FPotentialSensorAddress PotentialSensorAddress;
+		PotentialSensorAddress.SensorAddress = FromAddr;
+		ASynOpticonState::AddDiscoveredIPAddress(PotentialSensorAddress);
+	}
+	else if (rtype == MDNS_RECORDTYPE_SRV) {
+		UE_LOG(LogTemp, Warning, TEXT("MDNS Recordtype SRV"));
+		mdns_record_srv_t srv = mdns_record_parse_srv(data, size, record_offset, record_length,
+			namebuffer, sizeof(namebuffer));
+		printf("%.*s : %s %.*s SRV %.*s priority %d weight %d port %d\n",
+			MDNS_STRING_FORMAT(fromaddrstr), entrytype, MDNS_STRING_FORMAT(entrystr),
+			MDNS_STRING_FORMAT(srv.name), srv.priority, srv.weight, srv.port);
+	}
+	else if (rtype == MDNS_RECORDTYPE_A) {
+		UE_LOG(LogTemp, Warning, TEXT("MDNS Recordtype A"));
+		struct sockaddr_in addr;
+		mdns_record_parse_a(data, size, record_offset, record_length, &addr);
+		mdns_string_t addrstr =
+			ipv4_address_to_string(namebuffer, sizeof(namebuffer), &addr, sizeof(addr));
+		printf("%.*s : %s %.*s A %.*s\n", MDNS_STRING_FORMAT(fromaddrstr), entrytype,
+			MDNS_STRING_FORMAT(entrystr), MDNS_STRING_FORMAT(addrstr));
+	}
+	else if (rtype == MDNS_RECORDTYPE_AAAA) {
+		UE_LOG(LogTemp, Warning, TEXT("MDNS Recordtype AAAA"));
+		struct sockaddr_in6 addr;
+		mdns_record_parse_aaaa(data, size, record_offset, record_length, &addr);
+		mdns_string_t addrstr =
+			ipv6_address_to_string(namebuffer, sizeof(namebuffer), &addr, sizeof(addr));
+		printf("%.*s : %s %.*s AAAA %.*s\n", MDNS_STRING_FORMAT(fromaddrstr), entrytype,
+			MDNS_STRING_FORMAT(entrystr), MDNS_STRING_FORMAT(addrstr));
+	}
+	else if (rtype == MDNS_RECORDTYPE_TXT) {
+		UE_LOG(LogTemp, Warning, TEXT("MDNS Recordtype TXT"));
+		size_t parsed = mdns_record_parse_txt(data, size, record_offset, record_length, txtbuffer,
+			sizeof(txtbuffer) / sizeof(mdns_record_txt_t));
+		for (size_t itxt = 0; itxt < parsed; ++itxt) {
+			if (txtbuffer[itxt].value.length) {
+				printf("%.*s : %s %.*s TXT %.*s = %.*s\n", MDNS_STRING_FORMAT(fromaddrstr),
+					entrytype, MDNS_STRING_FORMAT(entrystr),
+					MDNS_STRING_FORMAT(txtbuffer[itxt].key),
+					MDNS_STRING_FORMAT(txtbuffer[itxt].value));
+			}
+			else {
+				printf("%.*s : %s %.*s TXT %.*s\n", MDNS_STRING_FORMAT(fromaddrstr), entrytype,
+					MDNS_STRING_FORMAT(entrystr), MDNS_STRING_FORMAT(txtbuffer[itxt].key));
+			}
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("MDNS Recordtype Other"));
+		printf("%.*s : %s %.*s type %u rclass 0x%x ttl %u length %d\n",
+			MDNS_STRING_FORMAT(fromaddrstr), entrytype, MDNS_STRING_FORMAT(entrystr), rtype,
+			rclass, ttl, (int)record_length);
+	}
+	return 0;
 }
 
 void UServiceDiscoveryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// Broadcast MDNS discovery query
+	if (TimeSinceBroadcast > TimeToBroadcast) {
+		TimeSinceBroadcast -= TimeToBroadcast;
+
+		int QueryId = mdns_discovery_send(BroadcastSocketID);
+		UE_LOG(LogTemp, Warning, TEXT("Broadcasting discovery"));
+		if (QueryId < 0) {
+			//Error
+			UE_LOG(LogTemp, Error, TEXT("Error sending discovery"));
+		}
+
+		//TODO This is only tmp to see the contents of the stored sensor list
+		TArray<FSensorData> SensorDataList = ASynOpticonState::GetSensorDataList();
+		UE_LOG(LogTemp, Warning, TEXT("Discovered Sensors length: %d"), SensorDataList.Num());
+	}
+	TimeSinceBroadcast += DeltaTime;
+
+	// Listen for MDNS messages
+	size_t NmbQueriesParsed = mdns_socket_listen(ReceiverSocketID, ReceiverBuffer, MAX_FUZZ_SIZE, &UServiceDiscoveryComponent::OnServiceDiscovered, 0);
+
+	// Iterate over the discovered IP Addresses and attempt to send a HTTP Rest request
+	if (TimeSinceInfoRequest > TimeToRequestInfo) {
+		TimeSinceInfoRequest -= TimeToRequestInfo;
+
+		TArray<FPotentialSensorAddress> DiscoveredIpAddresses = ASynOpticonState::GetDiscoveredIPAddress();
+		for (FPotentialSensorAddress PotentialSensorAddress : DiscoveredIpAddresses) {
+			if (!PotentialSensorAddress.RequestSent) {
+				FString Address;
+				FString Port;
+				PotentialSensorAddress.SensorAddress.Split(TEXT(":"), &Address, &Port);
+				HandleDiscoveredDevice(Address, Port);
+
+				ASynOpticonState::SetDiscoveredIPAddressRequest(PotentialSensorAddress, true);
+			}	
+		}
+	}
+	TimeSinceInfoRequest += DeltaTime;
+
+
 }
-
-#pragma pack(push, 1) // Ensure byte alignment
-struct FMDNSHeader
-{
-    uint16 Id;           // ID field
-    uint16 Flags;        // Flags field
-    uint16 NumQuestions; // Number of questions field
-    uint16 NumAnswers;   // Number of answers field
-    uint16 NumAuthority; // Number of authority records field
-    uint16 NumAdditional;// Number of additional records field
-};
-
-struct FMDNSQuestion
-{
-    uint16 Type;       // 2 bytes
-    uint16 Class;      // 2 bytes
-    // Variable size domain name (using TArray<uint8> as a placeholder)
-    TArray<uint8> DomainName;
-};
-
-struct FMDNSAnswer
-{
-    uint16 Type;        // 2 bytes
-    uint16 Class;       // 2 bytes
-    uint32 TTL;         // 4 bytes
-    uint16 RDLength;    // 2 bytes
-    // Variable size resource data (using TArray<uint8> as a placeholder)
-    TArray<uint8> ResourceData;
-};
-
-struct FMDNSAuthority
-{
-    uint16 Type;        // 2 bytes
-    uint16 Class;       // 2 bytes
-    uint32 TTL;         // 4 bytes
-    uint16 RDLength;    // 2 bytes
-    // Variable size resource data (using TArray<uint8> as a placeholder)
-    TArray<uint8> ResourceData;
-};
-
-struct FMDNSAdditional
-{
-    uint16 Type;        // 2 bytes
-    uint16 Class;       // 2 bytes
-    uint32 TTL;         // 4 bytes
-    uint16 RDLength;    // 2 bytes
-    // Variable size resource data (using TArray<uint8> as a placeholder)
-    TArray<uint8> ResourceData;
-};
-#pragma pack(pop) // Restore original byte alignment
-
-FArchive& operator<<(FArchive& Ar, FMDNSHeader& Header)
-{
-    Ar << Header.Id;
-    Ar << Header.Flags;
-    Ar << Header.NumQuestions;
-    Ar << Header.NumAnswers;
-    Ar << Header.NumAuthority;
-    Ar << Header.NumAdditional;
-    return Ar;
-}
-
-const uint16 MDNS_RECORD_TYPE_A = 1;
-
-void UServiceDiscoveryComponent::ParseMDNSMessage(const TArray<uint8>& MessageBytes)
-{
-    if (MessageBytes.Num() < sizeof(FMDNSHeader))
-    {
-        UE_LOG(LogTemp, Error, TEXT("Invalid mDNS message"));
-        return;
-    }
-
-    // Create a memory reader to read from the message bytes
-    FMemoryReader Reader(MessageBytes, true); // true indicates reading in little-endian mode
-
-    // Deserialize the mDNS header from the archive
-    FMDNSHeader Header;
-    Reader << Header; // This will handle byte order swapping automatically
-
-    // Extract information from the header
-    uint16 Id = Header.Id;
-    uint16 Flags = Header.Flags;
-    uint16 NumQuestions = Header.NumQuestions;
-    uint16 NumAnswers = Header.NumAnswers;
-    uint16 NumAuthority = Header.NumAuthority;
-    uint16 NumAdditional = Header.NumAdditional;
-
-    // Log the extracted information (replace with your actual handling logic)
-    UE_LOG(LogTemp, Display, TEXT("mDNS Message: ID=%d, Flags=%d, Questions=%d, Answers=%d, Authority=%d, Additional=%d"),
-        Id, Flags, NumQuestions, NumAnswers, NumAuthority, NumAdditional);
-
-    // Calculate the offset to the start of the answers section
-    /*int32 AnswerSectionOffset = sizeof(FMDNSHeader) +
-        NumQuestions * sizeof(FMDNSQuestion) +
-        NumAnswers * sizeof(FMDNSAnswer) +
-        NumAuthority * sizeof(FMDNSAuthority) +
-        NumAdditional * sizeof(FMDNSAdditional);*/
-
-    int32 AnswerSectionOffset = sizeof(FMDNSHeader);
-
-    for (int32 i = 0; i < NumQuestions; ++i)
-    {
-        // Skip over each question section
-        // In this example, we assume each question section is 4 bytes long (adjust as needed)
-        AnswerSectionOffset += 4; // Adjust as needed based on the actual structure of question sections
-    }
-
-    // Ensure alignment if necessary (align to 4-byte boundary)
-    AnswerSectionOffset = AnswerSectionOffset + ((4 - (AnswerSectionOffset % 4)) % 4);
-
-
-    // Parse the answers section
-    ParseAnswersSection(MessageBytes, AnswerSectionOffset);
-}
-
-void UServiceDiscoveryComponent::ParseAnswersSection(const TArray<uint8>& MessageBytes, int32 AnswerSectionOffset)
-{
-    // Create a memory reader to read from the message bytes
-    FMemoryReader Reader(MessageBytes, true);
-
-    // Seek to the start of the answers section
-    Reader.Seek(AnswerSectionOffset);
-
-    Reader.SetByteSwapping(false);
-
-    // Iterate through the answers section
-    while (!Reader.AtEnd())
-    {
-        // Parse answer record header
-        FMDNSAnswer Answer;
-        Reader << Answer.Type;
-        Reader << Answer.Class;
-        Reader << Answer.TTL;
-        Reader << Answer.RDLength;
-
-        // Extract information from the answer record
-        uint16 Type = Answer.Type;
-        uint16 Class = Answer.Class;
-        uint32 TTL = Answer.TTL;
-        uint16 RDLength = Answer.RDLength;
-        //uint32 TTL = FMemory::BigEndianToSystem(Answer.TTL);
-        //uint16 RDLength = FMemory::BigEndianToSystem(Answer.RDLength);
-
-        // Handle A (IPv4 address) records
-        if (Type == MDNS_RECORD_TYPE_A){
-            if (RDLength == sizeof(FIPv4Address))
-            {
-                FIPv4Address IPAddress;
-                Reader.Serialize(&IPAddress, sizeof(FIPv4Address));
-
-                // Process IPv4 address (e.g., store or log)
-                FString IPAddressString = IPAddress.ToString();
-                UE_LOG(LogTemp, Display, TEXT("IPv4 Address: %s"), *IPAddressString);
-            }
-        }
-        else if(Type == 1024) {
-            // Deserialize the SRV record data
-            FString Name, Target;
-            uint16 Priority, Weight, Port;
-            Reader << Name; // Name field
-            Reader << Priority;
-            Reader << Weight;
-            Reader << Port;
-            Reader << Target;
-
-            // Process the SRV record data (e.g., store or log)
-            UE_LOG(LogTemp, Display, TEXT("SRV Record: Name=%s, Priority=%d, Weight=%d, Port=%d, Target=%s"), *Name, Priority, Weight, Port, *Target);
-        }
-        else
-        {
-            // Handle other types of records as needed
-            // You can add additional logic here to parse other types of records
-            Reader.Seek(Reader.Tell() + RDLength);
-        }
-    }
-}
-
-void UServiceDiscoveryComponent::HandleReceivedData(const FArrayReaderPtr& Data, const FIPv4Endpoint& Sender)
-{
-    uint8* DataBuffer = Data->GetData();
-    int32 BufferSize = Data->Num();
-    // Convert uint8* buffer to TArray<uint8>
-    
-    if (DataBuffer && BufferSize > 0)
-    {
-        TArray<uint8> MessageBytes;
-        MessageBytes.Append(DataBuffer, BufferSize);
-        ParseMDNSMessage(MessageBytes);
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("Invalid mDNS message buffer"));
-        return;
-    }
-
-    // Process the received data
-    //UE_LOG(LogTemp, Warning, TEXT("Received message: %s"), *Message);
-}
-
 
 void UServiceDiscoveryComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     Super::EndPlay(EndPlayReason);
 
-    if (SocketReceiver)
-    {
-        SocketReceiver->Stop();
-        delete SocketReceiver;
-        SocketReceiver = nullptr;
-    }
-
-    if (Socket)
-    {
-        Socket->Close();
-        ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(Socket);
-        Socket = nullptr;
-    }
+    // Cleanup the sockets
+    mdns_socket_close(BroadcastSocketID);
+    mdns_socket_close(ReceiverSocketID);
+	// Cleanup the data buffer
+	free(ReceiverBuffer);
 }
+

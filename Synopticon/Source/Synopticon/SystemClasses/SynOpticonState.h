@@ -15,6 +15,7 @@
 //#include "WAMP/WAMPWorker.h"
 #include "Replay/ReplayDataStructures.h"
 
+#include "Sensors/SensorDataStructs.h"
 #include "SynOpticonState.generated.h"
 
 
@@ -45,6 +46,9 @@ class SYNOPTICON_API ASynOpticonState : public AGameState
 	GENERATED_BODY()
 	
 private:
+	static TArray<FSensorData> DiscoveredSensorsList;
+	static TArray<FPotentialSensorAddress> DiscoveredIPAddresses;
+
 	//===========Screen Labeling=============
 	static bool bLabelingScreens;
 
@@ -123,6 +127,13 @@ private:
 	//====================EyeRadar====================
 	static bool bEyeRadarVisible;
 public:
+	static void AddDiscoveredIPAddress(FPotentialSensorAddress IPAddress);
+	static void SetDiscoveredIPAddressRequest(FPotentialSensorAddress PotentialSensor, bool status);
+	static TArray<FPotentialSensorAddress> GetDiscoveredIPAddress();
+
+	static void AddSensorData(FSensorData SensorData);
+	static TArray<FSensorData> GetSensorDataList();
+
 	static void AddComponentToMap(ComponentTypeEnum type, FString name);
 	static TMap<int32, TPair<FString, bool>> AOISessionDict;
 

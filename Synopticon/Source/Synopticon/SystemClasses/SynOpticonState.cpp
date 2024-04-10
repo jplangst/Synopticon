@@ -17,6 +17,10 @@ bool ASynOpticonState::IsProcessingReplayData = false;
 bool ASynOpticonState::BApplyOffset = true;
 bool ASynOpticonState::BApplyDebugLines = false;
 
+
+TArray<FPotentialSensorAddress> ASynOpticonState::DiscoveredIPAddresses;
+TArray<FSensorData> ASynOpticonState::DiscoveredSensorsList;
+
 bool ASynOpticonState::bHeatMapVisible = false;
 float ASynOpticonState::HeatMapAlpha = 0.4f;
 bool ASynOpticonState::bAOIVisible = false;
@@ -53,6 +57,41 @@ float ASynOpticonState::DOUBLE_BLINK_THRESHOLD = 400; //ms
 int32 ASynOpticonState::SplitRecordingTimeThreshold = 120; //Minutes
 
 TMap<int32, TPair<FString, bool>> ASynOpticonState::AOISessionDict;
+
+
+void ASynOpticonState::AddSensorData(FSensorData SensorData) {
+	DiscoveredSensorsList.Add(SensorData);
+}
+TArray<FSensorData> ASynOpticonState::GetSensorDataList() {
+	return DiscoveredSensorsList;
+}
+
+void ASynOpticonState::AddDiscoveredIPAddress(FPotentialSensorAddress PotentialSensor) {
+	bool SensorAddressInList = false;
+	for (FPotentialSensorAddress ExistingAddresses : DiscoveredIPAddresses) {
+		if (ExistingAddresses.SensorAddress.Equals(PotentialSensor.SensorAddress)) {
+			SensorAddressInList = true;
+			break;
+		}
+	}
+	if (!SensorAddressInList) {
+		UE_LOG(LogTemp, Warning, TEXT("Discovered IP address added: %s"), *PotentialSensor.SensorAddress)
+			DiscoveredIPAddresses.Add(PotentialSensor);
+	}
+}
+
+void ASynOpticonState::SetDiscoveredIPAddressRequest(FPotentialSensorAddress PotentialSensor, bool status) {
+	for (int32 Index = 0; Index < DiscoveredIPAddresses.Num(); ++Index) {
+		if (DiscoveredIPAddresses[Index].SensorAddress.Equals(PotentialSensor.SensorAddress)) {
+			DiscoveredIPAddresses[Index].RequestSent = true;
+			break;
+		}
+	}
+}
+
+TArray<FPotentialSensorAddress> ASynOpticonState::GetDiscoveredIPAddress() {
+	return DiscoveredIPAddresses;
+}
 
 //AOI
 void ASynOpticonState::SetCreatingAOI(bool CreatingAOI) {
@@ -534,6 +573,9 @@ void ASynOpticonState::CleanupState() {
 	GazeActorList.Empty();
 	GazeParentActorList.Empty();
 	GazeMaterialComponents.Empty();
+
+	DiscoveredIPAddresses.Empty();
+	DiscoveredSensorsList.Empty();
 }
 
 UGlobalEventSystem* ASynOpticonState::GetGlobalEventSystem()
