@@ -62,7 +62,7 @@ ASynOpticonActor* USynOpticonFactory::CreateSynOpticonActor(FSynOpticonActorStru
 		hasEyeTrackingComponent = true;
 	}
 
-	if (!SynOpticonActorStruct.VisualComponentData.OpenFaceID.Equals(""))
+	if (!SynOpticonActorStruct.VisualComponentData.IpAddress.Equals(""))
 	{
 		CreateVisualComponent(NewSynOpticonActor, SynOpticonActorStruct.VisualComponentData, OpenFaceWAMPComponent);
 		hasVisionComponent = true;

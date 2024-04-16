@@ -201,9 +201,10 @@ struct FOpenFaceStruct
 {
 	GENERATED_USTRUCT_BODY()
 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon OpenFaceTracker Struct")
-		FString OpenFaceID; //e.g. GazeDataServer
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon OpenFaceTracker Struct")
+		FString IpAddress; 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon OpenFaceTracker Struct")
+		int32 Port; 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "SynOpticon OpenFaceTracker Struct")
 		FVector CameraTrackerPositionRight;
@@ -222,7 +223,8 @@ struct FOpenFaceStruct
 
 	FOpenFaceStruct()
 	{
-		OpenFaceID = "";
+		IpAddress = "";
+		Port = -1;
 		CameraTrackerPositionLeft.Set(0, 0, 0);
 		CameraTrackerPositionRight.Set(0, 0, 0);
 		AttachedScreenName = "";
@@ -232,7 +234,8 @@ struct FOpenFaceStruct
 };
 FORCEINLINE FArchive& operator<<(FArchive &Ar, FOpenFaceStruct &OpenFaceStruct)
 {
-	Ar << OpenFaceStruct.OpenFaceID;
+	Ar << OpenFaceStruct.IpAddress;
+	Ar << OpenFaceStruct.Port;
 	Ar << OpenFaceStruct.CameraTrackerPositionLeft;
 	Ar << OpenFaceStruct.CameraTrackerPositionRight;
 	Ar << OpenFaceStruct.AttachedScreenName;

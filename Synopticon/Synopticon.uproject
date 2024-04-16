@@ -257,6 +257,42 @@
 		{
 			"Name": "UdpMessaging",
 			"Enabled": false
+		},
+		{
+			"Name": "ElectraCodecs",
+			"Enabled": true
+		},
+		{
+			"Name": "ElectraPlayer",
+			"Enabled": true
+		},
+		{
+			"Name": "HAPDecoderElectra",
+			"Enabled": true,
+			"SupportedTargetPlatforms": [
+				"Win64",
+				"Mac"
+			]
+		},
+		{
+			"Name": "OpusDecoderElectra",
+			"Enabled": true
+		},
+		{
+			"Name": "VPxDecoderElectra",
+			"Enabled": true
+		},
+		{
+			"Name": "ElectraCDM",
+			"Enabled": true
+		},
+		{
+			"Name": "ElectraSubtitles",
+			"Enabled": true
+		},
+		{
+			"Name": "ElectraUtil",
+			"Enabled": true
 		}
 	]
 }

@@ -98,7 +98,8 @@ TSharedPtr<FJsonObject> USynOpticonActorJSONExporter::SaveVisionStructData(FOpen
 {
 	TSharedPtr<FJsonObject> VisionJson = MakeShareable(new FJsonObject);
 
-	VisionJson->SetStringField("OpenFaceID", VisionStruct.OpenFaceID); 
+	VisionJson->SetStringField("IpAddress", VisionStruct.IpAddress); 
+	VisionJson->SetNumberField("Port", VisionStruct.Port);
 	VisionJson->SetObjectField("CameraTrackerPositionRight", UJSONExporter::SaveFVectorAsJSON(VisionStruct.CameraTrackerPositionRight));
 	VisionJson->SetObjectField("CameraTrackerPositionLeft", UJSONExporter::SaveFVectorAsJSON(VisionStruct.CameraTrackerPositionLeft));
 	VisionJson->SetStringField("AttachedScreenName", VisionStruct.AttachedScreenName);
@@ -285,7 +286,7 @@ FOpenFaceStruct USynOpticonActorJSONExporter::GetVisionStructData(TSharedPtr<FJs
 {
 	FOpenFaceStruct VisionStruct;
 
-	if (!VisionStructObj->TryGetStringField("OpenFaceID", VisionStruct.OpenFaceID))
+	if (!VisionStructObj->TryGetStringField("IpAddress", VisionStruct.IpAddress))
 	{
 		return VisionStruct;
 	}

@@ -9,6 +9,11 @@
 
 #include "SystemClasses/SynOpticonState.h"
 #include "SystemClasses/SynOpticonCustomType.h"
+
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+#include "Networking.h"
+
 //#include "WAMPWorker.h"
 
 #include "Components/ActorComponent.h"
@@ -25,12 +30,16 @@ class SYNOPTICON_API UOpenFaceWAMPComponent : public UActorComponent
 	FString CurrentActorSource;
 
 	TArray<FString> OpenFaceSources;
+
 public:	
 	// Sets default values for this component's properties
 	UOpenFaceWAMPComponent();
 
 	// Called when the game starts
 	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType,
+		FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 

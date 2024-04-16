@@ -12,7 +12,7 @@ UOpenFaceWAMPComponent::UOpenFaceWAMPComponent()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 	// ...
 }
 
@@ -27,6 +27,12 @@ void UOpenFaceWAMPComponent::RegisterWAMP()
 	//TSharedPtr<wamp_event_handler> OpenFaceSampleHandler(new wamp_event_handler());
 	//*OpenFaceSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveOpenFaceData(_event); };
 	//FWAMPWorker::SubscribeToTopic(OpenFaceSample, OpenFaceSampleHandler);
+}
+
+
+void UOpenFaceWAMPComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction) {
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
 void UOpenFaceWAMPComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

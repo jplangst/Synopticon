@@ -133,6 +133,44 @@ struct FEyeRadarPointData
 
 
 USTRUCT(BlueprintType)
+struct FOpenTrackData
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadWrite, Category = "OpenTrackStruct")
+	double X;
+	UPROPERTY(BlueprintReadWrite, Category = "OpenTrackStruct")
+	double Y;
+	UPROPERTY(BlueprintReadWrite, Category = "OpenTrackStruct")
+	double Z;
+	UPROPERTY(BlueprintReadWrite, Category = "OpenTrackStruct")
+	double Yaw;
+	UPROPERTY(BlueprintReadWrite, Category = "OpenTrackStruct")
+	double Pitch;
+	UPROPERTY(BlueprintReadWrite, Category = "OpenTrackStruct")
+	double Roll;
+
+	FOpenTrackData() {
+		X = -.1;
+		Y = -.1;
+		Z = -.1;
+		Roll = -.1;
+		Pitch = -.1;
+		Yaw = -.1; 
+	}
+};
+FORCEINLINE FArchive& operator<<(FArchive& Ar, FOpenTrackData& OpenTrackData)
+{
+	Ar << OpenTrackData.X;
+	Ar << OpenTrackData.Y;
+	Ar << OpenTrackData.Z;
+	Ar << OpenTrackData.Yaw;
+	Ar << OpenTrackData.Pitch;
+	Ar << OpenTrackData.Roll;
+	return Ar;
+}
+
+USTRUCT(BlueprintType)
 struct FSubTaskStruct
 {
 	GENERATED_USTRUCT_BODY()

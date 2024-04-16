@@ -2,7 +2,6 @@
 
 #include "OpenFaceComponent.h"
 
-
 // Sets default values for this component's properties
 UOpenFaceComponent::UOpenFaceComponent()
 {
@@ -112,6 +111,8 @@ void UOpenFaceComponent::BeginPlay()
 		OrientationArrowMesh->SetVisibility(false, true);
 	}
 
+	OpenUDPSocket();
+
 	if (!ASynOpticonState::IsReplaying())
 	{
 		AttachedScreen = nullptr;
@@ -146,6 +147,107 @@ void UOpenFaceComponent::BeginPlay()
 	}
 }
 
+void UOpenFaceComponent::OpenUDPSocket() {
+	FIPv4Address ip;
+	bool did_parse = FIPv4Address::Parse(*OpenFaceStruct.IpAddress, ip);
+	FIPv4Endpoint Endpoint(ip, OpenFaceStruct.Port); // Replace 12345 with your desired port number
+	//FIPv4Endpoint Endpoint(FIPv4Address::Any, 4242); // Replace 12345 with your desired port number
+	UDPSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_DGram, TEXT("OpenTrackSocket"), false);
+	bool Result = UDPSocket->Bind(*Endpoint.ToInternetAddr());
+	if (Result) {
+		UE_LOG(LogTemp, Warning, TEXT("Open Track Socket bound"));
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Open Track Socket failed to bind"));
+	}
+}
+
+void UOpenFaceComponent::ReceiveData(float DeltaTime)
+{
+	FRigidBodyDataStruct OrientationSample;
+	FWAMPEyeDataStruct GazeSample;
+	bool shouldUpdate = false;
+	if (!ASynOpticonState::IsReplaying()) //real-time
+	{
+		if (UDPSocket) {
+			uint32 Size;
+			while (UDPSocket->HasPendingData(Size))
+			{
+				int32 OpenTrackDataSize = 48;
+				TArray<uint8> ReceivedData;
+				ReceivedData.SetNumUninitialized(OpenTrackDataSize);
+				int32 Read = 0;
+				UDPSocket->Recv(ReceivedData.GetData(), ReceivedData.Num(), Read);
+
+				// Process the received data as needed
+				if (Read == OpenTrackDataSize) {
+					FOpenTrackData OpenTrackData;
+
+					TArray<double> FloatArray;
+					FMemoryReader MemoryReader(ReceivedData, true);
+					while (MemoryReader.AtEnd() == false)
+					{
+						double Value;
+						MemoryReader << Value;
+						FloatArray.Add(Value);
+					}
+
+					OpenTrackData.X = FloatArray[0];
+					OpenTrackData.Y = FloatArray[1];
+					OpenTrackData.Z = FloatArray[2];
+					OpenTrackData.Roll = FloatArray[5];
+					OpenTrackData.Pitch = FloatArray[4];
+					OpenTrackData.Yaw = FloatArray[3]+180;
+
+					OrientationSample.Orientation = FQuat::MakeFromEuler(FVector(OpenTrackData.Roll, OpenTrackData.Pitch, OpenTrackData.Yaw));
+					OrientationSample.Position = FVector(OpenTrackData.Z, OpenTrackData.X, OpenTrackData.Y);
+					//UE_LOG(LogTemp, Warning, TEXT("Read from UDP socket: X %2.f Y %2.f Z %2.f Roll %2.f Pitch %2.f Yaw%2.f"),
+					//	OpenTrackData.X, OpenTrackData.Y, OpenTrackData.Z, OpenTrackData.Roll, OpenTrackData.Pitch, OpenTrackData.Yaw);
+
+					shouldUpdate = true;
+				}
+			}
+		}
+
+		//FWAMPOpenFaceDataStruct* OpenFaceDataSample = OpenFaceWAMPComponent->GetOpenFaceDataSample(OpenFaceStruct.OpenFaceID);
+		/*FWAMPOpenFaceDataStruct* OpenFaceDataSample = OpenFaceWAMPComponent->GetOpenFaceDataSample("OpenFaceStruct.OpenFaceID");
+		if (OpenFaceDataSample) {
+			shouldUpdate = true;
+			OrientationSample = OpenFaceDataSample->Orientation;
+			GazeSample = OpenFaceDataSample->GazeData;
+			delete OpenFaceDataSample;
+		}*/
+	}
+	else if (ASynOpticonState::IsReplaying() && !ASynOpticonState::IsPausingReplay())
+	{
+		if (SOBlock)
+		{
+			shouldUpdate = true;
+			OrientationSample.Position = SOBlock->ActorLocation;
+			OrientationSample.Orientation = SOBlock->ActorRotation.Quaternion();
+
+			GazeSample.LeftEyeLocation = SOBlock->ETGData.LeftEyeLocation;
+			GazeSample.LeftEyeDirection = SOBlock->ETGData.LeftEyeRotation.Vector();
+			GazeSample.RightEyeLocation = SOBlock->ETGData.RightEyeLocation;
+			GazeSample.RightEyeDirection = SOBlock->ETGData.RightEyeRotation.Vector();
+			GazeSample.LeftPupilRadius = GazeSample.RightPupilRadius = SOBlock->ETGData.PupilRadius;
+			GazeSample.LeftPupilConfidence = GazeSample.RightPupilConfidence = 1;
+		}
+	}
+
+	if (shouldUpdate)
+	{
+		if (OpenFaceStruct.IsTrackingEyes) {
+			UpdateGazeData(GazeSample);
+		}
+		if (OpenFaceStruct.IsTrackingHead) {
+			UpdatePositionData(DeltaTime, OrientationSample);
+		}
+	}
+
+	//raycast
+	DoRaycast();
+}
 
 // Called every frame
 void UOpenFaceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -153,7 +255,8 @@ void UOpenFaceComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	UpdateVectorsVisibility();
-	UpdateOpenFaceData(DeltaTime);
+	//UpdateOpenFaceData(DeltaTime);
+	ReceiveData(DeltaTime);
 }
 
 void UOpenFaceComponent::UpdateVectorsVisibility()
@@ -177,8 +280,8 @@ void UOpenFaceComponent::UpdateOpenFaceData(float DeltaTime)
 	bool shouldUpdate = false;
 	if (!ASynOpticonState::IsReplaying()) //real-time
 	{
-		FWAMPOpenFaceDataStruct* OpenFaceDataSample = OpenFaceWAMPComponent->GetOpenFaceDataSample(OpenFaceStruct.OpenFaceID);
-
+		//FWAMPOpenFaceDataStruct* OpenFaceDataSample = OpenFaceWAMPComponent->GetOpenFaceDataSample(OpenFaceStruct.OpenFaceID);
+		FWAMPOpenFaceDataStruct* OpenFaceDataSample = OpenFaceWAMPComponent->GetOpenFaceDataSample("OpenFaceStruct.OpenFaceID");
 		if (OpenFaceDataSample) {
 			shouldUpdate = true;
 			OrientationSample = OpenFaceDataSample->Orientation;
@@ -524,4 +627,16 @@ void UOpenFaceComponent::ToBinaryReplayData() {
 	//{
 	//	EyeTrackingWAMPComponent->SaveEncodedSceneCameraFrame(GlassesID, SOBlock);
 	//}
+}
+
+void UOpenFaceComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	//Clean up the UDP socket
+	if (UDPSocket)
+	{
+		UDPSocket->Close();
+		ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->DestroySocket(UDPSocket);
+		UDPSocket = nullptr;
+	}
 }
