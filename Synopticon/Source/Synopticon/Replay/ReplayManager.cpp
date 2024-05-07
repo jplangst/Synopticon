@@ -536,7 +536,8 @@ void UReplayManager::LoadSubReplayFile()
 
 	FArchiveLoadCompressedProxy* Decompressor;
 
-	Decompressor = new FArchiveLoadCompressedProxy(CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
+	//Decompressor = new FArchiveLoadCompressedProxy(CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
+	Decompressor = new FArchiveLoadCompressedProxy(CompressedData, NAME_Zlib);
 	if (Decompressor->GetError())
 	{
 		return;
@@ -795,6 +796,7 @@ void UReplayManager::CleanupFromBinary()
 {
 	if (FromBinary)
 	{
+		bShouldDoSeeking = false;
 		FromBinary->FlushCache();
 		FromBinary->Close();
 		delete FromBinary;
@@ -1126,8 +1128,6 @@ void FLoadWorker::Shutdown()
 		LoadWorker = nullptr;
 	}
 }
-
-
 
 FBinaryExporterWorker* FBinaryExporterWorker::BinaryExporterWorker = nullptr;
 int64 FBinaryExporterWorker::ID = 0;

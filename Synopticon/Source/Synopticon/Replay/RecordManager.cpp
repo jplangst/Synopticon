@@ -379,7 +379,9 @@ void URecordManager::SaveSubReplayFile()
 {
 	TArray<uint8> CompressedData;
 	FArchiveSaveCompressedProxy* Compressor;
-	Compressor = new FArchiveSaveCompressedProxy(CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
+	//Compressor = new FArchiveSaveCompressedProxy(CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
+	Compressor = new FArchiveSaveCompressedProxy(CompressedData, NAME_Zlib);
+	
 	*Compressor << *ToBinaryArchives[SecondaryArchive];
 	Compressor->Flush();
 
