@@ -194,7 +194,7 @@ void UOpenFaceComponent::ReceiveData(float DeltaTime)
 
 					OpenTrackData.X = FloatArray[0];
 					OpenTrackData.Y = FloatArray[1];
-					OpenTrackData.Z = FloatArray[2];
+					OpenTrackData.Z = -FloatArray[2];
 					OpenTrackData.Roll = FloatArray[5];
 					OpenTrackData.Pitch = FloatArray[4];
 					OpenTrackData.Yaw = FloatArray[3]+180;

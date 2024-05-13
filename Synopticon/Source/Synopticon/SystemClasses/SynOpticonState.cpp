@@ -15,7 +15,7 @@ bool ASynOpticonState::bLabelingScreens = false;
 bool ASynOpticonState::IsProcessingReplayData = false;
 
 bool ASynOpticonState::BApplyOffset = true;
-bool ASynOpticonState::BApplyDebugLines = false;
+bool ASynOpticonState::BApplyDebugLines = true;
 
 
 TArray<FPotentialSensorAddress> ASynOpticonState::DiscoveredIPAddresses;
