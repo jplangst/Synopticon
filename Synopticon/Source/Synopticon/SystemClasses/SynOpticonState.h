@@ -31,7 +31,8 @@ struct FHeatMapConditionStruct
 	FLinearColor Color; 
 
 	FHeatMapConditionStruct() {
-
+		Value = 0;
+		Color = FLinearColor();
 	}
 
 	FHeatMapConditionStruct(FLinearColor NewColor, float NewValue) {

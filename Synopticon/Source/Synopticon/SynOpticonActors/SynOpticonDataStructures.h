@@ -39,6 +39,7 @@ struct FObjectLoggingInfoStruct
 		Time = 0;
 		Count = 0;
 		Percentage = 0;
+		GazeActorID = -1;
 	}
 };
 FORCEINLINE FArchive& operator<<(FArchive &Ar, FObjectLoggingInfoStruct &ObjectLoggingInfoStruct)
@@ -70,13 +71,13 @@ struct FGazePathLoggingInfoStruct
 	float Duration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Gaze Path Logging Info Struct")
-		FVector2D HitUV;
+	FVector2D HitUV;
 
 	FGazePathLoggingInfoStruct()
 	{
-		//ObjectName = "ObjectNameNotSet";
-		//TimeStamp = -1;
-		//Duration = 0;
+		Duration = 0;
+		TimeStamp = FDateTime::Now();
+		GazeActorID = -1;
 		HitUV = FVector2D(-1, -1);
 	}
 	bool operator == (const FGazePathLoggingInfoStruct& a) const
@@ -118,7 +119,7 @@ struct FSynOpticonActorLoggingStruct
 
 	FSynOpticonActorLoggingStruct()
 	{
-		//Name = "OwnerNameNotSet";
+		SynOpticonActorID = -1;
 		GazePaths.Empty();
 		Objects.Empty();
 		TotalTime = 0;
@@ -470,6 +471,7 @@ struct FSynOpticonActorStruct
 		NatNetName = "";
 		HasMyo = false;
 		VideoComponents = TArray<FVideoComponentStruct>();
+		MarkersConfiguration = MarkersConfigurationEnum::VE_Position;
 	}
 	FSynOpticonActorStruct(FString _ActorName, FString _NatNetName, 
 		FEyeTrackerStruct _EyeTrackerStruct, FRemoteEyeTrackerStruct _RemoteEyeTrackerStruct,

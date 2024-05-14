@@ -2,7 +2,6 @@
 
 #pragma once
 
-
 #include "Engine.h"
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
@@ -27,7 +26,6 @@
 #include "SystemClasses/SynOpticonCustomType.h"
 
 #include "SynOpticonStatics.generated.h"
-
 
 //using namespace std;
 
@@ -54,6 +52,11 @@ struct FConvergenceStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Convergence")
 		float distance;
+
+	FConvergenceStruct() {
+		point = FVector(-1, -1, -1);
+		distance = -1;
+	}
 };
 
 UENUM(BlueprintType)		//"BlueprintType" is essential to include
@@ -91,6 +94,11 @@ struct FFileDataStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "File Browser")
 		bool IsFile;
+
+	FFileDataStruct() {
+		Name = "Not set";
+		IsFile = false;
+	}
 };
 
 UCLASS()

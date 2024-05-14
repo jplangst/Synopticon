@@ -28,6 +28,16 @@ struct FData
 
     UPROPERTY(BlueprintReadWrite)
     FString sensor;
+
+    FData() {
+        conn_type = "Not set";
+        connected = false;
+        ip = "Not set";
+        params = "Not set";
+        port = -1;
+        protocol = "Not set";
+        sensor = "Not set";
+    }
 };
 
 USTRUCT(BlueprintType)
@@ -40,6 +50,11 @@ struct FSensorData
 
     UPROPERTY(BlueprintReadWrite)
     FString model;
+
+    FSensorData() {
+        data = FData();
+        model = "Not set";
+    }
 };
 
 USTRUCT(BlueprintType)
@@ -52,6 +67,11 @@ struct FPupilLabs
 
     UPROPERTY(BlueprintReadWrite)
     TArray<FSensorData> result;
+
+    FPupilLabs() {
+        message = "Not set";
+        result = TArray<FSensorData>();
+    }
 };
 
 USTRUCT(BlueprintType)
@@ -60,8 +80,13 @@ struct FPotentialSensorAddress
     GENERATED_BODY()
 
     UPROPERTY(BlueprintReadWrite)
-    FString SensorAddress = "Not set";
+    FString SensorAddress;
 
     UPROPERTY(BlueprintReadWrite)
-    bool RequestSent = false;
+    bool RequestSent;
+
+    FPotentialSensorAddress() {
+        SensorAddress = "Not set";
+        RequestSent = false;
+    }
 };
