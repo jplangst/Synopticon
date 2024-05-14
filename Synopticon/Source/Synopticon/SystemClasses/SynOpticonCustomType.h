@@ -434,7 +434,7 @@ struct FSettingsStruct
 		bool bSaveRatePerMinute; //or minute
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings Struct")
-		FString CrossbarAdress; //or minute
+		FString CrossbarAdress;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings Struct")
 		FString CrossbarRealm;
@@ -447,6 +447,7 @@ struct FSettingsStruct
 		EyesTrackingUnitToUnrealUnitFactor = 0.1;
 		IsHorizontalCoordinateSystem = true;
 		SaveScreenRate = 1;
+		SaveRate = 1;
 		bSaveRatePerMinute = true; //or minute
 		CrossbarAdress = "ws://127.0.0.1:8080/ws";//"ws://127.0.0.1:8080/ws"; //"ws://lupin.ad.ife.no:9080/ws";//"ws://127.0.0.1:8080/ws";
 		CrossbarRealm = "realm1";
@@ -630,6 +631,11 @@ struct FSequenceObjectData
 
 	FSequenceObjectData() {
 		ValidDuration = 0;
+		YPosition = -1;
+		ID = -1;
+		ObjectName = "Not set";
+		LineColor = FLinearColor(1, 0, 0);
+		SequenceLines = TArray<FVector2D>();
 	}
 };
 

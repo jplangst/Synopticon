@@ -259,40 +259,35 @@
 			"Enabled": false
 		},
 		{
-			"Name": "ElectraCodecs",
-			"Enabled": true
+			"Name": "AndroidMedia",
+			"Enabled": false
 		},
 		{
-			"Name": "ElectraPlayer",
-			"Enabled": true
+			"Name": "AndroidMoviePlayer",
+			"Enabled": false
 		},
 		{
-			"Name": "HAPDecoderElectra",
+			"Name": "AndroidPermission",
+			"Enabled": false
+		},
+		{
+			"Name": "AndroidFileServer",
+			"Enabled": false
+		},
+		{
+			"Name": "AvfMedia",
+			"Enabled": false
+		},
+		{
+			"Name": "WindowsMoviePlayer",
+			"Enabled": false
+		},
+		{
+			"Name": "WMFCodecs",
 			"Enabled": true,
 			"SupportedTargetPlatforms": [
-				"Win64",
-				"Mac"
+				"Win64"
 			]
-		},
-		{
-			"Name": "OpusDecoderElectra",
-			"Enabled": true
-		},
-		{
-			"Name": "VPxDecoderElectra",
-			"Enabled": true
-		},
-		{
-			"Name": "ElectraCDM",
-			"Enabled": true
-		},
-		{
-			"Name": "ElectraSubtitles",
-			"Enabled": true
-		},
-		{
-			"Name": "ElectraUtil",
-			"Enabled": true
 		}
 	]
 }
