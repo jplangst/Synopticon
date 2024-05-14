@@ -190,7 +190,7 @@ void UOpenFaceComponent::ReceiveData(float DeltaTime)
 						double Value;
 						MemoryReader << Value;
 						FloatArray.Add(Value);
-					}
+					}a
 
 					OpenTrackData.X = FloatArray[0];
 					OpenTrackData.Y = FloatArray[1];
