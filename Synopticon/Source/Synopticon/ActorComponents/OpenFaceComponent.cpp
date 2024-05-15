@@ -190,14 +190,14 @@ void UOpenFaceComponent::ReceiveData(float DeltaTime)
 						double Value;
 						MemoryReader << Value;
 						FloatArray.Add(Value);
-					}a
+					}
 
 					OpenTrackData.X = FloatArray[0];
 					OpenTrackData.Y = FloatArray[1];
-					OpenTrackData.Z = -FloatArray[2];
+					OpenTrackData.Z = FloatArray[2];
 					OpenTrackData.Roll = FloatArray[5];
 					OpenTrackData.Pitch = FloatArray[4];
-					OpenTrackData.Yaw = FloatArray[3]+180;
+					OpenTrackData.Yaw = FloatArray[3];
 
 					OrientationSample.Orientation = FQuat::MakeFromEuler(FVector(OpenTrackData.Roll, OpenTrackData.Pitch, OpenTrackData.Yaw));
 					OrientationSample.Position = FVector(OpenTrackData.Z, OpenTrackData.X, OpenTrackData.Y);
