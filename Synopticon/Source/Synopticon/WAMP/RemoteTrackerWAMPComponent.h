@@ -4,14 +4,13 @@
 //#include "WAMP/WAMPWorker.h"
 
 #include "CoreMinimal.h"
-#include "CircularQueue.h"
-
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-
-#include "Replay/ReplayDataStructures.h"
-
+#include "Containers/CircularQueue.h"
 #include "Components/ActorComponent.h"
+
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../Replay/ReplayDataStructures.h"
+
 #include "RemoteTrackerWAMPComponent.generated.h"
 
 

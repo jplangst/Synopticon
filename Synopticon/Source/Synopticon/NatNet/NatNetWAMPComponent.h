@@ -4,16 +4,12 @@
 //#include "WAMP/WAMPWorker.h"
 
 #include "CoreMinimal.h"
-#include "CircularQueue.h"
-
-#include "Utils/SynOpticonStatics.h"
-
-//#include <time.h>
+#include "Containers/CircularQueue.h"
 #include "Components/ActorComponent.h"
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h "
 
-
+#include "../Utils/SynOpticonStatics.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h "
 
 #include "NatNetWAMPComponent.generated.h"
 

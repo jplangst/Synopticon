@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-#include "Utils/JSONExporter.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../Utils/JSONExporter.h"
+
 #include "SettingsJSONExporter.generated.h"
 
 /**

@@ -82,7 +82,7 @@ public class Synopticon : ModuleRules
     {
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", 
             "RHI", "RenderCore", "XmlParser", "Json", "JsonUtilities", "ProceduralMeshComponent", "HTTP", 
-            "UMG","MediaAssets","Sockets","Networking", "Slate", "SlateCore", "Messaging", "OpenSSL"}); //, "ShaderCore"
+            "UMG","MediaAssets","Sockets","Networking", "Slate", "SlateCore", "Messaging", "OpenSSL", "AssetRegistry"}); //, "ShaderCore"
         //PrivateDependencyModuleNames.Add("OpenSSL");
         //PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "Messaging"});
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
@@ -97,5 +97,8 @@ public class Synopticon : ModuleRules
         //LoadWAMP(Target);
 
         PublicDefinitions.Add("MALLOC_LEAKDETECTION = 1");
+
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
     }
 }

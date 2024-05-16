@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-//#include "WAMP/WAMPWorker.h"
+
 #include "CoreMinimal.h"
+#include "HAL/RunnableThread.h"
 
 #include "ExperimentDataStructure.h"
-#include "SystemClasses/SynOpticonState.h"
-#include "RunnableThread.h"
+#include "../SystemClasses/SynOpticonState.h"
+//#include "../WAMP/WAMPWorker.h"
+
 #include "ExperimentWAMPComponent.generated.h"
 /**
  * 

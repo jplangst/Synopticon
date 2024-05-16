@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "SystemClasses/SynOpticonState.h"
-
-#include "KismetProceduralMeshLibrary.h"
-
+//#include "KismetProceduralMeshLibrary.h"
+#include "ProceduralMeshComponent.h"
 #include "Components/ActorComponent.h"
+
+#include "../SystemClasses/SynOpticonState.h"
+
 #include "GazeObjectMaterialComponent.generated.h"
 
 

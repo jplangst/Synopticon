@@ -24,13 +24,12 @@
 //#pragma warning(pop)
 
 #include "CoreMinimal.h"
-#include "Queue.h"
+#include "Containers/Queue.h"
 
-#include "Object.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-#include "ImageProcessing/ImageDataStructures.h"
-
-#include "SystemClasses/SynOpticonState.h"
+#include "UObject/Object.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../ImageProcessing/ImageDataStructures.h"
 
 #include "ThreadPoolTasks.generated.h"
 

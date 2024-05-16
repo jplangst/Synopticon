@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "SystemClasses/SynOpticonState.h"
+
+#include "../SystemClasses/SynOpticonState.h"
 //#include "WAMPWorker.h"
+
 #include "MicroTaskWAMPComponent.generated.h"
 
 

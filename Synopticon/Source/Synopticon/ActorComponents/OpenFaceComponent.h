@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "GazeObjects/GazeActor.h"
-#include "Replay/ReplayDataStructures.h"
-#include "WAMP/OpenFaceWAMPComponent.h"
-#include "ActorComponents/RaycastComponent_Ours.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "Networking.h"
+
+#include "../GazeObjects/GazeActor.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../WAMP/OpenFaceWAMPComponent.h"
+#include "../ActorComponents/RaycastComponent_Ours.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
 
 #include "OpenFaceComponent.generated.h"
 

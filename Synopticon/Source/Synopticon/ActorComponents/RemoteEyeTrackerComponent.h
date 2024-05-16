@@ -4,24 +4,19 @@
 
 #include "Engine.h"
 #include "Components/StaticMeshComponent.h"
-#include "UObjectIterator.h"
-
-#include "ConstructorHelpers.h"
-
+#include "UObject/UObjectIterator.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "GazeObjects/GazeActor.h"
-
-#include "SystemClasses/SynOpticonState.h"
-#include "Utils/SynOpticonStatics.h"
-
-#include "WAMP/RemoteTrackerWAMPComponent.h"
-
-#include "Replay/ReplayDataStructures.h"
-#include "SynOpticonActors/SynOpticonDataStructures.h"
-
 #include "ParticleDefinitions.h"
-
 #include "Components/ActorComponent.h"
+
+#include "../GazeObjects/GazeActor.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../Utils/SynOpticonStatics.h"
+#include "../WAMP/RemoteTrackerWAMPComponent.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
+
 #include "RemoteEyeTrackerComponent.generated.h"
 
 

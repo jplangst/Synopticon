@@ -4,14 +4,16 @@
 
 #include "CoreMinimal.h"
 
-#include "Utils/SynOpticonStatics.h"
+#include "../Utils/SynOpticonStatics.h"
+#include "../Utils/SynOpticonStatics.h"
+#include "../NatNet/NatNetWAMPComponent.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+
 #include "GazeActor.h"
 #include "GazeActorDataTypes.h"
-#include "NatNet/NatNetWAMPComponent.h"
-#include "ActorComponents/PositionAndOrientationComponent.h"
 #include "GazeObjectMaterialComponent.h"
 #include "GazeParentActor.h"
-#include "Utils/SynOpticonStatics.h"
+
 #include "GeomTools.h"
 #include "GazeActorFactory.generated.h"
 

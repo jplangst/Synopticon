@@ -2,7 +2,7 @@
 
 #include "ExperimentWAMPComponent.h"
 
-#include "GazeObjects/GazeActorFactory.h"
+#include "../GazeObjects/GazeActorFactory.h"
 
 const FString ImageAndAOIsTopic = FString("NewImageAndAOIsTopic");
 const FString PopupTopic = FString("PopupTopic");

@@ -5,20 +5,18 @@
 #include "Engine.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
-
-#include "ConstructorHelpers.h"
-
+#include "UObject/ConstructorHelpers.h"
 #include "Components/ActorComponent.h"
 
 //Utility
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-
-#include "SynOpticonActors/SynOpticonDataStructures.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
 
 //Actor components
-#include "WAMP/EyeTrackingWAMPComponent.h"
-#include "ActorComponents/RaycastComponent_Ours.h"
+#include "../WAMP/EyeTrackingWAMPComponent.h"
+#include "../ActorComponents/RaycastComponent_Ours.h"
+
 #include "EyeVectorsComponent.generated.h"
 
 /**

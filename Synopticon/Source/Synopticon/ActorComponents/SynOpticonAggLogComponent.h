@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "Components/ActorComponent.h"
 
-#include "ActorComponents/RemoteEyeTrackerComponent.h"
+#include "../ActorComponents/RemoteEyeTrackerComponent.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
 #include "RaycastComponent_Ours.h"
 #include "HandComponent.h"
-#include "SynOpticonActors/SynOpticonDataStructures.h"
+
 #include "SynOpticonAggLogComponent.generated.h"
 
 UENUM(BlueprintType)

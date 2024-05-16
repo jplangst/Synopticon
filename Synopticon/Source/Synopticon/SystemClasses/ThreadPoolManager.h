@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GenericPlatformAffinity.h"
-#include "QueuedThreadPool.h"
+#include "GenericPlatform/GenericPlatformAffinity.h"
+#include "Misc/QueuedThreadPool.h"
 
-#include "Object.h"
+#include "UObject/Object.h"
 #include "ThreadPoolManager.generated.h"
 
 /**

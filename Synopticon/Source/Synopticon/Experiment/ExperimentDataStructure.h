@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GazeObjects/GazeActorDataTypes.h"
+#include "../GazeObjects/GazeActorDataTypes.h"
 #include "ExperimentDataStructure.generated.h"
 
 USTRUCT(BlueprintType)

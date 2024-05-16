@@ -7,7 +7,7 @@
 #include "GazeActorDataTypes.h"
 #include "StaticRoomActorDatatypes.h"
 
-#include "Utils/JSONExporter.h"
+#include "../Utils/JSONExporter.h"
 
 #include "GazeActorJSONExporter.generated.h"
 /**

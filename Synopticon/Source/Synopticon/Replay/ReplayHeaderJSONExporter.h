@@ -5,10 +5,10 @@
 #include "CoreMinimal.h"
 
 #include "ReplayDataStructures.h"
-#include "Experiment/ExperimentDataStructure.h"
-#include "GazeObjects/GazeActorJSONExporter.h"
-#include "SynOpticonActors/SynOpticonActorJSONExporter.h"
-#include "Experiment/ExperimentDataJSONExporter.h"
+#include "../Experiment/ExperimentDataStructure.h"
+#include "../GazeObjects/GazeActorJSONExporter.h"
+#include "../SynOpticonActors/SynOpticonActorJSONExporter.h"
+#include "../Experiment/ExperimentDataJSONExporter.h"
 
 #include "ReplayHeaderJSONExporter.generated.h"
 

@@ -4,23 +4,17 @@
 
 #include "CoreMinimal.h"
 
-#include "ConstructorHelpers.h"
+#include "UObject/ConstructorHelpers.h"
 #include "Materials/MaterialInstanceDynamic.h"
-
 #include "Components/SceneComponent.h"
-
-#include "Utils/SynOpticonStatics.h"
 #include "DrawDebugHelpers.h"
-
-#include "Replay/ReplayDataStructures.h"
-
-//Global state system
-#include "NatNet/NatNetWAMPComponent.h"
-
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-
 #include "Kismet/KismetMathLibrary.h"
+
+#include "../Utils/SynOpticonStatics.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../NatNet/NatNetWAMPComponent.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
 
 #include "PositionAndOrientationComponent.generated.h"
 

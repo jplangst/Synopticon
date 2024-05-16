@@ -3,16 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "ConstructorHelpers.h"
-
+#include "UObject/ConstructorHelpers.h"
+#include "Components/ActorComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "ParticleDefinitions.h"
 
-#include "SynOpticonActors/SynOpticonDataStructures.h"
-#include "GazeObjects/GazeActor.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
+#include "../GazeObjects/GazeActor.h"
 
-#include "Components/ActorComponent.h"
 #include "GazeDataVisualizerComponent.generated.h"
 
 UCLASS(Blueprintable, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

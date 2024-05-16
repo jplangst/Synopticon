@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "GameFramework/Actor.h"
-#include "Utils/SynOpticonStatics.h"
 
-#include "ActorComponents/PositionAndOrientationComponent.h"
+#include "../Utils/SynOpticonStatics.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
 
 #include "PositionModellingActor.generated.h"
 

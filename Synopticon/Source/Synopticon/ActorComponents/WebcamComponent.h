@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "SynOpticonActors/SynOpticonDataStructures.h"
+
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
+
 #include "WebcamComponent.generated.h"
 
 

@@ -5,18 +5,17 @@
 //#include "Utils/CleanWampHeader.h"
 
 #include "CoreMinimal.h"
-#include "CircularQueue.h"
-
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h"
+#include "Containers/CircularQueue.h"
+#include "Components/ActorComponent.h"
 
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "Networking.h"
 
-//#include "WAMPWorker.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
 
-#include "Components/ActorComponent.h"
+//#include "WAMPWorker.h"
 
 #include "OpenFaceWAMPComponent.generated.h"
 

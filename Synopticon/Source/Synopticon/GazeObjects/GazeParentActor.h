@@ -3,12 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "NatNet/NatNetWAMPComponent.h"
-#include "ActorComponents/PositionAndOrientationComponent.h"
-#include "GazeObjects/GazeActor.h"
-
 #include "GameFramework/Actor.h"
+
+#include "../NatNet/NatNetWAMPComponent.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+#include "../GazeObjects/GazeActor.h"
+
 #include "GazeParentActor.generated.h"
 
 UCLASS()

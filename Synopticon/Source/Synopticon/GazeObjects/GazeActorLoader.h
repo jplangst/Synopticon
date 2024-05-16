@@ -1,19 +1,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "SystemClasses/SynOpticonState.h"
-
-#include "Utils/SynOpticonStatics.h"
 #include "XmlParser.h"
+#include "Serialization/BufferArchive.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/ArchiveLoadCompressedProxy.h"
+
+#include "../SystemClasses/SynOpticonState.h"
+#include "../Utils/SynOpticonStatics.h"
 #include "GazeObjectMaterialComponent.h"
 #include "GazeActor.h"
 #include "GazeParentActor.h"
 #include "GazeActorJSONExporter.h"
-
-#include "BufferArchive.h"
-#include "MemoryReader.h"
-#include "ArchiveLoadCompressedProxy.h"
 
 #include "GazeActorDataTypes.h"
 

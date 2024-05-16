@@ -3,32 +3,26 @@
 #pragma once
 
 #include "Engine.h"
-
 #include "Components/ActorComponent.h"
 
 //Eye data wamp
-#include "WAMP/EyeTrackingWAMPComponent.h"
-
+#include "../WAMP/EyeTrackingWAMPComponent.h"
 //NatNet
-#include "NatNet/NatNetWAMPComponent.h"
-
+#include "../NatNet/NatNetWAMPComponent.h"
 //Actor components
-#include "ActorComponents/WebcamComponent.h"
-
-#include "Utils/ReplaySyncJSONExporter.h"
-#include "Replay/ReplayDataStructures.h"
-
+#include "../ActorComponents/WebcamComponent.h"
+#include "../Utils/ReplaySyncJSONExporter.h"
+#include "../Replay/ReplayDataStructures.h"
 //SynOpticon Actors
-#include "SynOpticonActors/SynOpticonActorLoader.h"
-#include "SynOpticonActors/SynOpticonFactory.h"
-#include "SynOpticonActors/SynOpticonActor.h"
-
+#include "../SynOpticonActors/SynOpticonActorLoader.h"
+#include "../SynOpticonActors/SynOpticonFactory.h"
+#include "../SynOpticonActors/SynOpticonActor.h"
 //Gaze Actors
-#include "GazeObjects/GazeActorDataTypes.h"
-#include "GazeObjects/GazeActorLoader.h"
-#include "GazeObjects/GazeActorFactory.h"
-#include "GazeObjects/GazeActor.h"
-#include "GazeObjects/GazeParentActor.h"
+#include "../GazeObjects/GazeActorDataTypes.h"
+#include "../GazeObjects/GazeActorLoader.h"
+#include "../GazeObjects/GazeActorFactory.h"
+#include "../GazeObjects/GazeActor.h"
+#include "../GazeObjects/GazeParentActor.h"
 
 #include "CreationAndDeletionManager.generated.h"
 

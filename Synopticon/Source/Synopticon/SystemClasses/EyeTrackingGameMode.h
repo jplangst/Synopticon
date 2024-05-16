@@ -6,56 +6,57 @@
 
 #include "GlobalEventSystem.h"
 
-#include <Viewport.h>
+//#include <Viewport.h>
+#include "UnrealClient.h"
 
 //Utilities
-#include "Utils/SynOpticonStatics.h"
+#include "../Utils/SynOpticonStatics.h"
 
-#include "CsvParser.h"
+#include "Serialization/Csv/CsvParser.h"
 
 //Actor Components
-#include "WAMP/OpenFaceWAMPComponent.h"
-#include "WAMP/EyeTrackingWAMPComponent.h"
-#include "WAMP/MicroTaskWAMPComponent.h"
-#include "WAMP/ImagerWAMPComponent.h"
-//#include "WAMP/WAMPWorker.h"
+#include "../WAMP/OpenFaceWAMPComponent.h"
+#include "../WAMP/EyeTrackingWAMPComponent.h"
+#include "../WAMP/MicroTaskWAMPComponent.h"
+#include "../WAMP/ImagerWAMPComponent.h"
+//#include "../WAMP/WAMPWorker.h"
 #include "CreationAndDeletionManager.h"
 
-#include "GazeObjects/GazeObjectMaterialComponent.h"
+#include "../GazeObjects/GazeObjectMaterialComponent.h"
 
 //Replay
-#include "Replay/ReplayDataStructures.h"
-#include "Replay/RecordManager.h"
-#include "Replay/ReplayManager.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../Replay/RecordManager.h"
+#include "../Replay/ReplayManager.h"
 
 //NatNet
-#include "NatNet/NatNetWAMPComponent.h"
+#include "../NatNet/NatNetWAMPComponent.h"
 
 //Gaze Actors
-#include "GazeObjects/GazeActorLoader.h"
-#include "GazeObjects/GazeActor.h"
-#include "GazeObjects/GazeActorFactory.h"
-#include "GazeObjects/GazeParentActor.h"
+#include "../GazeObjects/GazeActorLoader.h"
+#include "../GazeObjects/GazeActor.h"
+#include "../GazeObjects/GazeActorFactory.h"
+#include "../GazeObjects/GazeParentActor.h"
 
 //PositionModelling Actor
-#include "PositionModelling/PositionModellingActor.h"
-#include "PositionModelling/CalibrationActor.h"
+#include "../PositionModelling/PositionModellingActor.h"
+#include "../PositionModelling/CalibrationActor.h"
 
 //SynOpticon Actors
-#include "SynOpticonActors/SynOpticonActorLoader.h"
-#include "SynOpticonActors/SynOpticonFactory.h"
-#include "SynOpticonActors/SynOpticonActor.h"
+#include "../SynOpticonActors/SynOpticonActorLoader.h"
+#include "../SynOpticonActors/SynOpticonFactory.h"
+#include "../SynOpticonActors/SynOpticonActor.h"
 
 #include "Containers/TripleBuffer.h"
 
 //System classes
-#include "SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonState.h"
 
 //Engine
 #include "Runtime/Online/HTTP/Public/Http.h"
 
 //Experiment
-#include "Experiment/ExperimentWAMPComponent.h"
+#include "../Experiment/ExperimentWAMPComponent.h"
 
 //Radiant UI
 #include "GameFramework/HUD.h"

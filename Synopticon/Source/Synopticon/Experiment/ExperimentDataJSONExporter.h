@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "Utils/JSONExporter.h"
-#include "GazeObjects/GazeActorJSONExporter.h"
-#include "ExperimentDataStructure.h"
 #include "CoreMinimal.h"
+
+#include "../Utils/JSONExporter.h"
+#include "../GazeObjects/GazeActorJSONExporter.h"
+#include "ExperimentDataStructure.h"
 
 #include "ExperimentDataJSONExporter.generated.h"
 

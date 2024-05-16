@@ -3,16 +3,15 @@
 #pragma once
 #include "Engine.h"
 #include "Components/StaticMeshComponent.h"
-
-#include "ConstructorHelpers.h"
-
-#include "SynOpticonActors/SynOpticonDataStructures.h"
-#include "Replay/ReplayDataStructures.h"
-
-#include "ActorComponents/PositionAndOrientationComponent.h"
 #include "Components/SceneComponent.h"
-#include "GazeObjects/GazeActor.h"
-#include "GazeObjects/StaticRoomActorDatatypes.h"
+#include "UObject/ConstructorHelpers.h"
+
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+#include "../GazeObjects/GazeActor.h"
+#include "../GazeObjects/StaticRoomActorDatatypes.h"
+
 #include "HandComponent.generated.h"
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )

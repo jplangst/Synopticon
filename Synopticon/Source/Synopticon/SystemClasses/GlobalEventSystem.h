@@ -7,7 +7,7 @@
 #include "GazeEventDataStructures.h"
 #include "SynOpticonCustomType.h"
 #include "Components/ActorComponent.h"
-#include "Experiment/ExperimentDataStructure.h"
+#include "../Experiment/ExperimentDataStructure.h"
 #include "GlobalEventSystem.generated.h"
 
 //======================GLOBAL==========================

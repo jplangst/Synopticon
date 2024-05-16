@@ -3,9 +3,9 @@
 #include "CoreMinimal.h"
 
 //header file to save and load binary
-#include "Archive.h"
+#include "Serialization/Archive.h"
 
-#include "Utils/SynOpticonStatics.h"
+#include "../Utils/SynOpticonStatics.h"
 
 //#include "ArchiveBase.h"
 #include "StaticRoomActorDatatypes.h"

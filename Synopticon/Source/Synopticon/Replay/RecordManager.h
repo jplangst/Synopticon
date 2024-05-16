@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Serialization/BufferArchive.h"
+#include "Serialization/ArchiveSaveCompressedProxy.h"
 
 //Encode and decode images, used to free memory in this case
 #include "webp/encode.h"
 #include "webp/decode.h"
 
 //get information 
-#include "SystemClasses/CreationAndDeletionManager.h"
+#include "../SystemClasses/CreationAndDeletionManager.h"
 
-#include "BufferArchive.h"
-#include "ArchiveSaveCompressedProxy.h"
 //header file to save and load binary
 #include "ReplayHeaderJSONExporter.h"
 #include "ReplayDataStructures.h"

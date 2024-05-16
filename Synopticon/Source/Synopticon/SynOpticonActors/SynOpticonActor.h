@@ -8,21 +8,21 @@
 #include "GameFramework/SpringArmComponent.h"
 
 #include "GameFramework/Pawn.h"
-#include "GazeObjects/GazeActor.h"
+#include "../GazeObjects/GazeActor.h"
 
 #include "SynOpticonPlayerController.h"
 #include "SynOpticonDataStructures.h"
 
 //Actor components
-#include "ActorComponents/PositionAndOrientationComponent.h"
-#include "ActorComponents/EyeVectorsComponent.h"
-#include "ActorComponents/RemoteEyeTrackerComponent.h"
-#include "ActorComponents/SynOpticonAggLogComponent.h"
-#include "ActorComponents/RaycastComponent_Ours.h"
-#include "ActorComponents/GazeDataVisualizerComponent.h"
-#include "ActorComponents/ShimmerVRPNComponent.h"
-#include "ActorComponents/HandComponent.h"
-#include "ActorComponents/OpenFaceComponent.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+#include "../ActorComponents/EyeVectorsComponent.h"
+#include "../ActorComponents/RemoteEyeTrackerComponent.h"
+#include "../ActorComponents/SynOpticonAggLogComponent.h"
+#include "../ActorComponents/RaycastComponent_Ours.h"
+#include "../ActorComponents/GazeDataVisualizerComponent.h"
+#include "../ActorComponents/ShimmerVRPNComponent.h"
+#include "../ActorComponents/HandComponent.h"
+#include "../ActorComponents/OpenFaceComponent.h"
 
 //NatNet
 

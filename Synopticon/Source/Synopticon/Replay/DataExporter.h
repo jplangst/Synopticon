@@ -3,13 +3,13 @@
 #pragma once
 #include "CoreMinimal.h"
 
-#include "PlatformFilemanager.h"
-#include "PlatformFile.h"
+#include "HAL/PlatformFilemanager.h"
+#include "HAL/PlatformFile.h"
 
-#include "GazeObjects/GazeActorDataTypes.h"
-#include "SynOpticonActors/SynOpticonDataStructures.h"
-#include "Replay/ReplayDataStructures.h"
-#include "Utils/SynOpticonStatics.h"
+#include "../GazeObjects/GazeActorDataTypes.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../Utils/SynOpticonStatics.h"
 
 class SYNOPTICON_API DataExporter
 {

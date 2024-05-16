@@ -6,19 +6,20 @@
 #include "Materials/MaterialInstanceDynamic.h"
 
 //Worker thread pool and tasks
-#include "SystemClasses/ThreadPoolManager.h"
-#include "SystemClasses/ThreadPoolTasks.h"
+#include "../SystemClasses/ThreadPoolManager.h"
+#include "../SystemClasses/ThreadPoolTasks.h"
 
 //#include "GazeObjects/GazeParentActor.h"
 
-#include "ActorComponents/PositionAndOrientationComponent.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
 #include "GazeObjectMaterialComponent.h"
 
 //Image processing data structures
-#include "ImageProcessing/ImageDataStructures.h"
-#include "Replay/ReplayDataStructures.h"
+#include "../ImageProcessing/ImageDataStructures.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../SystemClasses/SynOpticonState.h"
+
 #include "GameFramework/Actor.h"
-#include "SystemClasses/SynOpticonState.h"
 #include "Kismet/GameplayStatics.h"
 #include "StaticRoomActorDatatypes.h"
 #include "GazeActorDataTypes.h"

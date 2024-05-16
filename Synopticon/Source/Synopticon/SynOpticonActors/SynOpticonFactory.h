@@ -3,31 +3,27 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "Object.h"
+#include "UObject/Object.h"
 
 #include "SynOpticonDataStructures.h"
 #include "SynOpticonActor.h"
-#include "SystemClasses/SynOpticonState.h"
-
-#include "NatNet/NatNetWAMPComponent.h"
-
+#include "../SystemClasses/SynOpticonState.h"
+#include "../NatNet/NatNetWAMPComponent.h"
 //WAMP components
-#include "WAMP/EyeTrackingWAMPComponent.h"
-#include "WAMP/OpenFaceWAMPComponent.h"
-
+#include "../WAMP/EyeTrackingWAMPComponent.h"
+#include "../WAMP/OpenFaceWAMPComponent.h"
 //Actor components
-#include "ActorComponents/RemoteEyeTrackerComponent.h"
-#include "ActorComponents/EyeVectorsComponent.h"
-#include "ActorComponents/PositionAndOrientationComponent.h"
-#include "ActorComponents/RaycastComponent_Ours.h"
-#include "ActorComponents/SynOpticonAggLogComponent.h"
-#include "ActorComponents/WebcamComponent.h"
-//#include "ActorComponents/MyoInputComponent.h"
-#include "ActorComponents/OpenFaceComponent.h"
-#include "ActorComponents/ShimmerVRPNComponent.h"
-#include "ActorComponents/GazeInputComponent.h"
-#include "ActorComponents/HandComponent.h"
+#include "../ActorComponents/RemoteEyeTrackerComponent.h"
+#include "../ActorComponents/EyeVectorsComponent.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+#include "../ActorComponents/RaycastComponent_Ours.h"
+#include "../ActorComponents/SynOpticonAggLogComponent.h"
+#include "../ActorComponents/WebcamComponent.h"
+//#include "../ActorComponents/MyoInputComponent.h"
+#include "../ActorComponents/OpenFaceComponent.h"
+#include "../ActorComponents/ShimmerVRPNComponent.h"
+#include "../ActorComponents/GazeInputComponent.h"
+#include "../ActorComponents/HandComponent.h"
 
 #include "SynOpticonFactory.generated.h"
 

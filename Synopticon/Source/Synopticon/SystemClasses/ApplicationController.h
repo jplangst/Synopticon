@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-#include "GameFramework/PlayerController.h"
-#include "EyeTrackingGameMode.h"
-#include "Utils/SynOpticonStatics.h"
-
 #include "GlobalEventSystem.h"
+#include "GameFramework/PlayerController.h"
+
+#include "../Utils/SynOpticonStatics.h"
+#include "EyeTrackingGameMode.h"
 #include "SynOpticonState.h"
+
 #include "ApplicationController.generated.h"
 
 /**

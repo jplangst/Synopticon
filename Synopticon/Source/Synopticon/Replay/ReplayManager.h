@@ -1,31 +1,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Serialization/BufferArchive.h"
+#include "Serialization/MemoryReader.h"
+#include "Serialization/ArchiveLoadCompressedProxy.h"
 
 //Encode and decode images, used to free memory in this case
 #include "webp/encode.h"
 #include "webp/decode.h"
-
-#include "Utils/ReplaySyncJSONExporter.h"
+#include "../Utils/ReplaySyncJSONExporter.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/CreationAndDeletionManager.h"
+//#include "WAMP/WAMPWorker.h"
+#include "../GazeObjects/GazeObjectMaterialComponent.h"
 #include "ReplayHeaderJSONExporter.h"
 #include "DataExporter.h"
-
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/CreationAndDeletionManager.h"
-
-//#include "WAMP/WAMPWorker.h"
-
-#include "GazeObjects/GazeObjectMaterialComponent.h"
-
-#include "BufferArchive.h"
-#include "MemoryReader.h"
-#include "ArchiveLoadCompressedProxy.h"
 
 //header file to save and load binary
 #include "ReplayDataStructures.h"
 #include "ReplayManager.generated.h"
-
-
 
 UCLASS()
 class SYNOPTICON_API UReplayManager : public UActorComponent

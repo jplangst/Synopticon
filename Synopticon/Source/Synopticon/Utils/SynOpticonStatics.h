@@ -11,19 +11,18 @@
 #include "GeomTools.h"
 #include "Engine/Polys.h"
 
-#include "PlatformFilemanager.h"
-#include "PlatformFile.h"
-#include "IPlatformFileModule.h"
+#include "HAL/PlatformFileManager.h"
+#include "HAL/PlatformFile.h"
+#include "HAL/IPlatformFileModule.h"
 #include "Templates/SharedPointer.h"
-#include "WidgetRenderer.h"
-#include "UserWidget.h"
-#include "WidgetRenderer.h"
+#include "Slate/WidgetRenderer.h"
+#include "Blueprint/UserWidget.h"
 #include "Engine/TextureRenderTarget2D.h"
 
 #include "MediaTexture.h"
 #include "MediaPlayer.h"
 
-#include "SystemClasses/SynOpticonCustomType.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
 
 #include "SynOpticonStatics.generated.h"
 

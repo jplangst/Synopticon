@@ -6,8 +6,9 @@
 
 #include "EngineUtils.h"
 
-#include "AssetRegistryModule.h"
-#include "AssetData.h"
+//#include "AssetRegistryModule.h"
+//#include "AssetData.h"
+#include "EngineUtils.h"
 
 #include "AssetSelector.generated.h"
 /**

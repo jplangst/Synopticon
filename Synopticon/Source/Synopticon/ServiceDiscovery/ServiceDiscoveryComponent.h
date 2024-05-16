@@ -7,9 +7,9 @@
 THIRD_PARTY_INCLUDES_START
 
 #if PLATFORM_WINDOWS
-#include "WindowsHWrapper.h"
-#include "AllowWindowsPlatformTypes.h"
-#include "AllowWindowsPlatformAtomics.h"
+#include "Windows/WindowsHWrapper.h"
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include "Windows/AllowWindowsPlatformAtomics.h"
 #endif
 
 #ifdef WIN32
@@ -25,8 +25,8 @@ THIRD_PARTY_INCLUDES_START
 #include "../zeroconf/mdns.hpp"
 
 #if PLATFORM_WINDOWS
-#include "HideWindowsPlatformAtomics.h"
-#include "HideWindowsPlatformTypes.h"
+#include "Windows/HideWindowsPlatformAtomics.h"
+#include "Windows/HideWindowsPlatformTypes.h"
 #endif
 
 THIRD_PARTY_INCLUDES_END
@@ -37,8 +37,8 @@ THIRD_PARTY_INCLUDES_END
 #include "Interfaces/IHttpResponse.h"
 #include "JsonUtilities.h"
 
-#include "Sensors/SensorDataStructs.h"
-#include "SystemClasses/SynOpticonState.h"
+#include "../Sensors/SensorDataStructs.h"
+#include "../SystemClasses/SynOpticonState.h"
 #include "ServiceDiscoveryComponent.generated.h"
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

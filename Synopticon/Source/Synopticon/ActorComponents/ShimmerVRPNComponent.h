@@ -18,16 +18,14 @@
 //#include <thread>
 //#include "HideWindowsPlatformTypes.h"
 
-#include "CircularQueue.h"
-
-#include "Replay/ReplayDataStructures.h"
-
+#include "Containers/CircularQueue.h"
 #include "Components/ActorComponent.h"
 
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
 
-#include "SynOpticonActors/SynOpticonDataStructures.h"
 #include "ShimmerVRPNComponent.generated.h"
 
 #define TIME_OUT 5

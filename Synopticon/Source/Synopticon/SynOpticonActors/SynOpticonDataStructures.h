@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 
-#include "Archive.h"
-//#include "ArchiveBase.h"
-#include "SystemClasses/SynOpticonCustomType.h"
+#include "Serialization/Archive.h"
+
+#include "../SystemClasses/SynOpticonCustomType.h"
 
 #include "SynOpticonDataStructures.generated.h"
 

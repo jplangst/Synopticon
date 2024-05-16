@@ -2,10 +2,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Experiment/ExperimentDataStructure.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-#include "GazeObjects/GazeActorDataTypes.h"
-#include "SynOpticonActors/SynOpticonDataStructures.h"
+#include "../Experiment/ExperimentDataStructure.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../GazeObjects/GazeActorDataTypes.h"
+#include "../SynOpticonActors/SynOpticonDataStructures.h"
 
 static const int32 gCompressedBufferSize = 600000;
 static const int32 gEncodedSceneCameraBufferSize = 200000;

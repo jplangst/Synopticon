@@ -5,18 +5,16 @@
 #include "CoreMinimal.h"
 #include "XmlFile.h"
 #include "XmlNode.h"
+#include "Serialization/ArchiveLoadCompressedProxy.h"
 
-#include "SystemClasses/SynOpticonState.h"
-
+#include "../SystemClasses/SynOpticonState.h"
 //Actor Components
-#include "ActorComponents/PositionAndOrientationComponent.h"
-#include "ActorComponents/EyeVectorsComponent.h"
-#include "ActorComponents/ShimmerVRPNComponent.h"
-//#include "ActorComponents/MyoInputComponent.h"
-#include "SynOpticonActors/SynOpticonActor.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+#include "../ActorComponents/EyeVectorsComponent.h"
+#include "../ActorComponents/ShimmerVRPNComponent.h"
+//#include "../ActorComponents/MyoInputComponent.h"
+#include "SynOpticonActor.h"
 #include "SynOpticonActorJSONExporter.h"
-
-#include "ArchiveLoadCompressedProxy.h"
 
 /**
  * 

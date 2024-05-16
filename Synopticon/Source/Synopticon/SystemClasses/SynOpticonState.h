@@ -3,19 +3,19 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Runnable.h"
+#include "HAL/Runnable.h"
 
 #include "GameFramework/GameState.h"
 #include "SynOpticonCustomType.h"
 #include "GlobalEventSystem.h"
 #include "ThreadPoolManager.h"
-#include "GazeObjects/GazeActorDataTypes.h"
 
-#include "Utils/SynOpticonStatics.h"
-//#include "WAMP/WAMPWorker.h"
-#include "Replay/ReplayDataStructures.h"
+#include "../GazeObjects/GazeActorDataTypes.h"
+#include "../Utils/SynOpticonStatics.h"
+//#include "../WAMP/WAMPWorker.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../Sensors/SensorDataStructs.h"
 
-#include "Sensors/SensorDataStructs.h"
 #include "SynOpticonState.generated.h"
 
 

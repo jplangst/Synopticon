@@ -6,15 +6,13 @@
 
 #include "Components/ActorComponent.h"
 
-#include "SystemClasses/SynOpticonCustomType.h"
-#include "WAMP/EyeTrackingWAMPComponent.h"
-
+#include "../SystemClasses/SynOpticonCustomType.h"
+#include "../WAMP/EyeTrackingWAMPComponent.h"
 //Synopticon State
-#include "SystemClasses/SynOpticonState.h"
-
+#include "../SystemClasses/SynOpticonState.h"
 //Worker thread pool and tasks
-#include "SystemClasses/ThreadPoolManager.h"
-#include "SystemClasses/ThreadPoolTasks.h"
+#include "../SystemClasses/ThreadPoolManager.h"
+#include "../SystemClasses/ThreadPoolTasks.h"
 
 #include "ImagerWAMPComponent.generated.h"
 

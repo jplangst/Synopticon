@@ -6,7 +6,7 @@
 
 #include "SynOpticonDataStructures.h"
 
-#include "Utils/JSONExporter.h"
+#include "../Utils/JSONExporter.h"
 
 #include "SynOpticonActorJSONExporter.generated.h"
 /**

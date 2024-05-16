@@ -2,7 +2,7 @@
 
 //#include "Synopticon.h"
 #include "EyeVectorsComponent.h"
-#include "SystemClasses/GazeEventDataStructures.h"
+#include "../SystemClasses/GazeEventDataStructures.h"
 
 
 double MACULAR_ANGLE = 9.0;

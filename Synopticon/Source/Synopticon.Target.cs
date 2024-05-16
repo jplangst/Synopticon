@@ -13,15 +13,8 @@ public class SynopticonTarget : TargetRules
         //bForceEnableRTTI = true;
         //bForceEnableExceptions = true;
         bAllowLTCG = true;
-
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
+        BuildEnvironment = TargetBuildEnvironment.Shared;
     }
-
-    //public override void SetupGlobalEnvironment(
-    //      TargetInfo Target,
-    //      ref LinkEnvironmentConfiguration OutLinkEnvironmentConfiguration,
-    //      ref CPPEnvironmentConfiguration OutCPPEnvironmentConfiguration
-    //      )
-    //{
-    //    OutCPPEnvironmentConfiguration.bUseAVX = true;
-    //}
 }

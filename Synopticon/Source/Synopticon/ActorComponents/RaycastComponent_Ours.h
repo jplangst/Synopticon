@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "RaycastDatatypes.h"
-
 #include "Components/ActorComponent.h"
-#include "GazeObjects/GazeActor.h"
-#include "GazeObjects/StaticRoomActor.h"
-#include "PositionAndOrientationComponent.h"
-#include "SystemClasses/SynOpticonState.h"
 #include "ParticleDefinitions.h"
+
+#include "../GazeObjects/GazeActor.h"
+#include "../GazeObjects/StaticRoomActor.h"
+#include "../ActorComponents/PositionAndOrientationComponent.h"
+#include "../SystemClasses/SynOpticonState.h"
+
 #include "RaycastComponent_Ours.generated.h"
 
 //Struct that contains the combined trace results on a gaze object

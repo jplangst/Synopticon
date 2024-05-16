@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PositionAndOrientationComponent.h"
-#include "GazeObjects/GazeParentActor.h"
+#include "../GazeObjects/GazeParentActor.h"
 //#include "Synopticon.h"
 
 int32 UPositionAndOrientationComponent::CompID = 0;

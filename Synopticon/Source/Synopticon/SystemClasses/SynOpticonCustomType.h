@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 #include <array>
+#include <string>
 
 #include "SynOpticonCustomType.generated.h"
 

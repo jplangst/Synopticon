@@ -9,5 +9,8 @@ public class SynopticonEditorTarget : TargetRules
     {
 		Type = TargetType.Editor;
         ExtraModuleNames.Add("Synopticon");
+        bOverrideBuildEnvironment = true;
+        IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
+        DefaultBuildSettings = BuildSettingsVersion.Latest;
     }
 }

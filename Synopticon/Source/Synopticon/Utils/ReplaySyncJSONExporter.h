@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-#include "SystemClasses/SynOpticonCustomType.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
 
 #include "ReplaySyncJSONExporter.generated.h"
 /**

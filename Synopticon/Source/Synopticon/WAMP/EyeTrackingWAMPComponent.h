@@ -3,16 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CircularQueue.h"
-
-#include "SystemClasses/SynOpticonState.h"
-#include "SystemClasses/SynOpticonCustomType.h"
-//#include "WAMPWorker.h"
-
-#include "Replay/ReplayDataStructures.h"
-#include "ImageProcessing/ImageDataStructures.h"
-
+#include "Containers/CircularQueue.h"
 #include "Components/ActorComponent.h"
+
+#include "../SystemClasses/SynOpticonState.h"
+#include "../SystemClasses/SynOpticonCustomType.h"
+//#include "../WAMPWorker.h"
+#include "../Replay/ReplayDataStructures.h"
+#include "../ImageProcessing/ImageDataStructures.h"
 
 #include "EyeTrackingWAMPComponent.generated.h"
 
