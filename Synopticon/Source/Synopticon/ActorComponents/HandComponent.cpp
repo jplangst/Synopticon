@@ -46,10 +46,10 @@ void UHandComponent::BeginPlay()
 	}
 
 	//Collision Setup
-	TScriptDelegate<FWeakObjectPtr> onBeginOverlapFunc;
+	TScriptDelegate onBeginOverlapFunc;
 	onBeginOverlapFunc.BindUFunction(this, "OnBeginOverlap");
 
-	TScriptDelegate<FWeakObjectPtr> onEndOverlapFunc;
+	TScriptDelegate onEndOverlapFunc;
 	onEndOverlapFunc.BindUFunction(this, "OnEndOverlap");
 
 	HandMesh->OnComponentBeginOverlap.Add(onBeginOverlapFunc);

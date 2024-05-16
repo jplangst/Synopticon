@@ -66,7 +66,10 @@ FVector2D UJSONExporter::GetFVector2DFromJSON(TSharedPtr<FJsonObject> VectorJson
 }
 
 FQuat UJSONExporter::GetFQuatFromJSON(TSharedPtr<FJsonObject> QuatJson) {
-	double X, Y, Z, W;
+	double X = -1;
+	double Y = -1;
+	double Z = -1;
+	double W = -1;
 
 	if (QuatJson->TryGetNumberField("X", X) && QuatJson->TryGetNumberField("Y", Y) 
 		&& QuatJson->TryGetNumberField("Z", Z) && QuatJson->TryGetNumberField("W", W)) {

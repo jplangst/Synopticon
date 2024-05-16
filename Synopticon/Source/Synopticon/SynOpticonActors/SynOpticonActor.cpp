@@ -167,7 +167,7 @@ void ASynOpticonActor::UpdateActorTasks() {
 	if (!ASynOpticonState::IsReplaying()) 
 	{	
 		AGazeActor* Target = nullptr;
-		int32 GazeObjectID;
+		int32 GazeObjectID = -1;
 
 		URaycastComponent_Ours* RaycastComponent = FindComponentByClass<URaycastComponent_Ours>();
 		if (RaycastComponent)

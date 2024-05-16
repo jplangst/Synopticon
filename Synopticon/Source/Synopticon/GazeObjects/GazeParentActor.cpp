@@ -76,7 +76,7 @@ void AGazeParentActor::CreatePosOriComponent(FString _NatNetName) {
 }
 
 void AGazeParentActor::SetCalibrationQuat(FQuat CalibrationQuat) {
-	UPositionAndOrientationComponent* PosOriComp = Cast<UPositionAndOrientationComponent>(GetRootComponent());
+	PosOriComp = Cast<UPositionAndOrientationComponent>(GetRootComponent());
 	if (PosOriComp) {
 		PosOriComp->SetCalibrationToolCalibration(CalibrationQuat);
 	}
