@@ -1,0 +1,14 @@
+{
+	"OutputFiles": [
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\Module.OptitrackLiveLink.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\LiveLinkNatNetModule.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\LiveLinkNatNetRetarget.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\LiveLinkNatNetSettings.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\LiveLinkNatNetSource.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\LiveLinkNatNetSourceEditorWidget.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\LiveLinkNatNetSourceFactory.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\OptitrackLiveLinkComponent.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\OptitrackLiveLinkDisplay.cpp.obj",
+		"..\\..\\..\\x64\\UnrealGame\\Development\\OptitrackLiveLink\\RetargetSkeleton.cpp.obj"
+	]
+}
