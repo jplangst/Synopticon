@@ -1,4 +1,9 @@
 # Synopticon
+
+# Enabling Motive Plugin
+- Copy the "OptiTrack" folder from the "MotivePugin" folder into the Unreal Engine plugins folder, normally located at 
+"C:\Program Files\Epic Games\5.#\Engine\Plugins". Enable it in the project settings inside Unreal Editor if it is not already enabled.
+
 # How to work with Opentrack
 - Input: neuralnet tracker
 - Output: UDP over network
