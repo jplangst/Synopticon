@@ -3,6 +3,9 @@
 #include "NatNetWAMPComponent.h"
 
 const FString NatNetDataSample = "NatNetDataSample";
+FCriticalSection UNatNetWAMPComponent::gNetworkQueueMutex;
+TArray<FString> UNatNetWAMPComponent::AvailableRigidBodies;
+TMap<FString, TCircularQueue<FRigidBodyDataStruct*>*> UNatNetWAMPComponent::NatNetDataQueuesMap;
 // Sets default values for this component's properties
 UNatNetWAMPComponent::UNatNetWAMPComponent()
 {
@@ -19,11 +22,17 @@ void UNatNetWAMPComponent::BeginPlay()
 	Super::BeginPlay();
 
 	//FNatNetWAMPWorker::JoyInit(this, ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm(), FString("NatNetDataSample"));
+	
 
 	// ...
-	
+
 	ASynOpticonState::GetGlobalEventSystem()->OnEventWAMPComponentDisconnected.AddDynamic(this, &UNatNetWAMPComponent::OnNatNetWAMPComponentDisconnected);
 	ASynOpticonState::GetGlobalEventSystem()->OnEventWAMPComponentConnected.AddDynamic(this, &UNatNetWAMPComponent::OnNatNetWAMPComponentConnected);
+
+	g_pClient = new NatNetClient();
+
+	g_pClient->SetFrameReceivedCallback(UNatNetWAMPComponent::DataHandler, g_pClient);
+	FNatNetWorker::JoyInit(ASynOpticonState::GetWAMPRouterAdress(), ASynOpticonState::GetWAMPRealm(), g_pClient);
 }
 
 void UNatNetWAMPComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -45,10 +54,11 @@ void UNatNetWAMPComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 		}
 	}
 	NatNetDataQueuesMap.Empty();
+	FNatNetWorker::Shutdown();
 }
 
 void UNatNetWAMPComponent::RegisterWAMP()
-{
+{	
 	//TSharedPtr<wamp_event_handler> NatNetDataSampleHandler(new wamp_event_handler());
 	//*NatNetDataSampleHandler = [this](const autobahn::wamp_event& _event) { OnReceiveNatNetData(_event); };
 	//FWAMPWorker::SubscribeToTopic(NatNetDataSample, NatNetDataSampleHandler);
@@ -167,6 +177,71 @@ void UNatNetWAMPComponent::OnReceiveNatNetData(const string _event) //Was const 
 	////		}
 	////	}
 	////}
+}
+
+void NATNET_CALLCONV UNatNetWAMPComponent::DataHandler(sFrameOfMocapData* data, void* pUserData)
+{
+	NatNetClient* pClient = (NatNetClient*)pUserData;
+	if (!pClient)
+		return;
+
+	// Note : This function is called every 1 / mocap rate ( e.g. 100 fps = every 10 msecs )
+	// We don't want to do too much here and cause the network processing thread to get behind,
+	// so let's just safely add this frame to our shared  'network' frame queue and return.
+
+	// Note : The 'data' ptr passed in is managed by NatNet and cannot be used outside this function.
+	// Since we are keeping the data, we need to make a copy of it.
+	shared_ptr<sFrameOfMocapData> pDataCopy = make_shared<sFrameOfMocapData>();
+	NatNet_CopyFrame(data, pDataCopy.get());
+
+	AvailableRigidBodies.Empty();
+	for (int i = 0; i < pDataCopy->nRigidBodies; i++) {
+		FString RigidBodyID = FNatNetWorker::getDataDescriptions(pDataCopy->RigidBodies[i].ID);
+
+		FRigidBodyDataStruct* Sample = new FRigidBodyDataStruct();
+
+		FVector RawPosition = FVector(pDataCopy->RigidBodies[i].x, pDataCopy->RigidBodies[i].y, pDataCopy->RigidBodies[i].z);
+
+		Sample->Position = USynOpticonStatics::ConvertFromMotiveToUnrealEngineCoordinateSystem(RawPosition, ASynOpticonState::GetTrackerOffset(),
+				ASynOpticonState::IsHorizontalCoordinateSystem(), ASynOpticonState::GetPosTrackingUnitToUnrealUnitFactor());
+
+		FQuat RawOrientation = FQuat(pDataCopy->RigidBodies[i].qx, pDataCopy->RigidBodies[i].qy, pDataCopy->RigidBodies[i].qz, pDataCopy->RigidBodies[i].qw);
+		Sample->Orientation = USynOpticonStatics::ConvertFromMotiveToUnrealEngineCoordinateSystem(RawOrientation, ASynOpticonState::IsHorizontalCoordinateSystem());
+
+		for (int j = 0; j < pDataCopy->MocapData[i].nMarkers; j++) 
+		{
+
+			FVector RawMarker = FVector(pDataCopy->MocapData[i].Markers[j][0], pDataCopy->MocapData[i].Markers[j][1], pDataCopy->MocapData[i].Markers[j][2]);
+			Sample->Markers.Add(USynOpticonStatics::ConvertFromMotiveToUnrealEngineCoordinateSystem(RawMarker,
+					ASynOpticonState::GetTrackerOffset(), ASynOpticonState::IsHorizontalCoordinateSystem(),
+					ASynOpticonState::GetPosTrackingUnitToUnrealUnitFactor()));
+		}
+		AvailableRigidBodies.Add(RigidBodyID);
+		//NatNetWAMPComponent->AddNatNetDataSample(RigidBodyID, Sample);
+		if (!NatNetDataQueuesMap.Contains(RigidBodyID)) {
+			TCircularQueue<FRigidBodyDataStruct*>* DataQueue = new TCircularQueue<FRigidBodyDataStruct*>(10); //Allow one second worth of data to be stored at a time
+			DataQueue->Enqueue(Sample);
+			NatNetDataQueuesMap.Add(RigidBodyID, DataQueue);
+		}
+		else {
+			if (gNetworkQueueMutex.TryLock())
+			{
+				TCircularQueue<FRigidBodyDataStruct*>** NatNetDataQueue = NatNetDataQueuesMap.Find(RigidBodyID);
+				if (*NatNetDataQueue)
+				{
+					bool Success = (*NatNetDataQueue)->Enqueue(Sample);
+
+					//If the queue was full we need to free the memory we used for the sample
+					if (!Success) {
+						delete Sample;
+					}
+				}
+			}
+			gNetworkQueueMutex.Unlock();
+		}
+	}
+
+	return;
 }
 
 #pragma warning(pop)

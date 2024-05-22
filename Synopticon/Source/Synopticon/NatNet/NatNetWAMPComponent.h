@@ -10,6 +10,15 @@
 #include "../Utils/SynOpticonStatics.h"
 #include "../SystemClasses/SynOpticonState.h"
 #include "../SystemClasses/SynOpticonCustomType.h "
+#include "NatNetWorker.h"
+
+#include <memory>
+//#include <mutex>
+//#include <deque>
+
+#include "NatNetTypes.h"
+#include "NatNetCAPI.h"
+#include "NatNetClient.h"
 
 #include "NatNetWAMPComponent.generated.h"
 
@@ -22,7 +31,13 @@ class SYNOPTICON_API UNatNetWAMPComponent : public UActorComponent
 
 private:
 
-	TMap<FString, TCircularQueue<FRigidBodyDataStruct*>*> NatNetDataQueuesMap;
+	static TMap<FString, TCircularQueue<FRigidBodyDataStruct*>*> NatNetDataQueuesMap;
+
+	static FCriticalSection gNetworkQueueMutex;
+	//static std::deque<MocapFrameWrapper> gNetworkQueue;
+	static const int kMaxQueueSize = 500;
+
+	NatNetClient* g_pClient = NULL;
 
 public:
 
@@ -36,7 +51,7 @@ public:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	// Called every frame
-	TArray<FString> AvailableRigidBodies;
+	static TArray<FString> AvailableRigidBodies;
 
 	FRigidBodyDataStruct* GetNatNetDataSample(FString RigidBodyID);
 
@@ -51,4 +66,7 @@ public:
 	void OnReceiveNatNetData(const string _event);
 
 	void RegisterWAMP();
+
+
+	static void NATNET_CALLCONV DataHandler(sFrameOfMocapData* data, void* pUserData);
 };

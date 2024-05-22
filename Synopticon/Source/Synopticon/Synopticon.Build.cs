@@ -78,6 +78,17 @@ public class Synopticon : ModuleRules
         PublicDefinitions.Add(string.Format("WITH_LibWebP_BINDING={0}", 1));
     }
 
+    public void LoadNatNetSDK(ReadOnlyTargetRules Target)
+    {
+        string LibrariesPath = Path.Combine(ThirdPartyPath, "NatNetSDK");
+
+        PublicAdditionalLibraries.Add(Path.Combine(LibrariesPath, "lib", "x64", "NatNetLib.lib"));
+        // Include path
+        PublicIncludePaths.Add(Path.Combine(LibrariesPath, "include"));
+
+        PublicDefinitions.Add(string.Format("WITH_LibWebP_BINDING={0}", 1));
+    }
+
     public Synopticon(ReadOnlyTargetRules Target) : base(Target)
     {
         PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", 
@@ -94,6 +105,7 @@ public class Synopticon : ModuleRules
         LoadLibWebP(Target);   
         LoadLibvpx(Target);
         LoadLibYUV(Target);
+        LoadNatNetSDK(Target);
         //LoadWAMP(Target);
 
         PublicDefinitions.Add("MALLOC_LEAKDETECTION = 1");
