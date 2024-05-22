@@ -281,13 +281,6 @@
 		{
 			"Name": "WindowsMoviePlayer",
 			"Enabled": false
-		},
-		{
-			"Name": "WMFCodecs",
-			"Enabled": true,
-			"SupportedTargetPlatforms": [
-				"Win64"
-			]
 		}
 	]
 }

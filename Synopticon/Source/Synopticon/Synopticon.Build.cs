@@ -86,7 +86,7 @@ public class Synopticon : ModuleRules
         // Include path
         PublicIncludePaths.Add(Path.Combine(LibrariesPath, "include"));
 
-        PublicDefinitions.Add(string.Format("WITH_LibWebP_BINDING={0}", 1));
+        PublicDefinitions.Add(string.Format("WITH_NatNet_BINDING={0}", 1));
     }
 
     public Synopticon(ReadOnlyTargetRules Target) : base(Target)
