@@ -85,10 +85,10 @@ void FNatNetWorker::Reconnect(FString _ServerIP, FString _Port)
 uint32 FNatNetWorker::Run() {
     
     // Manually specify Motive server IP/connection type
-    g_connectParams.connectionType = ConnectionType_Multicast;
+    g_connectParams.connectionType = ConnectionType_Unicast;
     g_connectParams.localAddress = "127.0.0.1";
-    g_connectParams.serverAddress = TCHAR_TO_ANSI(*ServerIP);
-    g_connectParams.connectionType = ConnectionType_Multicast;
+    g_connectParams.serverAddress = "127.0.0.1";//TCHAR_TO_ANSI(*ServerIP);
+    //g_connectParams.connectionType = ConnectionType_Multicast;
     g_connectParams.serverCommandPort = 1510;
     g_connectParams.serverDataPort = 1511;
     g_connectParams.multicastAddress = g_discoveredMulticastGroupAddr;
