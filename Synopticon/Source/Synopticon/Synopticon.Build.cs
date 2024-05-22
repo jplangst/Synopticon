@@ -83,10 +83,24 @@ public class Synopticon : ModuleRules
         string LibrariesPath = Path.Combine(ThirdPartyPath, "NatNetSDK");
 
         PublicAdditionalLibraries.Add(Path.Combine(LibrariesPath, "lib", "x64", "NatNetLib.lib"));
+        //RuntimeDependencies.Add(Path.Combine(LibrariesPath, "lib", "x64", "NatNetLib.dll"));
+
+        string SDKDllPath = Path.Combine(LibrariesPath, "lib", "x64", "NatNetLib.dll");
+        RuntimeDependencies.Add("$(TargetOutputDir)/NatNetLib.dll", SDKDllPath);
+
+        if (Target.Platform == UnrealTargetPlatform.Win64)
+        {
+            string TargetDllPath = Path.Combine(Target.ProjectFile.Directory.FullName, "Binaries/Win64/NatNetLib.dll");
+            if (!File.Exists(TargetDllPath))
+            {
+                File.Copy(SDKDllPath, TargetDllPath, true);
+            }
+        }
+
         // Include path
         PublicIncludePaths.Add(Path.Combine(LibrariesPath, "include"));
 
-        PublicDefinitions.Add(string.Format("WITH_LibWebP_BINDING={0}", 1));
+        PublicDefinitions.Add(string.Format("WITH_NatNetSDK_BINDING={0}", 1));
     }
 
     public Synopticon(ReadOnlyTargetRules Target) : base(Target)

@@ -220,6 +220,11 @@ void FNatNetWorker::UpdateDataToDescriptionMaps(sDataDescriptions* pDataDefs)
 
 }
 
-FString FNatNetWorker::getDataDescriptions(int _id) { 
-    return NatNetWorker->g_AssetIDtoAssetName[_id];
+FString FNatNetWorker::getDataDescriptions(int _id) {
+    if (NatNetWorker->g_AssetIDtoAssetName.Contains(_id)) {
+        return NatNetWorker->g_AssetIDtoAssetName[_id];
+    }
+    else {
+        return "";
+    }
 }
