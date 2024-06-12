@@ -194,28 +194,28 @@ TArray<TSharedPtr<FJsonValue>> UReplayHeaderJSONExporter::SavePopupEvents(TArray
 CompressedHeader UReplayHeaderJSONExporter::GetHeaderData(TSharedPtr<FJsonObject> HeaderJsonObj)
 {
 	CompressedHeader HeaderData;
-	TArray< TSharedPtr<FJsonValue> > GazeActorDataList = HeaderJsonObj->GetArrayField("GazeActorDataList");
+	TArray< TSharedPtr<FJsonValue> > GazeActorDataList = HeaderJsonObj->GetArrayField(TEXT("GazeActorDataList"));
 	for (TSharedPtr<FJsonValue> GazeActorData : GazeActorDataList)
 	{
 		TSharedPtr<FJsonObject> GazeActorDataObj = GazeActorData->AsObject();
 		HeaderData.GazeActorDataList.Add(UGazeActorJSONExporter::GetGazeActorData(GazeActorDataObj));
 	}
 
-	TArray< TSharedPtr<FJsonValue> > GazeGroupList = HeaderJsonObj->GetArrayField("GazeGroupList");
+	TArray< TSharedPtr<FJsonValue> > GazeGroupList = HeaderJsonObj->GetArrayField(TEXT("GazeGroupList"));
 	for (TSharedPtr<FJsonValue> GazeGroupData : GazeGroupList)
 	{
 		TSharedPtr<FJsonObject> GazeGroupDataObj = GazeGroupData->AsObject();
 		HeaderData.GazeGroupList.Add(UGazeActorJSONExporter::GetGazeGroupData(GazeGroupDataObj));
 	}
 
-	TArray< TSharedPtr<FJsonValue> > SynOpticonActorDataList = HeaderJsonObj->GetArrayField("SynOpticonActorDataList");
+	TArray< TSharedPtr<FJsonValue> > SynOpticonActorDataList = HeaderJsonObj->GetArrayField(TEXT("SynOpticonActorDataList"));
 	for (TSharedPtr<FJsonValue> SynOpticonActorData : SynOpticonActorDataList)
 	{
 		TSharedPtr<FJsonObject> SynOpticonActorDataObj = SynOpticonActorData->AsObject();
 		HeaderData.SynOpticonActorDataList.Add(USynOpticonActorJSONExporter::GetSynOpticonActorData(SynOpticonActorDataObj));
 	}
 
-	TArray< TSharedPtr<FJsonValue> > ReplayEvents = HeaderJsonObj->GetArrayField("ReplayEvents");
+	TArray< TSharedPtr<FJsonValue> > ReplayEvents = HeaderJsonObj->GetArrayField(TEXT("ReplayEvents"));
 	for (TSharedPtr<FJsonValue> ReplayEvent : ReplayEvents)
 	{
 		TSharedPtr<FJsonObject> ReplayEventObj = ReplayEvent->AsObject();
@@ -229,11 +229,11 @@ CompressedHeader UReplayHeaderJSONExporter::GetHeaderData(TSharedPtr<FJsonObject
 	}
 	else
 	{
-		FString StartTimestamp = HeaderJsonObj->GetStringField("StartTimestamp");
+		FString StartTimestamp = HeaderJsonObj->GetStringField(TEXT("StartTimestamp"));
 		FDateTime::Parse(StartTimestamp, HeaderData.StartTimestamp);
 	}
 	
-	TArray< TSharedPtr<FJsonValue> > LogFileTimestamps = HeaderJsonObj->GetArrayField("LogFileTimestamps");
+	TArray< TSharedPtr<FJsonValue> > LogFileTimestamps = HeaderJsonObj->GetArrayField(TEXT("LogFileTimestamps"));
 	for (TSharedPtr<FJsonValue> LogFileTimestamp : LogFileTimestamps)
 	{
 		FDateTime Timestamp;
@@ -241,7 +241,7 @@ CompressedHeader UReplayHeaderJSONExporter::GetHeaderData(TSharedPtr<FJsonObject
 		HeaderData.LogFileTimestamps.Add(Timestamp);
 	}
 	
-	TArray< TSharedPtr<FJsonValue> > TimeIndex = HeaderJsonObj->GetArrayField("TimeIndex");
+	TArray< TSharedPtr<FJsonValue> > TimeIndex = HeaderJsonObj->GetArrayField(TEXT("TimeIndex"));
 	for (TSharedPtr<FJsonValue> TI : TimeIndex)
 	{
 		TArray<TimeIndexStruct> TempStruct;
@@ -253,23 +253,23 @@ CompressedHeader UReplayHeaderJSONExporter::GetHeaderData(TSharedPtr<FJsonObject
 		HeaderData.TimeIndex.Add(TempStruct);
 	}
 	
-	HeaderData.ReplayTimeInSeconds = HeaderJsonObj->GetIntegerField("ReplayTimeInSeconds");
-	HeaderData.NumOfLogFiles = HeaderJsonObj->GetIntegerField("NumOfLogFiles");
+	HeaderData.ReplayTimeInSeconds = HeaderJsonObj->GetIntegerField(TEXT("ReplayTimeInSeconds"));
+	HeaderData.NumOfLogFiles = HeaderJsonObj->GetIntegerField(TEXT("NumOfLogFiles"));
 	HeaderData.Settings = GetSettingsStruct(HeaderJsonObj->GetObjectField("Settings"));
 
-	HeaderData.ChangeImageEvents = GetChangeImageEvents(HeaderJsonObj->GetArrayField("ChangeImageEvents"));
-	HeaderData.PopupEvents = GetPopupEvents(HeaderJsonObj->GetArrayField("PopupEvents"));
+	HeaderData.ChangeImageEvents = GetChangeImageEvents(HeaderJsonObj->GetArrayField(TEXT("ChangeImageEvents")));
+	HeaderData.PopupEvents = GetPopupEvents(HeaderJsonObj->GetArrayField(TEXT("PopupEvents")));
 
-	HeaderData.MicroTaskEvents = GetMicroTaskEvents(HeaderJsonObj->GetArrayField("MicroTaskEvents"));
+	HeaderData.MicroTaskEvents = GetMicroTaskEvents(HeaderJsonObj->GetArrayField(TEXT("MicroTaskEvents")));
 
-	TArray< TSharedPtr<FJsonValue> > AOIHistory = HeaderJsonObj->GetArrayField("AOIHistory");
+	TArray< TSharedPtr<FJsonValue> > AOIHistory = HeaderJsonObj->GetArrayField(TEXT("AOIHistory"));
 	for (TSharedPtr<FJsonValue> aoi : AOIHistory)
 	{
 		TSharedPtr<FJsonObject> aoiObj = aoi->AsObject();
 		HeaderData.AOIHistory.Add(UGazeActorJSONExporter::GetAOIData(aoiObj));
 	}
 
-	TArray< TSharedPtr<FJsonValue> > PopupHistory = HeaderJsonObj->GetArrayField("PopupHistory");
+	TArray< TSharedPtr<FJsonValue> > PopupHistory = HeaderJsonObj->GetArrayField(TEXT("PopupHistory"));
 	for (TSharedPtr<FJsonValue> popup : PopupHistory)
 	{
 		TSharedPtr<FJsonObject> popupObj = popup->AsObject();
@@ -292,16 +292,16 @@ TArray<TPair<MicroTaskEventTypeEnum, FActorTaskStruct>> UReplayHeaderJSONExporte
 
 TPair<MicroTaskEventTypeEnum, FActorTaskStruct> UReplayHeaderJSONExporter::GetMicroTaskEvent(TSharedPtr<FJsonObject> MicroTaskEventObject) {
 	MicroTaskEventTypeEnum TaskType;
-	TaskType = MicroTaskEventFromFString(MicroTaskEventObject->GetStringField("Type"));
+	TaskType = MicroTaskEventFromFString(MicroTaskEventObject->GetStringField(TEXT("Type")));
 
 	FActorTaskStruct TaskData;
-	TaskData.TaskID = MicroTaskEventObject->GetNumberField("TaskId");
-	TaskData.TaskName = MicroTaskEventObject->GetStringField("TaskName");
-	TaskData.ActorName = MicroTaskEventObject->GetStringField("ActorName");
-	TaskData.Complete = MicroTaskEventObject->GetBoolField("Complete");
-	TaskData.StartTimestamp = FDateTime::FromUnixTimestamp(MicroTaskEventObject->GetNumberField("StartTimestamp"));
-	TaskData.EndTimestamp = FDateTime::FromUnixTimestamp(MicroTaskEventObject->GetNumberField("EndTimestamp"));
-	TaskData.SubTaskList = GetMicroTaskSubTasks(MicroTaskEventObject->GetArrayField("SubTasks"));
+	TaskData.TaskID = MicroTaskEventObject->GetNumberField(TEXT("TaskId"));
+	TaskData.TaskName = MicroTaskEventObject->GetStringField(TEXT("TaskName"));
+	TaskData.ActorName = MicroTaskEventObject->GetStringField(TEXT("ActorName"));
+	TaskData.Complete = MicroTaskEventObject->GetBoolField(TEXT("Complete"));
+	TaskData.StartTimestamp = FDateTime::FromUnixTimestamp(MicroTaskEventObject->GetNumberField(TEXT("StartTimestamp")));
+	TaskData.EndTimestamp = FDateTime::FromUnixTimestamp(MicroTaskEventObject->GetNumberField(TEXT("EndTimestamp")));
+	TaskData.SubTaskList = GetMicroTaskSubTasks(MicroTaskEventObject->GetArrayField(TEXT("SubTasks")));
 
 	return TPair<MicroTaskEventTypeEnum, FActorTaskStruct>(TaskType, TaskData);
 }
@@ -312,8 +312,8 @@ TArray<FSubTaskStruct> UReplayHeaderJSONExporter::GetMicroTaskSubTasks(TArray<TS
 	{
 		TSharedPtr<FJsonObject> SubTaskObj = SubTaskValue->AsObject();
 		FSubTaskStruct SubTask;
-		SubTask.AOIName = SubTaskObj->GetStringField("AOIName");
-		SubTask.Complete = SubTaskObj->GetBoolField("Complete");
+		SubTask.AOIName = SubTaskObj->GetStringField(TEXT("AOIName"));
+		SubTask.Complete = SubTaskObj->GetBoolField(TEXT("Complete"));
 		MicroTaskSubTasks.Add(SubTask);
 	}
 	return MicroTaskSubTasks;
@@ -322,9 +322,9 @@ TArray<FSubTaskStruct> UReplayHeaderJSONExporter::GetMicroTaskSubTasks(TArray<TS
 FReplayEventStruct UReplayHeaderJSONExporter::GetReplayEventStruct(TSharedPtr<FJsonObject> ReplayEventStructObj)
 {
 	FReplayEventStruct ReplayEventStruct;
-	ReplayEventStruct.Name = ReplayEventStructObj->GetStringField("Name");
-	ReplayEventStruct.Description = ReplayEventStructObj->GetStringField("Description");
-	ReplayEventStruct.SessionID = ReplayEventStructObj->GetStringField("SessionID");
+	ReplayEventStruct.Name = ReplayEventStructObj->GetStringField(TEXT("Name"));
+	ReplayEventStruct.Description = ReplayEventStructObj->GetStringField(TEXT("Description"));
+	ReplayEventStruct.SessionID = ReplayEventStructObj->GetStringField(TEXT("SessionID"));
 	double StartTimestampUnix;
 	if (ReplayEventStructObj->TryGetNumberField("StartTimestamp", StartTimestampUnix))
 	{
@@ -332,17 +332,17 @@ FReplayEventStruct UReplayHeaderJSONExporter::GetReplayEventStruct(TSharedPtr<FJ
 	}
 	else
 	{
-		FTimespan::Parse(ReplayEventStructObj->GetStringField("StartTimestamp"), ReplayEventStruct.StartTimestamp);
+		FTimespan::Parse(ReplayEventStructObj->GetStringField(TEXT("StartTimestamp")), ReplayEventStruct.StartTimestamp);
 	}
 	
 	double EndTimestampUnix;
-	if (ReplayEventStructObj->TryGetNumberField("EndTimestamp", EndTimestampUnix))
+	if (ReplayEventStructObj->TryGetNumberField(TEXT("EndTimestamp"), EndTimestampUnix))
 	{
 		ReplayEventStruct.EndTimestamp = FTimespan::FromMilliseconds(EndTimestampUnix);
 	}
 	else
 	{
-		FTimespan::Parse(ReplayEventStructObj->GetStringField("EndTimestamp"), ReplayEventStruct.EndTimestamp);
+		FTimespan::Parse(ReplayEventStructObj->GetStringField(TEXT("EndTimestamp")), ReplayEventStruct.EndTimestamp);
 	}
 
 	return ReplayEventStruct;
@@ -358,13 +358,13 @@ TimeIndexStruct UReplayHeaderJSONExporter::GetTimeIndexStruct(TSharedPtr<FJsonOb
 	}
 	else
 	{
-		FDateTime::Parse(TimeIndexStructObj->GetStringField("TimeStamp"), TimeIndex.TimeStamp);
+		FDateTime::Parse(TimeIndexStructObj->GetStringField(TEXT("TimeStamp")), TimeIndex.TimeStamp);
 	}
 	
-	TimeIndex.PlayIndex = TimeIndexStructObj->GetNumberField("PlayIndex");
-	TimeIndex.FileIndex = TimeIndexStructObj->GetNumberField("FileIndex");
-	TimeIndex.HasGAKeyFrame = TimeIndexStructObj->GetNumberField("HasGAKeyFrame");
-	TimeIndex.LastGAKeyFrameIndex = TimeIndexStructObj->GetNumberField("LastGAKeyFrameIndex");
+	TimeIndex.PlayIndex = TimeIndexStructObj->GetNumberField(TEXT("PlayIndex"));
+	TimeIndex.FileIndex = TimeIndexStructObj->GetNumberField(TEXT("FileIndex"));
+	TimeIndex.HasGAKeyFrame = TimeIndexStructObj->GetNumberField(TEXT("HasGAKeyFrame"));
+	TimeIndex.LastGAKeyFrameIndex = TimeIndexStructObj->GetNumberField(TEXT("LastGAKeyFrameIndex"));
 
 	return TimeIndex;
 }
@@ -372,16 +372,16 @@ TimeIndexStruct UReplayHeaderJSONExporter::GetTimeIndexStruct(TSharedPtr<FJsonOb
 FSettingsStruct UReplayHeaderJSONExporter::GetSettingsStruct(TSharedPtr<FJsonObject> SettingsStructObj)
 {
 	FSettingsStruct SettingsStruct;
-	TSharedPtr<FJsonObject> MotiveOffsetObj = SettingsStructObj->GetObjectField("MotiveOffset");
+	TSharedPtr<FJsonObject> MotiveOffsetObj = SettingsStructObj->GetObjectField(TEXT("MotiveOffset"));
 	SettingsStruct.MotiveOffset = UJSONExporter::GetFVectorFromJSON(MotiveOffsetObj);
-	TSharedPtr<FJsonObject> ETOffsetObj = SettingsStructObj->GetObjectField("ETOffset");
+	TSharedPtr<FJsonObject> ETOffsetObj = SettingsStructObj->GetObjectField(TEXT("ETOffset"));
 	SettingsStruct.ETOffset = UJSONExporter::GetFVectorFromJSON(ETOffsetObj);
-	SettingsStruct.PosTrackingUnitToUnrealUnitFactor = SettingsStructObj->GetNumberField("PosTrackingUnitToUnrealUnitFactor");
-	SettingsStruct.EyesTrackingUnitToUnrealUnitFactor = SettingsStructObj->GetNumberField("EyesTrackingUnitToUnrealUnitFactor");
-	SettingsStruct.SaveRate = SettingsStructObj->GetNumberField("SaveRate");
-	SettingsStruct.SaveScreenRate = SettingsStructObj->GetNumberField("SaveScreenRate");
-	SettingsStruct.bSaveRatePerMinute = SettingsStructObj->GetBoolField("bSaveRatePerMinute"); 
-	SettingsStruct.CrossbarAdress = SettingsStructObj->GetStringField("CrossbarAdress"); 
+	SettingsStruct.PosTrackingUnitToUnrealUnitFactor = SettingsStructObj->GetNumberField(TEXT("PosTrackingUnitToUnrealUnitFactor"));
+	SettingsStruct.EyesTrackingUnitToUnrealUnitFactor = SettingsStructObj->GetNumberField(TEXT("EyesTrackingUnitToUnrealUnitFactor"));
+	SettingsStruct.SaveRate = SettingsStructObj->GetNumberField(TEXT("SaveRate"));
+	SettingsStruct.SaveScreenRate = SettingsStructObj->GetNumberField(TEXT("SaveScreenRate"));
+	SettingsStruct.bSaveRatePerMinute = SettingsStructObj->GetBoolField(TEXT("bSaveRatePerMinute"));
+	SettingsStruct.CrossbarAdress = SettingsStructObj->GetStringField(TEXT("CrossbarAdress"));
 
 	return SettingsStruct;
 }
@@ -394,8 +394,8 @@ TArray<TPair<FDateTime, FImageAndAOIs>> UReplayHeaderJSONExporter::GetChangeImag
 	{
 		TPair<FDateTime, FImageAndAOIs > ChangeImageEvent;
 		TSharedPtr<FJsonObject> DataObj = ChangeImageEventObj->AsObject();
-		ChangeImageEvent.Key = FDateTime::FromUnixTimestamp(DataObj->GetNumberField("Timestamp"));
-		ChangeImageEvent.Value = UExperimentDataJSONExporter::GetImageAndAOIs(DataObj->GetObjectField("ImageAndAOIsEvent"));
+		ChangeImageEvent.Key = FDateTime::FromUnixTimestamp(DataObj->GetNumberField(TEXT("Timestamp")));
+		ChangeImageEvent.Value = UExperimentDataJSONExporter::GetImageAndAOIs(DataObj->GetObjectField(TEXT("ImageAndAOIsEvent")));
 		ChangeImageEvents.Add(ChangeImageEvent);
 	}
 	return ChangeImageEvents;
@@ -409,8 +409,8 @@ TArray<TPair<FDateTime, FPopupAndAOIs>> UReplayHeaderJSONExporter::GetPopupEvent
 	{
 		TPair<FDateTime, FPopupAndAOIs > PopupEvent;
 		TSharedPtr<FJsonObject> DataObj = PopupEventObj->AsObject();
-		PopupEvent.Key = FDateTime::FromUnixTimestamp(DataObj->GetNumberField("Timestamp"));
-		PopupEvent.Value = UExperimentDataJSONExporter::GetPopupAndAOIs(DataObj->GetObjectField("PopupEvent"));
+		PopupEvent.Key = FDateTime::FromUnixTimestamp(DataObj->GetNumberField(TEXT("Timestamp")));
+		PopupEvent.Value = UExperimentDataJSONExporter::GetPopupAndAOIs(DataObj->GetObjectField(TEXT("PopupEvent")));
 		PopupEvents.Add(PopupEvent);
 	}
 	return PopupEvents;

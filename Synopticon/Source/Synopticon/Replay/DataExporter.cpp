@@ -14,7 +14,7 @@ DataExporter::~DataExporter()
 {
 }
 
-bool DataExporter::ExportData(FString FileName, CompressedHeader* Header, bool ExportAggregated, bool ExportFixations, bool RelativeTimestamp)
+bool DataExporter::ExportData(FString FileName, CompressedHeader* Header, bool ExportAggregated, bool ExportFixations, bool ExportGazePath, bool RelativeTimestamp)
 {
 	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 
@@ -70,6 +70,10 @@ bool DataExporter::ExportData(FString FileName, CompressedHeader* Header, bool E
 				if (ExportAggregated)
 				{
 					GazeLogSave = SaveLogComponentTable(SavedPath + "/" + _FileName + "_eye_data", SOData.ActorName, Header->ReplayTimeInSeconds, GANames, SOData.GazeLogComponentData, RelativeTimestamp);
+				}
+				if (ExportGazePath)
+				{
+					GazeLogSave = SaveGazePath(SavedPath + "/" + _FileName + "_gazePath", SOData.ActorName, BeginTimestamp, GANames, SOData.GazeLogComponentData, RelativeTimestamp);
 				}
 
 				bool FixationSave = SaveFixations(SavedPath + "/" + _FileName, SOData.ActorName, GANames, SOData.GazeData, BeginTimestamp, RelativeTimestamp);
@@ -195,6 +199,37 @@ bool DataExporter::SaveLogComponentTable(FString FileName, FString ParticipantID
 	FString Row = ParticipantID + ",,Unspecified,," + GetFloatAsStringWithPrecision(UnspecifiedTime, 2) + ",," + GetFloatAsStringWithPrecision(UnspecifiedPercentage, 2) + "\n";
 
 	FFileHelper::SaveStringToFile(Row, *AbsoluteFilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
+
+	return true;
+}
+
+bool DataExporter::SaveGazePath(FString FileName, FString ParticipantID, FDateTime Begin,
+	TMap<int32, FString> GANames, FSynOpticonActorLoggingStruct LogComponentData, bool RelativeTimestamp)
+{
+	FString GazePathFilePath = FileName + "_gazePath.csv";
+
+	// Allow overwriting or file doesn't already exist
+
+	FString ColumnHeaders = FString("Participant, Timestamp, AOI, Duration\n");
+	FFileHelper::SaveStringToFile(ColumnHeaders, *GazePathFilePath);
+
+	double TotalPercentages = 0;
+	double KnownTime = 0;
+	for (FGazePathLoggingInfoStruct Obj : LogComponentData.GazePaths)
+	{
+		FString Timestamp;
+		if (RelativeTimestamp)
+		{
+			Timestamp = FromTimespanToString(Obj.TimeStamp - Begin);
+		}
+		else //Utc time
+		{
+			Timestamp = FromDateTimeToString(Obj.TimeStamp);
+		}
+
+		FString Row = ParticipantID + "," + Timestamp + "," + GANames.FindRef(Obj.GazeActorID) + "," + GetFloatAsStringWithPrecision(Obj.Duration, 3) + "\n";
+		FFileHelper::SaveStringToFile(Row, *GazePathFilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
+	}
 
 	return true;
 }

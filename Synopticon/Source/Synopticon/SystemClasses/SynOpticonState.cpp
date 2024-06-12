@@ -54,7 +54,7 @@ float ASynOpticonState::OFFSET_THRESHOLD = 0;
 
 float ASynOpticonState::DOUBLE_BLINK_THRESHOLD = 400; //ms
 
-int32 ASynOpticonState::SplitRecordingTimeThreshold = 120; //Minutes
+int32 ASynOpticonState::SplitRecordingTimeThreshold = 5; //Minutes
 
 TMap<int32, TPair<FString, bool>> ASynOpticonState::AOISessionDict;
 

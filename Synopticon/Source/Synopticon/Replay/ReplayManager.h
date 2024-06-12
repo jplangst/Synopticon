@@ -168,7 +168,7 @@ public:
 	bool ApplyTexturesFromOneFileToOther(FString From, FString To);
 
 	UFUNCTION(BlueprintCallable, Category = "Replay Manager")
-	void ExportData(bool ExportAggregated, bool ExportFixations, bool RelativeTime, FString _FileName);
+	void ExportData(bool ExportAggregated, bool ExportFixations, bool ExportGazePath, bool RelativeTime, FString _FileName);
 
 	UFUNCTION(BlueprintCallable, Category = "Replay Manager")
 	bool LoadHeaderAndCreateActors(FString _FileName);

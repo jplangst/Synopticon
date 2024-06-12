@@ -23,6 +23,9 @@ class SYNOPTICON_API DataExporter
 		TArray<FFixationGroupStruct> Fixations, FDateTime Begin, bool RelativeTimestamp);
 	static bool SaveEvents(FString FileName, CompressedHeader* Header, bool RelativeTimestamp);
 
+	static bool SaveGazePath(FString FileName, FString ParticipantID, FDateTime Begin,
+		TMap<int32, FString> GANames, FSynOpticonActorLoggingStruct LogComponentData, bool RelativeTimestamp);
+
 	static FString FromDateTimeToString(FDateTime Timestamp);
 	static FString FromTimespanToString(FTimespan Timeduration);
 	static FString FromIntToTimeFormat(int Number);
@@ -32,7 +35,7 @@ public:
 	DataExporter();
 	~DataExporter();
 
-	static bool ExportData(FString FileName, CompressedHeader* Header, bool ExportAggregated, bool ExportFixations, bool RelativeTimestamp);
+	static bool ExportData(FString FileName, CompressedHeader* Header, bool ExportAggregated, bool ExportFixations, bool ExportGazePath, bool RelativeTimestamp);
 	//export binary
 	static FString ExportBinaryData(FString FileName, CompressedHeader* Header);
 	static void SaveSOBinaryDataBlock(FString FileName, FString Data);

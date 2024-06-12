@@ -873,7 +873,7 @@ bool UReplayManager::ApplyTexturesFromOneFileToOther(FString From, FString To)
 	return Result;
 }
 
-void UReplayManager::ExportData(bool ExportAggregated, bool ExportFixations, bool RelativeTimestamp, FString _FileName)
+void UReplayManager::ExportData(bool ExportAggregated, bool ExportFixations, bool ExportGazePath, bool RelativeTimestamp, FString _FileName)
 {
 	CompressedHeader _Header;
 	if (!Header) {
@@ -891,7 +891,7 @@ void UReplayManager::ExportData(bool ExportAggregated, bool ExportFixations, boo
 		_FileName.Split("/", &Path, &_Name, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
 		_Name.Split(".", &_Name, &_Ext, ESearchCase::IgnoreCase, ESearchDir::FromEnd);
 	}
-	DataExporter::ExportData(_Name, &_Header, ExportAggregated, ExportFixations, RelativeTimestamp);
+	DataExporter::ExportData(_Name, &_Header, ExportAggregated, ExportFixations, ExportGazePath, RelativeTimestamp);
 }
 
 bool UReplayManager::LoadHeaderAndCreateActors(FString _FileName)
