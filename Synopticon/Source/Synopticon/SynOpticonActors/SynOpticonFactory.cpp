@@ -3,7 +3,6 @@
 #include "SynOpticonFactory.h"
 //#include "Synopticon.h"
 
-
 int32 USynOpticonFactory::Index = 0;
 bool USynOpticonFactory::ReplayMode = false;
 TArray<FLinearColor> USynOpticonFactory::ActorColors = TArray<FLinearColor>();
