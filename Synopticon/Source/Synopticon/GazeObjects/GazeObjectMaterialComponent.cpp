@@ -146,7 +146,8 @@ void UGazeObjectMaterialComponent::TickComponent( float DeltaTime, ELevelTick Ti
 				if (isLookedAt)
 				{
 					ProcMesh->CustomDepthStencilValue = StencilValue;
-					ProcMesh->SetRenderCustomDepth(true);		
+					ProcMesh->SetRenderCustomDepth(true);	
+					ProcMesh->MarkRenderStateDirty();
 					MarkRenderStateDirty();
 				}
 				else
