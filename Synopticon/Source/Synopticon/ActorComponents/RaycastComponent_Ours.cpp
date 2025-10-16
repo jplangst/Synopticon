@@ -148,7 +148,8 @@ void URaycastComponent_Ours::ProcessHitResults(TArray<FHitObjectResult> &HitResu
 			}			
 		//}
 		
-		UPositionAndOrientationComponent* PosOriComponent = GetOwner()->FindComponentByClass<UPositionAndOrientationComponent>();
+		AActor* TestOwner = GetOwner();
+		UPositionAndOrientationComponent* PosOriComponent = TestOwner->FindComponentByClass<UPositionAndOrientationComponent>();
 		if (PosOriComponent)
 		{
 			PosOriComponent->ScaleOrientationMesh(GetTargetDistance());

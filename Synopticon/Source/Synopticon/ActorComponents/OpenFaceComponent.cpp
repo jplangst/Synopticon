@@ -532,9 +532,11 @@ void UOpenFaceComponent::DoRaycast()
 		double distance = RaycastComponent->GetTargetDistance();
 		if (distance != -1 && distance != 0)
 		{
-			LeftEyeSceneComponent->SetRelativeScale3D(FVector(distance / 500, 1, 1));
-			RightEyeSceneComponent->SetRelativeScale3D(FVector(distance / 500, 1, 1));
-			CombinedVectorSceneComponent->SetRelativeScale3D(FVector(distance / 500, 1, 1));
+			double scaledSize = distance / 500;
+			LeftEyeSceneComponent->SetRelativeScale3D(FVector(scaledSize, 1, 1));
+			RightEyeSceneComponent->SetRelativeScale3D(FVector(scaledSize, 1, 1));
+			CombinedVectorSceneComponent->SetRelativeScale3D(FVector(scaledSize, 1, 1));
+			OrientationSceneComponent->SetRelativeScale3D(FVector(scaledSize, 1, 1));
 			ScaleDelay = 0;
 			StartScaleDelay = false;
 		}
