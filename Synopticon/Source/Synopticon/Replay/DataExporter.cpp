@@ -380,18 +380,13 @@ FString DataExporter::ExportBinaryData(FString FileName, CompressedHeader* Heade
 			FString ColumnHeaders = FString("Timestamp");
 			for (FSynOpticonActorStruct SO : Header->SynOpticonActorDataList)
 			{
-				/*FString ColumnHeaders = FString("Timestamp, Location-X, Location-Y, Location-Z, Rotation-Pitch, Rotation-Roll, Rotation-Yaw,")
-					+ FString("LeftEyeLocation-X, LeftEyeLocation-Y, LeftEyeLocation-Z, LeftEyeRotation-Pitch, LeftEyeRotation-Roll, LeftEyeRotation-Yaw,")
-					+ FString("RightEyeLocation-X, RightEyeLocation-Y, RightEyeLocation-Z, RightEyeRotation-Pitch, RightEyeRotation-Roll, RightEyeRotation-Yaw,")
-					+ FString("PupilRadius,")
-					+ FString("LeftHandLocation-X, LeftHandLocation-Y, LeftHandLocation-Z, LeftHandRotation-Pitch, LeftHandRotation-Roll, LeftHandRotation-Yaw,")
-					+ FString("RightHandLocation-X, RightHandLocation-Y, RightHandLocation-Z, RightHandRotation-Pitch, RightHandRotation-Roll, RightHandRotation-Yaw");*/
+				ColumnHeaders = FString("Timestamp," + SO.ActorName + ",x, y, z, pitch, roll, yaw");
 
-				ColumnHeaders += ", PupilRadius-" + SO.ActorName
-					+ ", LeftEyeLocationX-" + SO.ActorName + ", LeftEyeLocationY-" + SO.ActorName + ", LeftEyeLocationZ-" + SO.ActorName
-					+ ", LeftEyeRotationPitch-" + SO.ActorName + ", LeftEyeRotationYaw-" + SO.ActorName + ", LeftEyeRotationRoll-" + SO.ActorName
-					+ ", RightEyeLocationX-" + SO.ActorName + ", RightEyeLocationY-" + SO.ActorName + ", RightEyeLocationZ-" + SO.ActorName
-					+ ", RightEyeRotationPitch-" + SO.ActorName + ", RightEyeRotationYaw-" + SO.ActorName + ", RightEyeRotationRoll-" + SO.ActorName;
+				//ColumnHeaders += ", PupilRadius-" + SO.ActorName
+				//	+ ", LeftEyeLocationX-" + SO.ActorName + ", LeftEyeLocationY-" + SO.ActorName + ", LeftEyeLocationZ-" + SO.ActorName
+				//	+ ", LeftEyeRotationPitch-" + SO.ActorName + ", LeftEyeRotationYaw-" + SO.ActorName + ", LeftEyeRotationRoll-" + SO.ActorName
+				//	+ ", RightEyeLocationX-" + SO.ActorName + ", RightEyeLocationY-" + SO.ActorName + ", RightEyeLocationZ-" + SO.ActorName
+				//	+ ", RightEyeRotationPitch-" + SO.ActorName + ", RightEyeRotationYaw-" + SO.ActorName + ", RightEyeRotationRoll-" + SO.ActorName;
 			}
 			ColumnHeaders += "\n";
 			FFileHelper::SaveStringToFile(ColumnHeaders, *File);
@@ -415,46 +410,50 @@ void DataExporter::SaveSOBinaryDataBlock(FString FileName, FString Data)
 FString DataExporter::GetSOBinaryDataRow(CompressedHeader* Header, FCompressedTickBlock DataBlock)
 {
 	int i = 0;
-	FString Rows = FromDateTimeToString(DataBlock.DateTime);
-	for (CompressedSOBlock* SOData : DataBlock.SOActorData)
+	FString Rows = "";
+	FString Timestamp = FromDateTimeToString(DataBlock.DateTime);
+	//for (CompressedSOBlock* SOData : DataBlock.SOActorData)
+	for (int32 Index = 0; Index < DataBlock.SOActorData.Num(); ++Index)
 	{
-		if (SOData->HasETGData) {
-			ETGDataBlock ETGBlock = SOData->ETGData;
-			Rows += "," + FString::SanitizeFloat(SOData->ETGData.PupilRadius) +
-				"," + FString::SanitizeFloat(ETGBlock.LeftEyeLocation.X) + //left
-				"," + FString::SanitizeFloat(ETGBlock.LeftEyeLocation.Y) +
-				"," + FString::SanitizeFloat(ETGBlock.LeftEyeLocation.Z) +
-				"," + FString::SanitizeFloat(ETGBlock.LeftEyeRotation.Pitch) +
-				"," + FString::SanitizeFloat(ETGBlock.LeftEyeRotation.Yaw) +
-				"," + FString::SanitizeFloat(ETGBlock.LeftEyeRotation.Roll) +
-				"," + FString::SanitizeFloat(ETGBlock.RightEyeLocation.X) + //right
-				"," + FString::SanitizeFloat(ETGBlock.RightEyeLocation.Y) +
-				"," + FString::SanitizeFloat(ETGBlock.RightEyeLocation.Z) +
-				"," + FString::SanitizeFloat(ETGBlock.RightEyeRotation.Pitch) +
-				"," + FString::SanitizeFloat(ETGBlock.RightEyeRotation.Yaw) +
-				"," + FString::SanitizeFloat(ETGBlock.RightEyeRotation.Roll);
-		}
-		else if (SOData->hasRTData) {
-			RTDataBlock RTBlock = SOData->RTData;
-			Rows += "," + FString::SanitizeFloat((RTBlock.RightEyePupilRadius + RTBlock.LeftEyePupilRadius)/2) +
-				"," + FString::SanitizeFloat(RTBlock.LeftEyeLocation.X) + //left
-				"," + FString::SanitizeFloat(RTBlock.LeftEyeLocation.Y) +
-				"," + FString::SanitizeFloat(RTBlock.LeftEyeLocation.Z) +
-				"," + FString::SanitizeFloat(RTBlock.LeftEyeRotation.Pitch) +
-				"," + FString::SanitizeFloat(RTBlock.LeftEyeRotation.Yaw) +
-				"," + FString::SanitizeFloat(RTBlock.LeftEyeRotation.Roll) +
-				"," + FString::SanitizeFloat(RTBlock.RightEyeLocation.X) + //right
-				"," + FString::SanitizeFloat(RTBlock.RightEyeLocation.Y) +
-				"," + FString::SanitizeFloat(RTBlock.RightEyeLocation.Z) +
-				"," + FString::SanitizeFloat(RTBlock.RightEyeRotation.Pitch) +
-				"," + FString::SanitizeFloat(RTBlock.RightEyeRotation.Yaw) +
-				"," + FString::SanitizeFloat(RTBlock.RightEyeRotation.Roll);
-		}
-		else {
-			Rows += ",,,,,,,,,,,,,";
-		}
-		//Row = DataBlock.DateTime.ToString() + "," + FString::SanitizeFloat(SOData->ActorLocation.X) + "," + FString::SanitizeFloat(SOData->ActorLocation.Y) + "," + FString::SanitizeFloat(SOData->ActorLocation.Z) + 
-		//				"," + FString::SanitizeFloat(SOData->ActorRotation.Pitch) + "," + FString::SanitizeFloat(SOData->ActorRotation.Roll) + "," + FString::SanitizeFloat(SOData->ActorRotation.Yaw);
+		//if (SOData->HasETGData) {
+		//	ETGDataBlock ETGBlock = SOData->ETGData;
+		//	Rows += "," + FString::SanitizeFloat(SOData->ETGData.PupilRadius) +
+		//		"," + FString::SanitizeFloat(ETGBlock.LeftEyeLocation.X) + //left
+		//		"," + FString::SanitizeFloat(ETGBlock.LeftEyeLocation.Y) +
+		//		"," + FString::SanitizeFloat(ETGBlock.LeftEyeLocation.Z) +
+		//		"," + FString::SanitizeFloat(ETGBlock.LeftEyeRotation.Pitch) +
+		//		"," + FString::SanitizeFloat(ETGBlock.LeftEyeRotation.Yaw) +
+		//		"," + FString::SanitizeFloat(ETGBlock.LeftEyeRotation.Roll) +
+		//		"," + FString::SanitizeFloat(ETGBlock.RightEyeLocation.X) + //right
+		//		"," + FString::SanitizeFloat(ETGBlock.RightEyeLocation.Y) +
+		//		"," + FString::SanitizeFloat(ETGBlock.RightEyeLocation.Z) +
+		//		"," + FString::SanitizeFloat(ETGBlock.RightEyeRotation.Pitch) +
+		//		"," + FString::SanitizeFloat(ETGBlock.RightEyeRotation.Yaw) +
+		//		"," + FString::SanitizeFloat(ETGBlock.RightEyeRotation.Roll);
+		//}
+		//else if (SOData->hasRTData) {
+		//	RTDataBlock RTBlock = SOData->RTData;
+		//	Rows += "," + FString::SanitizeFloat((RTBlock.RightEyePupilRadius + RTBlock.LeftEyePupilRadius)/2) +
+		//		"," + FString::SanitizeFloat(RTBlock.LeftEyeLocation.X) + //left
+		//		"," + FString::SanitizeFloat(RTBlock.LeftEyeLocation.Y) +
+		//		"," + FString::SanitizeFloat(RTBlock.LeftEyeLocation.Z) +
+		//		"," + FString::SanitizeFloat(RTBlock.LeftEyeRotation.Pitch) +
+		//		"," + FString::SanitizeFloat(RTBlock.LeftEyeRotation.Yaw) +
+		//		"," + FString::SanitizeFloat(RTBlock.LeftEyeRotation.Roll) +
+		//		"," + FString::SanitizeFloat(RTBlock.RightEyeLocation.X) + //right
+		//		"," + FString::SanitizeFloat(RTBlock.RightEyeLocation.Y) +
+		//		"," + FString::SanitizeFloat(RTBlock.RightEyeLocation.Z) +
+		//		"," + FString::SanitizeFloat(RTBlock.RightEyeRotation.Pitch) +
+		//		"," + FString::SanitizeFloat(RTBlock.RightEyeRotation.Yaw) +
+		//		"," + FString::SanitizeFloat(RTBlock.RightEyeRotation.Roll);
+		//}
+		//else {
+		//	Rows += ",,,,,,,,,,,,,";
+		//}
+		CompressedSOBlock* SOData = DataBlock.SOActorData[Index];
+		const FSynOpticonActorStruct& SO = Header->SynOpticonActorDataList[Index];
+		Rows += Timestamp + "," + SO.ActorName + "," + FString::SanitizeFloat(SOData->ActorLocation.X) + "," + FString::SanitizeFloat(SOData->ActorLocation.Y) + "," + FString::SanitizeFloat(SOData->ActorLocation.Z) +
+						"," + FString::SanitizeFloat(SOData->ActorRotation.Pitch) + "," + FString::SanitizeFloat(SOData->ActorRotation.Roll) + "," + FString::SanitizeFloat(SOData->ActorRotation.Yaw) + "\n";
 		//if (SOData->HasETGData)
 		//{
 		//	//export etgdata
@@ -475,30 +474,29 @@ FString DataExporter::GetSOBinaryDataRow(CompressedHeader* Header, FCompressedTi
 		//			"," + PupilRadius);
 		//}
 
-		//int j = 0;
-		//FSynOpticonActorStruct SO = Header->SynOpticonActorDataList[i];
-		//for (HandDataBlock* HandData : SOData->HandDataBlocks)
-		//{
-		//	FRotator Rotation = HandData->HandRotation.Rotator();
-		//	if (SO.HandComponents[j].LeftHand)
-		//	{
-		//		Row += ("," + FString::SanitizeFloat(HandData->HandLocation.X) + "," + FString::SanitizeFloat(HandData->HandLocation.Y) + "," + FString::SanitizeFloat(HandData->HandLocation.Z) +
-		//				"," + FString::SanitizeFloat(Rotation.Pitch) + "," + FString::SanitizeFloat(Rotation.Roll) + "," + FString::SanitizeFloat(Rotation.Yaw) + 
-		//				",,\n");
-		//	}
-		//	else
-		//	{
-		//		Row += (",,," + FString::SanitizeFloat(HandData->HandLocation.X) + "," + FString::SanitizeFloat(HandData->HandLocation.Y) + "," + FString::SanitizeFloat(HandData->HandLocation.Z) +
-		//				"," + FString::SanitizeFloat(Rotation.Pitch) + "," + FString::SanitizeFloat(Rotation.Roll) + "," + FString::SanitizeFloat(Rotation.Yaw) +
-		//				"\n");
-		//	}
-		//	j++;
-		//}
+		/*int j = 0;
+		FSynOpticonActorStruct SO = Header->SynOpticonActorDataList[i];
+		for (HandDataBlock* HandData : SOData->HandDataBlocks)
+		{
+			FRotator Rotation = HandData->HandRotation.Rotator();
+			if (SO.HandComponents[j].LeftHand)
+			{
+				Row += ("," + FString::SanitizeFloat(HandData->HandLocation.X) + "," + FString::SanitizeFloat(HandData->HandLocation.Y) + "," + FString::SanitizeFloat(HandData->HandLocation.Z) +
+						"," + FString::SanitizeFloat(Rotation.Pitch) + "," + FString::SanitizeFloat(Rotation.Roll) + "," + FString::SanitizeFloat(Rotation.Yaw) + 
+						",,\n");
+			}
+			else
+			{
+				Row += (",,," + FString::SanitizeFloat(HandData->HandLocation.X) + "," + FString::SanitizeFloat(HandData->HandLocation.Y) + "," + FString::SanitizeFloat(HandData->HandLocation.Z) +
+						"," + FString::SanitizeFloat(Rotation.Pitch) + "," + FString::SanitizeFloat(Rotation.Roll) + "," + FString::SanitizeFloat(Rotation.Yaw) +
+						"\n");
+			}
+			j++;
+		}
 
 		
-		i++;
+		i++;*/
 	}
-	Rows += "\n";
 	return Rows;
 }
 

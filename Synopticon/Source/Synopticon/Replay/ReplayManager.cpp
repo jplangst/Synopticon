@@ -518,9 +518,8 @@ float UReplayManager::GetTotalReplayTimeInSeconds()
 //===============================supporting functions===============================
 void UReplayManager::SaveLoadBlockData(FArchive& Ar, FCompressedTickBlock& Block)
 {
-	ReadMemoryCriticalSection.Lock();
-	Ar << Block;
-	ReadMemoryCriticalSection.Unlock();
+	FScopeLock Lock(&ReadMemoryCriticalSection);
+	Ar << Block; // or Block.Serialize(Ar);
 }
 
 void UReplayManager::LoadSubReplayFile()
@@ -936,24 +935,38 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 		CompressedHeader* _Header = new CompressedHeader();
 		*_Header = LoadHeaderFile(FileName);
 
+		for (FGazeActorData GA : _Header->GazeActorDataList)
+		{
+			CompressedGazeBlock* GazeBlock = new CompressedGazeBlock();
+			GazeBlock->movable = GA.Movable;
+			GazeBlock->parented = GA.Parented;
+			_DataBlock.GazeActorData.Add(GazeBlock);
+		}
+
+		//for (FSynOpticonActorStruct SO : _Header->SynOpticonActorDataList)
+		//{
+		//	CompressedSOBlock* SOBlock = new CompressedSOBlock();
+		//	_DataBlock.SOActorData.Add(SOBlock);
+		//}
+
 		//Setup DataBlock
 
 		//setup for gaze actors
-		for (FGazeActorData GA : _Header->GazeActorDataList)
-		{
-			CompressedGazeBlock* NewGazeBlock = new CompressedGazeBlock();
-			NewGazeBlock->movable = GA.Movable;
-			NewGazeBlock->parented = GA.Parented;
-			_DataBlock.GazeActorData.Add(NewGazeBlock);
-		}
-		//setup for so actors
+		//for (FGazeActorData GA : _Header->GazeActorDataList)
+		//{
+		//	CompressedGazeBlock* NewGazeBlock = new CompressedGazeBlock();
+		//	NewGazeBlock->movable = GA.Movable;
+		//	NewGazeBlock->parented = GA.Parented;
+		//	_DataBlock.GazeActorData.Add(NewGazeBlock);
+		//}
+		////setup for so actors
 		for (FSynOpticonActorStruct SO : _Header->SynOpticonActorDataList)
 		{
 			CompressedSOBlock* NewSOBlock = new CompressedSOBlock();
-			if (SO.EyeTrackerStruct.GlassesID != "")
-			{
+			//if (SO.EyeTrackerStruct.GlassesID != "")
+			//{
 				NewSOBlock->HasETGData = true;
-			}
+			//}
 
 			if (SO.RemoteEyeTrackerStruct.RemoteTrackerID != "")
 			{
@@ -969,6 +982,16 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 			_DataBlock.SOActorData.Add(NewSOBlock);
 		}
 		FString ExportedFile = DataExporter::ExportBinaryData(FullName, _Header);
+
+		IPlatformFile& PF = FPlatformFileManager::Get().GetPlatformFile();
+
+		if (PF.FileExists(*ExportedFile))
+		{
+			if (!PF.DeleteFile(*ExportedFile))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Failed to delete file: %s"), *ExportedFile);
+			}
+		}
 		//ExportBinary
 		int FileIndex = 0;
 		FString ReadFile = FileName;
@@ -979,9 +1002,9 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 			_CompressedData.Empty();
 			if (!FFileHelper::LoadFileToArray(_CompressedData, *ReadFile))
 			{
-				//return; //invalid file
+				return; //invalid file
 			}
-			FileIndex += 1;
+			
 			if (_Decompressor)
 			{
 				_Decompressor->FlushCache();
@@ -990,7 +1013,7 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 			_Decompressor = new FArchiveLoadCompressedProxy(_CompressedData, "DXT", ECompressionFlags::COMPRESS_ZLIB);
 			if (_Decompressor->GetError())
 			{
-				//return;
+				return;
 			}
 
 			_DecompressedBinaryBuffer.Empty();
@@ -1007,12 +1030,22 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 			int Print = 0;
 			FString Rows = "";
 
-			while (_PlayIndex < _BinaryBuffer->TotalSize())
+			int64 Start = _BinaryBuffer->Tell();
+
+			while (!_BinaryBuffer->AtEnd())
 			{
+				const int64 Before = _BinaryBuffer->Tell();
+
+				// Must take FArchive& and actually read from it
 				SaveLoadBlockData(*_BinaryBuffer, _DataBlock);
 
-				_PlayIndex = _BinaryBuffer->Tell();
-				_BinaryBuffer->Seek(_PlayIndex);
+				const int64 After = _BinaryBuffer->Tell();
+				_BinaryBuffer->Seek(After);
+				if (After <= Before)           // guard against infinite loop
+				{
+					UE_LOG(LogTemp, Error, TEXT("Archive cursor did not advance! Before=%lld After=%lld"), Before, After);
+					break;
+				}
 
 				//Export to csv
 				Rows += DataExporter::GetSOBinaryDataRow(_Header, _DataBlock);
@@ -1021,11 +1054,19 @@ void UReplayManager::ExportBinaryDataWorker(FString FileName)
 				{
 					DataExporter::SaveSOBinaryDataBlock(ExportedFile, Rows);
 					Print = 0;
-					Rows = "";
+					Rows.Empty();
 				}
 			}
+			if (!Rows.IsEmpty())
+			{
+				DataExporter::SaveSOBinaryDataBlock(ExportedFile, Rows);
+				Print = 0;
+				Rows.Empty();
+			}
 
-			ReadFile = FullName + FString::FromInt(FileIndex);
+			//prepare next file
+			FileIndex += 1;
+			ReadFile = FullName + "." + FString::FromInt(FileIndex);
 		} while (FileIndex < _Header->NumOfLogFiles);
 
 		if (_Decompressor)
